@@ -17,6 +17,12 @@
     "rings"
   ],
   "author": "",
+  "contributors": [
+    {"name": "Chiana Egels"},
+    {"name": "Jolan Jorissen"},
+    {"name": "Alki Ooms"},
+    {"name": "Tatjana Torchenyuk"}
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/aoomsAP/the-one-quiz/issues"
