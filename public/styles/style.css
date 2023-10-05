@@ -1,0 +1,13 @@
+/* favorites and blacklist */
+
+.bi-trash {
+    color: var(--bs-primary)
+}
+
+.odd {
+    background-color: var(--bs-secondary-bg);
+}
+
+.even {
+    background-color: var(--bs-tertiary-bg);
+}

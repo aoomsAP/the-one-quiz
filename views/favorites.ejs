@@ -2,9 +2,47 @@
 
 <%- include('./partials/nav'); %>
 
-
-
-
-
+<main class="container-sm p-3 pt-5" id="favorites">
+    <h1>Favorieten</h1>
+    <p>Hieronder vind je een lijst met je favoriete quotes. Klik op een naam om uitsluitend quotes van een bepaald personage te zien. Verwijder quotes uit je favorietenlijst door op het vuilbakje te klikken. De printknop opent een printbaar bestand.</p>
+    <button type="button" class="btn btn-primary" title="Print deze lijst uit"><i class="bi bi-printer"></i>&nbsp;Print</button>
+    <section class="container text-start my-5">
+        <article class="row my-2 p-3 odd">
+            <div class="col-sm-1 p-2 fw-bold">#1</div>
+            <div class="col-sm-2 p-2"><a href="/user/1/favorites/gandalfID" title="Zie enkel quotes van Gandalf">Gandalf</a></div>
+            <div class="col-sm-2 p-2">11 quotes</div>
+            <div class="col-sm-6 p-2">Yes the white tree of Gondor. The tree of the King. Lord Denethor however, is not the King. He is a steward only, a caretaker of the throne.</div>
+            <div class="col-sm-1 p-2"><button type="button" class="btn" title="Verwijder uit je favorietenlijst"><i class="bi bi-trash"></i></button></div>
+        </article>
+        <article class="row my-2 p-3 even">
+            <div class="col-sm-1 p-2 fw-bold">#2</div>
+            <div class="col-sm-2 p-2"><a href="/user/1/favorites/pippinID" title="Zie enkel quotes van Pippin">Pippin</a></div>
+            <div class="col-sm-2 p-2">1 quotes</div>
+            <div class="col-sm-6 p-2">It's the tree. Gandalf! Gandalf!</div>
+            <div class="col-sm-1 p-2"><button type="button" class="btn" title="Verwijder uit je favorietenlijst"><i class="bi bi-trash"></i></button></div>
+        </article>
+        <article class="row my-2 p-3 odd">
+            <div class="col-sm-1 p-2 fw-bold">#3</div>
+            <div class="col-sm-2 p-2"><a href="/user/1/favorites/gandalfID" title="Zie enkel quotes van Gandalf">Gandalf</a></div>
+            <div class="col-sm-2 p-2">11 quotes</div>
+            <div class="col-sm-6 p-2">Now listen carefully. Lord Denethor is Boromir's father. To give him news of his beloved son's death would be most unwise. And do not mention Frodo or the Ring. And say nothing of Aragorn either. In fact, its better if you don't speak at all Peregrin Took.</div>
+            <div class="col-sm-1 p-2"><button type="button" class="btn" title="Verwijder uit je favorietenlijst"><i class="bi bi-trash"></i></button></div>
+        </article>
+        <article class="row my-2 p-3 even">
+            <div class="col-sm-1 p-2 fw-bold">#4</div>
+            <div class="col-sm-2 p-2"><a href="/user/1/favorites/galadrielID" title="Zie enkel quotes van Galadriel">Galadriel</a></div>
+            <div class="col-sm-2 p-2">4 quotes</div>
+            <div class="col-sm-6 p-2">For the time will soon come when Hobbits will shape the fortunes of all.</div>
+            <div class="col-sm-1 p-2"><button type="button" class="btn" title="Verwijder uit je favorietenlijst"><i class="bi bi-trash"></i></button></div>
+        </article>
+        <article class="row my-2 p-3 odd">
+            <div class="col-sm-1 p-2 fw-bold">#5</div>
+            <div class="col-sm-2 p-2"><a href="/user/1/favorites/AragornIIElessarID" title="Zie enkel quotes van Aragorn II Elessar">Aragorn II Elessar</a></div>
+            <div class="col-sm-2 p-2">2 quotes</div>
+            <div class="col-sm-6 p-2">A day may come when the courage of men fails, when we forsake our friends and break all bonds of fellowship, but it is not this day.</div>
+            <div class="col-sm-1 p-2"><button type="button" class="btn" title="Verwijder uit je favorietenlijst"><i class="bi bi-trash"></i></button></div>
+        </article>
+    </section>
+</main>
 
 <%- include('./partials/footer'); %>
