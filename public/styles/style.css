@@ -1,5 +1,9 @@
 /* favorites and blacklist */
 
+#favorites, #blacklist {
+    max-width: 1000px;
+}
+
 .bi-trash {
     color: var(--bs-primary)
 }
@@ -10,4 +14,36 @@
 
 .even {
     background-color: var(--bs-tertiary-bg);
+}
+
+.table-id, .table-trash {
+    flex-basis: 2rem;
+}
+
+.table-name, .table-count {
+    flex-basis: 6rem;
+}
+
+.table-quote {
+    flex-basis: 100%;
+}
+
+@media screen and (min-width: 768px) {
+    .table-id {
+        order: 0;
+    }
+    .table-name {
+        order: 1;
+    }
+    .table-count {
+        order: 2;
+    }
+    .table-quote {
+        flex-basis: 0;
+        flex-grow: 1;
+        order: 3;
+    }
+    .table-trash {
+        order: 4;
+    }
 }
