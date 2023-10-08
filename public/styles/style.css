@@ -1,0 +1,45 @@
+/* favorites and blacklist */
+
+#favorites, #blacklist {
+    max-width: 1000px;
+}
+
+.odd {
+    background-color: var(--bs-secondary-bg);
+}
+
+.even {
+    background-color: var(--bs-tertiary-bg);
+}
+
+#favorites .table-id, #favorites .table-trash {
+    flex-basis: 2rem;
+}
+
+#favorites .table-name, #favorites .table-count {
+    flex-basis: 6rem;
+}
+
+#favorites .table-quote {
+    flex-basis: 100%;
+}
+
+@media screen and (min-width: 768px) {
+    #favorites .table-id {
+        order: 0;
+    }
+    #favorites .table-name {
+        order: 1;
+    }
+    #favorites .table-count {
+        order: 2;
+    }
+    #favorites .table-quote {
+        flex-basis: 0;
+        flex-grow: 1;
+        order: 3;
+    }
+    #favorites .table-trash {
+        order: 4;
+    }
+}
