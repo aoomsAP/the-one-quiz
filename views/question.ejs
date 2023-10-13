@@ -3,8 +3,67 @@
 <%- include('./partials/nav'); %>
 
 
+<main class="container mt-5">
+    <div class="card">
+        <!-- Type of Quiz -->
+        <h5 class="card-title">10-rounds-quiz</h5>
+        <div class="card-body">
+            <!-- Quote -->
+            <h5 class="card-title">Quote 1</h5>
+            <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam labore rem ex
+                placeat quos suscipit eum consequatur ratione, illo iure autem vel adipisci deleniti molestiae
+                hic rerum accusamus doloribus minus!</p>
+            <form>
+                <!-- First Row: 3 Characters -->
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <input class="form-check-input" type="radio" name="characterOptions"
+                            id="characterOptions">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Character A
+                        </label>
+                        <input class="form-check-input" type="radio" name="characterOptions"
+                            id="characterOptions">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Character B
+                        </label>
+                        <input class="form-check-input" type="radio" name="characterOptions"
+                            id="characterOptions">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Character C
+                        </label>
+                    </div>
+                    
+
+                <!-- Second Row: 3 movies -->
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <input class="form-check-input" type="radio" name="movieOptions"
+                            id="movieOptions">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Movie A
+                        </label>
+                        <input class="form-check-input" type="radio" name="movieOptions"
+                            id="movieOptions">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Movie B
+                        </label>
+                        <input class="form-check-input" type="radio" name="movieOptions"
+                            id="movieOptions">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Movie C
+                        </label>
+                    </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</main>
 
 
 
 
-<%- include('./partials/footer'); %>
+
+        <%- include('./partials/footer'); %>
