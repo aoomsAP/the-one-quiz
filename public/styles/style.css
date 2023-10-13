@@ -74,3 +74,9 @@
         width: 100%;
     }
 }
+
+#login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
