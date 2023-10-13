@@ -74,3 +74,24 @@
         width: 100%;
     }
 }
+
+
+
+
+
+
+
+
+
+#radioBtnGroups {
+    display: flex;
+    flex-direction: column;
+}
+
+#radioBtnGroups label{
+    width: 100%;
+}
+
+#quizQuestionCard div {
+    margin-bottom: 2rem;
+}

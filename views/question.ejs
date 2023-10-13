@@ -1,52 +1,51 @@
 <%- include('./partials/header'); %>
-
-<%- include('./partials/nav'); %>
-
+    <%- include('./partials/nav'); %>
 
 <main class="container mt-5">
-    <div class="card">
-        <!-- Type of Quiz -->
-        <h5 class="card-title">10-rounds-quiz</h5>
-        <div class="card-body">
+    <section class="text-center">
+        <h1>10-rounds-quiz</h1>
+    </section>
+
+    <section class="card" id="quizQuestionCard">
+        <h5 class="card-header text-center">Vraag 1</h5>
+        <div class="card-body text-center">
+
             <!-- Quote -->
-            <h5 class="card-title">Quote 1</h5>
-            <p class="card-text">A day may come when the courage of men fails, when we forsake our friends and break all bonds of fellowship, but it is not this day.
+            <h5 class="card-title">Quote</h5>
+            <p class="card-text">A day may come when the courage of men fails, when we forsake our friends and
+                break all bonds of fellowship, but it is not this day.
             </p>
-            <form>
-                <!-- First Row: 3 Characters -->
-                <div class="form-row">
-                    <div class="btn-group btn-group-lg" role="group" aria-label="Basic radio toggle button group">
-                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="btnradio1">Gandalf</label>
-                      
-                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="btnradio2">Aragorn II Elessar</label>
-                      
-                        <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="btnradio3">Galadriel</label>
-                    </div>
-                    
-                    <!-- Second Row: 3 movies -->
-                    <div class="btn-group btn-group-lg" role="group" aria-label="Basic radio toggle button group">
-                        <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="btnradio4">The Fellowship of the Ring</label>
-                    
-                        <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="btnradio5">The Two Towers</label>
-                    
-                        <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="btnradio6">The Return of the King</label>
-                    </div>
+
+            <form id="radioBtnGroups" action="" method="POST">
+                <!-- First row: 3 Characters -->
+                <div class="btn-group btn-group-lg" role="group">
+                    <input type="radio" class="btn-check" name="btnradioChar" id="btnradio1" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio1">Gandalf</label>
+
+                    <input type="radio" class="btn-check" name="btnradioChar" id="btnradio2" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio2">Aragorn II Elessar</label>
+
+                    <input type="radio" class="btn-check" name="btnradioChar" id="btnradio3" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio3">Galadriel</label>
                 </div>
+
+                <!-- Second row: 3 movies -->
+                <div class="btn-group btn-group-lg" role="group">
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio4">The Fellowship of the Ring</label>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio5">The Two Towers</label>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio6">The Return of the King</label>
+                </div>
+
                 <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
-    </div>
+    </section>
 </main>
 
-
-
-
-
-        <%- include('./partials/footer'); %>
+<%- include('./partials/footer'); %>
