@@ -75,9 +75,6 @@
     }
 }
 
-#login {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-height: 100vh;
+#login section {
+    margin: auto;
 }
