@@ -19,16 +19,16 @@
             
             <!-- Form Questions -->
             <form id="radioBtnGroups" class="row justify-content-center" action="" method="POST">
-                <!-- Thumbs-up & Thumbs-down buttons -->
-                <div class="btn-group d-grid gap-2 col-6 mx-auto" role="group"> 
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="button"
-                    title="Voeg toe aan jouw favorieten"><i class="bi bi-hand-thumbs-up"></i>
-                    </button>
                 
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="button"
-                    title="Voeg toe aan jouw black list"><i class="bi bi-hand-thumbs-down"></i>
-                    </button>
+                <!-- Thumbs-up & Thumbs-down buttons -->
+                <div class="d-grid gap-2 d-sm-block pb-3" role="group">
+                    <input type="radio" class="btn-check" name="btnThumbs" id="btnradioThumbsUp" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradioThumbsUp" title="Voeg toe aan jouw favorieten"><i class="bi bi-hand-thumbs-up"></i></label>
+
+                    <input type="radio" class="btn-check" name="btnThumbs" id="btnradioThumbsDown" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradioThumbsDown" title="Voeg toe aan jouw black list"><i class="bi bi-hand-thumbs-down"></i></label>
                 </div>
+                
                 <!-- First row: 3 Characters -->
                 <h6 class="pb-3">Welk personage deed deze uitspraak? </h6>
                 <div class="d-grid gap-2 col-6 mx-auto" role="group">
@@ -56,7 +56,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary col-sm-6 mx-auto">Submit</button>
+                <button type="submit" class="btn btn-primary col-sm-3 mx-auto">Submit</button>
             </form>
         </div>
     </section>
