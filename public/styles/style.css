@@ -89,6 +89,6 @@
 }
 
 
-#quizQuestionCard div {
+#quizQuestionCard .card-body div {
     margin-bottom: 2rem;
 }
