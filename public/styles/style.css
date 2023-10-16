@@ -74,3 +74,21 @@
         width: 100%;
     }
 }
+
+.card {
+    margin: auto;
+    height: 50vh;
+}
+
+.card-body {
+    height: 30vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.card-title, .card-text {
+    font-size: xx-large;
+}
