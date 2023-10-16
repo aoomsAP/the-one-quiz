@@ -48,6 +48,7 @@
     #blacklist .table-quote,
     #blacklist .table-comment {
         flex-basis: 100%;
+        margin: 0 !important;
     }
     #blacklist article>div {
         flex-wrap: wrap;
