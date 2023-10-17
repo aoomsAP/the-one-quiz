@@ -42,11 +42,12 @@
     #favorites .table-name {
         flex-basis: 6rem;
     }
-    #character .table-count,
+   
     #favorites .table-count {
         flex-basis: 6rem;
         flex-grow: 1;
     }
+    #character .table-quote,
     #favorites .table-quote {
         order: 1;
     }
