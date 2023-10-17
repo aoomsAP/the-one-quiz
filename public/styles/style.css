@@ -1,3 +1,14 @@
+/* Quizpagina */
+
+#quiz .heading {
+    text-align: center;
+}
+
+#quiz {
+    max-width: 1250px;
+}
+
+
 /* favorites and blacklist */
 
 #character,
