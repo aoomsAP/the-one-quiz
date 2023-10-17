@@ -1,75 +1,71 @@
 /* favorites and blacklist */
 
-#favorites, #blacklist {
+#character,
+#favorites,
+#blacklist {
     max-width: 1000px;
 }
 
-.odd {
+.table-custom article:nth-child(odd) {
     background-color: var(--bs-secondary-bg);
 }
 
-.even {
+.table-custom article:nth-child(even) {
     background-color: var(--bs-tertiary-bg);
 }
 
-#favorites .table-id, #favorites .table-trash {
+#character .table-id,
+#character .table-delete-button,
+#favorites .table-id,
+#favorites .table-delete-button {
     flex-basis: 2rem;
 }
 
-#favorites .table-name, #favorites .table-count {
-    flex-basis: 6rem;
+#favorites .table-name,
+#favorites .table-count {
+    flex-basis: 10rem;
 }
 
 #favorites .table-quote {
     flex-basis: 100%;
 }
 
-.table-row-edit {
-    display: none;
-}
-
-@media screen and (min-width: 768px) {
-    #favorites .table-id {
-        order: 0;
+@media screen and (max-width: 768px) {
+    #character .table-custom>article,
+    #favorites .table-custom>article {
+        flex-wrap: wrap;
     }
     #favorites .table-name {
+        flex-basis: 6rem;
+    }
+   
+    #favorites .table-count {
+        flex-basis: 6rem;
+        flex-grow: 1;
+    }
+    #character .table-quote,
+    #favorites .table-quote {
         order: 1;
     }
-    #favorites .table-count {
-        order: 2;
-    }
-    #favorites .table-quote {
-        flex-basis: 0;
-        flex-grow: 1;
-        order: 3;
-    }
-    #favorites .table-trash {
-        order: 4;
-    }
-}
 
-@media screen and (max-width: 768px) {
     #blacklist .table-id {
         margin-left: 0 !important;
     }
-
-    #blacklist .table-quote, #blacklist .table-comment {
+    #blacklist .table-quote,
+    #blacklist .table-comment {
         flex-basis: 100%;
+        margin: 0 !important;
     }
-
     #blacklist article>div {
         flex-wrap: wrap;
     }
-
-    #blacklist .table-row-icons {
+    #blacklist .table-icons {
         display: flex;
         flex-basis: 100%;
     }
-
-    #blacklist .table-row-icons div {
+    #blacklist .table-icons div {
         flex-basis: 50%;
     }
-
     #blacklist button {
         width: 100%;
     }
@@ -79,4 +75,22 @@
     margin: auto;
     height: 50vh;
     max-width: 50%;
+}
+
+#login section,
+#register section {
+    margin: auto;
+}
+
+#radioBtnGroups {
+    display: flex;
+    flex-direction: column;
+}
+
+#quizQuestionCard .card-body div {
+    margin-bottom: 2rem;
+}
+
+#footer {
+    background-color: var(--bs-tertiary-bg);
 }
