@@ -67,7 +67,17 @@
         width: 100%;
     }
 }
-
 #login section {
     margin: auto;
 }
+
+#radioBtnGroups {
+    display: flex;
+    flex-direction: column;
+}
+
+
+#quizQuestionCard .card-body div {
+    margin-bottom: 2rem;
+}
+
