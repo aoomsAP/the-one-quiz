@@ -67,7 +67,8 @@
         width: 100%;
     }
 }
-#login section {
+#login section,
+#register section {
     margin: auto;
 }
 
