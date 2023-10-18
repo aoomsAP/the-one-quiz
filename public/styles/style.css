@@ -1,108 +1,22 @@
-/* Quizpagina */
-
-#quiz .heading {
-    text-align: center;
+#landingPage article {
+    margin-bottom: 2rem;
 }
 
-#quiz {
-    max-width: 1250px;
+#landingPage article>div {
+    height: 100%;
 }
 
-
-/* favorites and blacklist */
-
-#character,
-#favorites,
-#blacklist {
-    max-width: 1000px;
+#landingPage .card-body {
+    display: flex;
+    flex-direction: column;
 }
 
-.table-custom article:nth-child(odd) {
-    background-color: var(--bs-secondary-bg);
-}
-
-.table-custom article:nth-child(even) {
-    background-color: var(--bs-tertiary-bg);
-}
-
-#character .table-id,
-#character .table-delete-button,
-#favorites .table-id,
-#favorites .table-delete-button {
-    flex-basis: 2rem;
-}
-
-#favorites .table-name,
-#favorites .table-count {
-    flex-basis: 10rem;
-}
-
-#character .table-quote,
-#favorites .table-quote {
-    flex-basis: 100%;
-}
-
-@media screen and (max-width: 768px) {
-    #character .table-custom>article,
-    #favorites .table-custom>article {
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-    #favorites .table-name {
-        flex-basis: 6rem;
-    }
-    #favorites .table-count {
-        flex-basis: 6rem;
-        flex-grow: 1;
-    }
-    #character .table-quote,
-    #favorites .table-quote {
-        order: 1;
-    }
-
-    #blacklist .table-id {
-        margin-left: 0 !important;
-    }
-    #blacklist .table-quote,
-    #blacklist .table-comment {
-        flex-basis: 100%;
-        margin: 0 !important;
-    }
-    #blacklist article>div {
-        flex-wrap: wrap;
-    }
-    #blacklist .table-icons {
-        display: flex;
-        flex-basis: 100%;
-    }
-    #blacklist .table-icons div {
-        flex-basis: 50%;
-    }
-    #blacklist .table-icons button {
-        width: 100%;
-    }
-}
-
-#score {
-    margin: auto;
-    height: 50vh;
-    max-width: 50%;
+#landingPage .card-text {
+    flex-grow: 1;
+    margin: 0;
 }
 
 #login section,
 #register section {
     margin: auto;
-}
-
-#radioBtnGroups {
-    display: flex;
-    flex-direction: column;
-}
-
-#quizQuestionCard .card-body div {
-    margin-bottom: 2rem;
-}
-
-#footer {
-    background-color: var(--bs-tertiary-bg);
 }
