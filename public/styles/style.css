@@ -37,6 +37,7 @@
     flex-basis: 10rem;
 }
 
+#character .table-quote,
 #favorites .table-quote {
     flex-basis: 100%;
 }

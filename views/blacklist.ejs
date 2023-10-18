@@ -3,12 +3,16 @@
     <%- include('./partials/nav'); %>
 
         <main class="container-sm p-3" id="blacklist">
+            <!-- Title and intro -->
             <section class="my-5">
                 <h1>Blacklist</h1>
                 <p>Hieronder vind je je blacklist. Klik op de pen om de opmerkingen te wijzigen, of op het vuilbakje om
                     quotes uit je blacklist te verwijderen.</p>
             </section>
+            <!-- Table with blacklisted quotes -->
             <section class="table-custom text-start p-0">
+
+                <!-- Blacklist row -->
                 <article class="my-2 p-3">
                     <div class="d-flex">
                         <div class="table-id p-2 fw-bold ms-auto">#1</div>
@@ -23,11 +27,38 @@
                                     data-bs-target="#comment1" aria-expanded="false" aria-controls="comment1"
                                     class="btn btn-outline-primary" title="Wijzig deze opmerking"><i
                                         class="bi bi-pencil-square"></i></button></div>
-                            <div class="table-delete-button ms-end p-2"><button type="button"
-                                    class="btn btn-outline-primary" title="Verwijder uit je blacklist"><i
-                                        class="bi bi-trash"></i></button></div>
+                            <div class="table-delete-button ms-end p-2">
+                                <button type="button" class="btn btn-outline-primary" title="Verwijder uit je blacklist"
+                                    data-bs-toggle="modal" data-bs-target="#confirmDelete1">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Confirm delete window -->
+                        <div class="modal fade" id="confirmDelete1" tabindex="-1" aria-labelledby="confirmDelete1"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2 class="modal-title fs-5" id="confirmDelete1">Weet je zeker dat je deze
+                                            quote uit je blacklist wil verwijderen?</h2>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Yes the white tree of Gondor. The tree of the King. Lord Denethor
+                                            however, is not the King. He is a steward only, a caretaker of the
+                                            throne.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                            aria-label="Close">Behouden</button>
+                                        <button type="button" class="btn btn-primary" formmethod="POST"
+                                            formaction="/">Verwijderen</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <!-- Edit comment window -->
                     <form class="table-edit-form collapse px-2" id="comment1" action="" method="POST">
                         <label for="editComment" class="form-label pt-2">Wijzig je opmerking hier:</label>
                         <textarea class="form-control" id="editComment" rows="3"
@@ -48,18 +79,44 @@
                                     data-bs-target="#comment2" aria-expanded="false" aria-controls="comment2"
                                     class="btn btn-outline-primary" title="Wijzig deze opmerking"><i
                                         class="bi bi-pencil-square"></i></button></div>
-                            <div class="table-delete-button ms-end p-2"><button type="button"
-                                    class="btn btn-outline-primary" title="Verwijder uit je blacklist"><i
-                                        class="bi bi-trash"></i></button></div>
+                            <div class="table-delete-button ms-end p-2">
+                                <button type="button" class="btn btn-outline-primary" title="Verwijder uit je blacklist"
+                                    data-bs-toggle="modal" data-bs-target="#confirmDelete2">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </div>
+                        <div class="modal fade" id="confirmDelete2" tabindex="-1" aria-labelledby="confirmDelete2"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2 class="modal-title fs-5" id="confirmDelete2">Weet je zeker dat je deze
+                                            quote uit je blacklist wil verwijderen?</h2>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>A day may come when the courage of men fails, when we
+                                            forsake our friends and break all bonds of fellowship, but it is not
+                                            this day.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                            aria-label="Close">Behouden</button>
+                                        <button type="button" class="btn btn-primary" formmethod="POST"
+                                            formaction="/">Verwijderen</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <form class="table-edit-form collapse px-2" id="comment2" action="" method="POST">
                         <label for="editComment" class="form-label pt-2">Wijzig je opmerking hier:</label>
-                        <textarea class="form-control" id="editComment" rows="3"
-                            placeholder="Corny ass..."></textarea>
+                        <textarea class="form-control" id="editComment" rows="3" placeholder="Corny ass..."></textarea>
                         <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
                     </form>
                 </article>
+
                 <article class="my-2 p-3">
                     <div class="d-flex">
                         <div class="table-id p-2 fw-bold ms-auto">#3</div>
@@ -73,9 +130,32 @@
                                     data-bs-target="#comment3" aria-expanded="false" aria-controls="comment3"
                                     class="btn btn-outline-primary" title="Wijzig deze opmerking"><i
                                         class="bi bi-pencil-square"></i></button></div>
-                            <div class="table-delete-button ms-end p-2"><button type="button"
-                                    class="btn btn-outline-primary" title="Verwijder uit je blacklist"><i
-                                        class="bi bi-trash"></i></button></div>
+                            <div class="table-delete-button ms-end p-2">
+                                <button type="button" class="btn btn-outline-primary" title="Verwijder uit je blacklist"
+                                    data-bs-toggle="modal" data-bs-target="#confirmDelete3">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="confirmDelete3" tabindex="-1" aria-labelledby="confirmDelete3"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2 class="modal-title fs-5" id="confirmDelete3">Weet je zeker dat je deze
+                                            quote uit je blacklist wil verwijderen?</h2>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>It's the tree. Gandalf! Gandalf!</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                            aria-label="Close">Behouden</button>
+                                        <button type="button" class="btn btn-primary" formmethod="POST"
+                                            formaction="/">Verwijderen</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <form class="table-edit-form collapse px-2" id="comment3" action="" method="POST">
@@ -85,6 +165,7 @@
                         <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
                     </form>
                 </article>
+
                 <article class="my-2 p-3">
                     <div class="d-flex">
                         <div class="table-id p-2 fw-bold ms-auto">#4</div>
@@ -100,10 +181,39 @@
                                     data-bs-target="#comment4" aria-expanded="false" aria-controls="comment4"
                                     class="btn btn-outline-primary" title="Wijzig deze opmerking"><i
                                         class="bi bi-pencil-square"></i></button></div>
-                            <div class="table-delete-button ms-end p-2"><button type="button"
-                                    class="btn btn-outline-primary" title="Verwijder uit je blacklist"><i
-                                        class="bi bi-trash"></i></button></div>
+                            <div class="table-delete-button ms-end p-2">
+                                <button type="button" class="btn btn-outline-primary" title="Verwijder uit je blacklist"
+                                    data-bs-toggle="modal" data-bs-target="#confirmDelete4">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </div>
+                        <div class="modal fade" id="confirmDelete4" tabindex="-1" aria-labelledby="confirmDelete4"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2 class="modal-title fs-5" id="confirmDelete4">Weet je zeker dat je deze
+                                            quote uit je blacklist wil verwijderen?</h2>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Now listen carefully. Lord Denethor is Boromir's father.
+                                            To give him news of his beloved son's death would be most unwise. And do
+                                            not mention Frodo
+                                            or the Ring. And say nothing of Aragorn either. In fact, its better if
+                                            you don't speak at
+                                            all Peregrin Took.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                            aria-label="Close">Behouden</button>
+                                        <button type="button" class="btn btn-primary" formmethod="POST"
+                                            formaction="/">Verwijderen</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <form class="table-edit-form collapse px-2" id="comment4" action="" method="POST">
                         <label for="editComment" class="form-label pt-2">Wijzig je opmerking hier:</label>
@@ -112,6 +222,7 @@
                         <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
                     </form>
                 </article>
+
                 <article class="my-2 p-3">
                     <div class="d-flex">
                         <div class="table-id p-2 fw-bold ms-auto">#5</div>
@@ -126,9 +237,33 @@
                                     data-bs-target="#comment5" aria-expanded="false" aria-controls="comment5"
                                     class="btn btn-outline-primary" title="Wijzig deze opmerking"><i
                                         class="bi bi-pencil-square"></i></button></div>
-                            <div class="table-delete-button ms-end p-2"><button type="button"
-                                    class="btn btn-outline-primary" title="Verwijder uit je blacklist"><i
-                                        class="bi bi-trash"></i></button></div>
+                            <div class="table-delete-button ms-end p-2">
+                                <button type="button" class="btn btn-outline-primary" title="Verwijder uit je blacklist"
+                                    data-bs-toggle="modal" data-bs-target="#confirmDelete5">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="confirmDelete5" tabindex="-1" aria-labelledby="confirmDelete5"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2 class="modal-title fs-5" id="confirmDelete5">Weet je zeker dat je deze
+                                            quote uit je blacklist wil verwijderen?</h2>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>For the time will soon come when Hobbits will shape the
+                                            fortunes of all.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                            aria-label="Close">Behouden</button>
+                                        <button type="button" class="btn btn-primary" formmethod="POST"
+                                            formaction="/">Verwijderen</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <form class="table-edit-form collapse px-2" id="comment5" action="" method="POST">
