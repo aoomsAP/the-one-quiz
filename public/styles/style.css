@@ -46,11 +46,11 @@
     #character .table-custom>article,
     #favorites .table-custom>article {
         flex-wrap: wrap;
+        justify-content: space-between;
     }
     #favorites .table-name {
         flex-basis: 6rem;
     }
-   
     #favorites .table-count {
         flex-basis: 6rem;
         flex-grow: 1;
@@ -78,7 +78,7 @@
     #blacklist .table-icons div {
         flex-basis: 50%;
     }
-    #blacklist button {
+    #blacklist .table-icons button {
         width: 100%;
     }
 }
