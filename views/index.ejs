@@ -1,12 +1,11 @@
 <%- include('./partials/header'); %>
 
-    <main id="landingPage" class="container mt-5">
-
+    <main id="landing-page" class="container mt-5">
         <!-- First section with Buttons -->
-        <section class="row text-center bg-white p-3 border-bottom">
+        <section class="row text-center bg-white p-3">
             <h1 class="display-1 mb-4">Projecten</h1>
-            <p class="display-6">Welkom op onze landingpagina!
-                <br> Meld je aan en start je ontdekkingsreis door zes boeiende webapplicaties!
+            <p class="fs-3">
+                Meld je aan en start je ontdekkingsreis door zes boeiende projecten!
             </p>
             <div class="d-grid gap-2 d-md-block">
                 <a href="/login" class="btn btn-primary btn-lg col text-center m-1">Aanmelden</a>
@@ -21,7 +20,7 @@
                     <div class="card mb-4">
                         <img src="/assets/images/LOTR-Quiz.jpeg" class="card-img-top" alt="Card Image">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Lord of The Rings</h5>
+                            <h5 class="card-title">Lord of The Rings</h5>
                             <p class="card-text">Test je kennis met deze quiz over bekende citaten uit de Lord of the
                                 Rings trilogie!</p>
                             <a href="/user/1/quiz" class="btn btn-primary w-100">Ontdek meer</a>
@@ -32,7 +31,7 @@
                     <div class="card mb-4">
                         <img src="/assets/images/MTG.jpeg" class="card-img-top" alt="Card Image">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Magic: The Gathering</h5>
+                            <h5 class="card-title">Magic: The Gathering</h5>
                             <p class="card-text">Bouw je eigen machtige "Magic: The Gathering" card deck en domineer het
                                 slagveld!</p>
                             <a href="#" class="btn btn-primary w-100">Ontdek meer</a>
@@ -43,7 +42,7 @@
                     <div class="card mb-4">
                         <img src="/assets/images/Pokemon.jpg" class="card-img-top border-bottom" alt="Card Image">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Pokémon</h5>
+                            <h5 class="card-title">Pokémon</h5>
                             <p class="card-text">Vang Pokémon, train ze en neem deel aan epische gevechten tegen andere
                                 Pokémon!</p>
                             <a href="#" class="btn btn-primary w-100">Ontdek meer</a>
@@ -54,7 +53,7 @@
                     <div class="card mb-4">
                         <img src="/assets/images/Fortnite.jpg" class="card-img-top" alt="Card Image">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Fortnite</h5>
+                            <h5 class="card-title">Fortnite</h5>
                             <p class="card-text">
                                 Creëer je eigen Fortnite-personage, volg je voortgang en bekijk je overwinningen en
                                 nederlagen in het spel.</p>
@@ -66,7 +65,7 @@
                     <div class="card mb-4">
                         <img src="/assets/images/LegoMasters.jpeg" class="card-img-top" alt="Card Image">
                         <div class="card-body">
-                            <h5 class="card-title text-center">LEGO Masters</h5>
+                            <h5 class="card-title">LEGO Masters</h5>
                             <p class="card-text">
                                 Organiseer je LEGO-minifiguren in sets en beleef urenlang bouwplezier met deze handige
                                 oplossing!</p>
@@ -78,7 +77,7 @@
                     <div class="card mb-4">
                         <img src="/assets/images/Fifa.jpeg" class="card-img-top" alt="Card Image">
                         <div class="card-body">
-                            <h5 class="card-title text-center">FIFA</h5>
+                            <h5 class="card-title">FIFA</h5>
                             <p class="card-text">Doe de FIFA Clubs-quiz en test je kennis van de meest iconische
                                 voetbalclubs ter wereld!</p>
                             <a href="#" class="btn btn-primary w-100">Ontdek meer</a>
@@ -87,5 +86,9 @@
                 </article>
             </div>
         </section>
+        <!-- To top -->
+        <a href="#top" class="scroll-to-top"><i class="bi bi-arrow-up-square-fill"></i></a>   
+    </main>
+    
 
 <%- include('./partials/footer'); %>
