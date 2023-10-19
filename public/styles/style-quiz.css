@@ -31,6 +31,20 @@ h1, h2, .navbar-nav {
     max-width: 1250px;
 }
 
+/* question page */
+
+#radio-btn-group {
+    display: flex;
+    flex-direction: column;
+}
+
+#quiz-question-card .card-body div {
+    margin-bottom: 2rem;
+}
+
+.question-container {
+    max-width: 720px;
+}
 
 /* favorites, character and blacklist */
 
@@ -123,14 +137,5 @@ h1, h2, .navbar-nav {
     margin: auto;
     height: 50vh;
     max-width: 50%;
-}
-
-#radioBtnGroups {
-    display: flex;
-    flex-direction: column;
-}
-
-#quizQuestionCard .card-body div {
-    margin-bottom: 2rem;
 }
 
