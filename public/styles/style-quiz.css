@@ -11,6 +11,7 @@
 body {
     font-family: 'Signika', sans-serif;
     font-size: 1.1rem;
+    background-color: rgb(244, 223, 169);
     background-image: url("/assets/images/parchment.jpg");
     background-size: cover;
     background-position: center;
@@ -92,10 +93,8 @@ h2, .navbar-nav {
 .modal-content {
     background-color: rgb(244, 223, 169);
     background-image: url("/assets/images/parchment.jpg");
-    background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    background-color: var(--bs-body-bg);
 }
 
 .scroll-to-top {
