@@ -1,17 +1,17 @@
-#landingPage article {
+#landing-page article {
     margin-bottom: 2rem;
 }
 
-#landingPage article>div {
+#landing-page article>div {
     height: 100%;
 }
 
-#landingPage .card-body {
+#landing-page .card-body {
     display: flex;
     flex-direction: column;
 }
 
-#landingPage .card-text {
+#landing-page .card-text {
     flex-grow: 1;
     margin: 0;
 }
