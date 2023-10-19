@@ -11,6 +11,10 @@
 body {
     font-family: 'Signika', sans-serif;
     font-size: 1.1rem;
+    background-image: url("/assets/images/parchment.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 h1, h2, .navbar-nav {
@@ -57,7 +61,9 @@ h1, h2, .navbar-nav {
     background-color: var(--bs-secondary-bg);
 }
 
-.table-custom article:nth-child(even) {
+.table-custom article:nth-child(even),
+#navbar,
+#footer {
     background-color: var(--bs-tertiary-bg);
 }
 
@@ -133,4 +139,3 @@ h1, h2, .navbar-nav {
 #quizQuestionCard .card-body div {
     margin-bottom: 2rem;
 }
-
