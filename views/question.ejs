@@ -21,10 +21,10 @@
                 
                 <!-- Thumbs-up & Thumbs-down buttons -->
                 <div class="d-sm-block pb-3" role="group">
-                    <input type="radio" class="btn-check" name="btnThumbs" id="btnradioThumbsUp" autocomplete="off">
+                    <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsUp" autocomplete="off" onclick=onlyOneThumb(this)>
                     <label class="btn btn-outline-primary" for="btnradioThumbsUp" title="Voeg toe aan jouw favorieten"><i class="bi bi-hand-thumbs-up"></i></label>
 
-                    <input type="radio" class="btn-check" name="btnThumbs" id="btnradioThumbsDown" autocomplete="off">
+                    <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsDown" autocomplete="off" onclick=onlyOneThumb(this)>
                     <label class="btn btn-outline-primary" for="btnradioThumbsDown" title="Voeg toe aan jouw black list"><i class="bi bi-hand-thumbs-down"></i></label>
                 </div>
                 
