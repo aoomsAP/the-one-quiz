@@ -1,35 +1,39 @@
 <%- include('./partials/header-quiz'); %>
 
-<main class="container mt-5">
+<main class="question-container container-md mt-5">
     <section class="text-center">
-        <h1>10-rounds-quiz</h1>
+        <h1>Quiz: 10 Rounds</h1>
     </section>
 
-    <section class="card" id="quizQuestionCard">
+    <section class="card" id="quiz-question-card">
         <h5 class="card-header text-center">Vraag 1</h5>
         <div class="card-body text-center">
 
             <!-- Quote -->
-            <h5 class="card-title">Quote</h5>
-            <p class="card-text lotr-quote">A day may come when the courage of men fails, when we forsake our friends and
+            <p class="card-text lotr-quote mx-sm-3 "><span>"</span>
+                A day may come when the courage of men fails, when we forsake our friends and
                 break all bonds of fellowship, but it is not this day.
+                <span>"</span>
             </p>
 
-            
             <!-- Form Questions -->
-            <form id="radioBtnGroups" class="row justify-content-center" action="" method="POST">
+            <form id="radio-btn-group" class="row justify-content-center" action="" method="POST">
                 
                 <!-- Thumbs-up & Thumbs-down buttons -->
                 <div class="d-sm-block pb-3" role="group">
-                    <input type="radio" class="btn-check" name="btnThumbs" id="btnradioThumbsUp" autocomplete="off">
+                    <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsUp" autocomplete="off">
                     <label class="btn btn-outline-primary" for="btnradioThumbsUp" title="Voeg toe aan jouw favorieten"><i class="bi bi-hand-thumbs-up"></i></label>
 
-                    <input type="radio" class="btn-check" name="btnThumbs" id="btnradioThumbsDown" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradioThumbsDown" title="Voeg toe aan jouw black list"><i class="bi bi-hand-thumbs-down"></i></label>
+                    <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsDown" autocomplete="off" data-bs-toggle="collapse" data-bs-target="#collapseComment" aria-expanded="false" aria-controls="collapseComment">
+                    <label class="btn btn-outline-primary" for="btnradioThumbsDown" title="Voeg toe aan jouw blacklist"><i class="bi bi-hand-thumbs-down"></i></label>
+                </div>
+                <div class="collapse col-sm-6 px-2 mx-auto" id="collapseComment">
+                    <label for="editComment" class="form-label pt-2">Reden voor blacklisting?</label>
+                    <textarea class="form-control" id="blacklistComment" rows="3">Corny ass...</textarea>
                 </div>
                 
                 <!-- First row: 3 Characters -->
-                <h6 class="pb-3">Welk personage deed deze uitspraak? </h6>
+                <h6 class="pb-3">Van welk personage komt deze quote? </h6>
                 <div class="d-grid gap-2 col-6 mx-auto" role="group">
                     <input type="radio" class="btn-check" name="btnradioChar" id="btnradio1" autocomplete="off">
                     <label class="btn btn-outline-primary" for="btnradio1">Gandalf</label>
@@ -42,7 +46,7 @@
                 </div>
 
                 <!-- Second row: 3 movies -->
-                <h6 class="pb-3">Uit welke film komt deze uitspraak? </h6>
+                <h6 class="pb-3">Uit welke film komt deze quote? </h6>
                 <div class="d-grid gap-2 col-6 mx-auto" role="group">
                     <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
                     <label class="btn btn-outline-primary" for="btnradio4">The Fellowship of the Ring</label>
@@ -55,7 +59,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary col-sm-3 mx-auto">Submit</button>
+                <button type="submit" class="btn btn-primary col-sm-3 mx-auto">Volgende vraag</button>
             </form>
         </div>
     </section>
