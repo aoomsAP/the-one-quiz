@@ -1,3 +1,26 @@
+/* fonts */
+
+@import url('https://fonts.googleapis.com/css2?family=Signika:wght@300&display=swap');
+@font-face {
+    font-family: Ringbearer;
+    src: url("/assets/fonts/RingbearerMedium-51mgZ.ttf");
+    /* Licensed for non-commercial work
+    https://www.fontspace.com/ringbearer-font-f2246 */
+}
+
+body {
+    font-family: 'Signika', sans-serif;
+    font-size: 1.1rem;
+}
+
+h1, h2, .navbar-nav {
+    font-family: 'Ringbearer', serif;
+}
+
+.table-quote, .lotr-quote {
+    font-style: italic;
+}
+
 /* Quizpagina */
 
 #quiz .heading {
