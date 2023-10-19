@@ -21,6 +21,10 @@ h1, h2, .navbar-nav {
     font-family: 'Ringbearer', serif;
 }
 
+h2, .navbar-nav {
+    text-transform: lowercase;
+}
+
 .table-quote, .lotr-quote {
     font-style: italic;
 }
