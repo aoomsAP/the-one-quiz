@@ -9,7 +9,20 @@
 }
 
 
-/* favorites and blacklist */
+/* favorites, character and blacklist */
+
+.scroll-to-top {
+    font-size: 2.5rem;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    opacity: 50%;
+    transition: opacity .2s;
+}
+
+.scroll-to-top:hover {
+    opacity: 100%;
+}
 
 #character,
 #favorites,
