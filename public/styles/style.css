@@ -20,3 +20,10 @@
 #register section {
     margin: auto;
 }
+
+#login,
+#register,
+#login .card,
+#register .card {
+    max-width: 500px;
+}
