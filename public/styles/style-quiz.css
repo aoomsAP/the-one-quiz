@@ -36,8 +36,10 @@ h2, .navbar-nav {
 }
 
 #quiz {
+    margin: auto;
     max-width: 1250px;
 }
+
 
 /* question page */
 
