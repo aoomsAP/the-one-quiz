@@ -148,7 +148,16 @@ h2, .navbar-nav {
 
         margin-right: auto;
         margin-left: auto;
+        padding-left: 0;
+        padding-right: 0;
 
+    }
+
+    #GandalfMoria{
+        padding-left: 0;
+    }   
+     #EyeOfSauron{
+        padding-right: 0;
     }
 
 }
