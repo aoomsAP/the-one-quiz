@@ -8,6 +8,16 @@
     https://www.fontspace.com/ringbearer-font-f2246 */
 }
 
+/* header */
+.navbar-brand {
+  height: 3rem;
+}
+
+.navbar-brand img{
+    height: 100%;
+    width: 100%;
+  }
+
 body {
     font-family: 'Signika', sans-serif;
     font-size: 1.1rem;
@@ -30,14 +40,36 @@ h2, .navbar-nav {
 }
 
 /* Quizpagina */
+#quiz {
+    margin: auto;
+    max-width: 1250px;
+}
 
 #quiz .heading {
     text-align: center;
 }
 
-#quiz {
-    max-width: 1250px;
+#quiz .card{
+    height: 100%;
+
 }
+
+#quiz article{
+    margin-bottom: 2rem;
+
+}
+
+#quiz .card-body{
+    display: flex;
+    flex-direction: column;
+}
+
+#quiz .card-text{
+    flex-grow: 1;
+    margin: 0;
+    
+}
+
 
 /* question page */
 
@@ -141,6 +173,14 @@ h2, .navbar-nav {
     #blacklist .table-icons button {
         width: 100%;
     }
+
+    #quizpage {
+
+        padding-left: 0;
+        padding-right: 0;
+
+    }
+
 }
 
 #score {
