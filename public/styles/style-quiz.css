@@ -143,6 +143,14 @@ h2, .navbar-nav {
     #blacklist .table-icons button {
         width: 100%;
     }
+
+    #quizpage {
+
+        margin-right: auto;
+        margin-left: auto;
+
+    }
+
 }
 
 #score {
