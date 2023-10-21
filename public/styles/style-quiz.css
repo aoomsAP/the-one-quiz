@@ -26,6 +26,13 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    display: grid;
+    grid-template-areas: 
+        'header'
+        'main'
+        'footer';
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
 }
 
 h1, h2, .navbar-nav {
@@ -195,4 +202,16 @@ h2, .navbar-nav {
     margin: auto;
     height: 50vh;
     max-width: 50%;
+}
+
+header {
+    grid-area: header;
+}
+
+main {
+    grid-area: main;
+}
+
+footer {
+    grid-area: footer;
 }
