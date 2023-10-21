@@ -21,6 +21,7 @@
 body {
     font-family: 'Signika', sans-serif;
     font-size: 1.1rem;
+    background-color: rgb(244, 223, 169);
     background-image: url("/assets/images/parchment.jpg");
     background-size: cover;
     background-position: center;
@@ -88,19 +89,6 @@ h2, .navbar-nav {
 
 /* favorites, character and blacklist */
 
-.scroll-to-top {
-    font-size: 2.5rem;
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    opacity: 50%;
-    transition: opacity .2s;
-}
-
-.scroll-to-top:hover {
-    opacity: 100%;
-}
-
 #character,
 #favorites,
 #blacklist {
@@ -132,6 +120,26 @@ h2, .navbar-nav {
 #character .table-quote,
 #favorites .table-quote {
     flex-basis: 100%;
+}
+
+.modal-content {
+    background-color: rgb(244, 223, 169);
+    background-image: url("/assets/images/parchment.jpg");
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.scroll-to-top {
+    font-size: 2.5rem;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    opacity: 50%;
+    transition: opacity .2s;
+}
+
+.scroll-to-top:hover {
+    opacity: 100%;
 }
 
 @media screen and (max-width: 768px) {
