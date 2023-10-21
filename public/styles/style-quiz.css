@@ -201,7 +201,7 @@ h2, .navbar-nav {
 #score {
     margin: auto;
     height: 50vh;
-    max-width: 50%;
+    max-width: 500px;
 }
 
 header {
