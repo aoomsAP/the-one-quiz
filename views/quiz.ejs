@@ -1,39 +1,44 @@
 <%- include('./partials/header-quiz'); %>
 
-        <main id="quiz" class="container" style="margin: auto">
-            <div class="heading my-3">
+    <main id="quiz" class="container">
+        <section class="heading my-3">
 
-                <h1>Kies tussen 2 quizes</h1>
-                <p>Kies je voor 10 rounds of SD?</p>
+            <h1>The One Quiz</h1>
+            <p>Test je kennis met deze quiz over bekende citaten uit de Lord Of The Rings trilogie! Kies het correcte
+                personage en de juiste film voor elke quote. Selecteer hieronder het type quiz dat jij aandurft.</p>
+        </section>
 
-            </div>
-            
-            <div class="row justify-content-md-center">
-                <article class="col-sm-6">
+        <section class="row justify-content-center">
+            <div id="quizpage" class="row gx-5">
+                <article id="GandalfMoria" class="col-sm-6">
                     <div class="card mb-4">
-                        <img src="/assets/images/Frodo10Questions.jpeg" class="card-img-top" alt="Card Image">
+                        <img src="/assets/images/GandalfMoria.PNG" alt="Gandalf in Moria"
+                            title="Gandalf in Moria" class="card-img-top">
+                            <!-- source for the image: https://wall.alphacoders.com/big.php?i=86190 -->
                         <div class="card-body">
-                            <h5 class="card-title">LOTR 10 ronden quiz</h5>
-                            <p class="card-text">Test je kennis met deze quiz over bekende citaten uit de Lord of the
-                                Rings trilogie!</p>
-                            <a href="/quiz" class="btn btn-primary w-100">I Will take the ring</a>
+                            <h2 class="card-title">10 rounds</h2>
+                            <p class="card-text">De quiz is 10 vragen lang. Zal jij een 10 op 10 kunnen halen?</p>
+                            <a href="quiz/10rounds/question/1" class="btn btn-primary w-100">I Will take the ring</a>
                         </div>
                     </div>
                 </article>
 
-                <article class="col-sm-6">
+                <article id="EyeOfSauron" class="col-sm-6">
                     <div class="card mb-4">
-                        <img src="/assets/images/FrodoGandalfSD.jpeg" class="card-img-top" alt="Card Image">
+                        <img src="/assets/images/EyeOfSauron.PNG" alt="Eye of Sauron"
+                            title="Eye of Sauron" class="card-img-top">
+                            <!-- source for the image: https://wall.alphacoders.com/big.php?i=172374 -->
                         <div class="card-body">
-                            <h5 class="card-title">LOTR Sudden Death Quiz</h5>
-                            <p class="card-text">Test je kennis met deze quiz over bekende citaten uit de Lord of the
-                                Rings trilogie!</p>
-                            <a href="/quiz" class="btn btn-primary w-100">I do not fear death</a>
+                            <h2 class="card-title">Sudden Death</h2>
+                            <p class="card-text">De quiz eindigt zodra je verkeerd antwoordt. Hoe lang kan jij het
+                                volhouden? Of struikel je over de eerste vraag?</p>
+                            <a href="quiz/10rounds/question/1" class="btn btn-primary w-100">I do not fear death</a>
                         </div>
                     </div>
                 </article>
             </div>
-        </main>
+        </section>
+    </main>
 
 
-        <%- include('./partials/footer'); %>
+    <%- include('./partials/footer'); %>
