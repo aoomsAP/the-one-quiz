@@ -40,3 +40,20 @@
 #register .card {
     max-width: 500px;
 }
+
+body {
+    display: grid;
+    grid-template-areas: 
+        'main'
+        'footer';
+    grid-template-rows: 1fr auto;
+    height: 100vh;
+}
+
+main {
+    grid-area: main;
+}
+
+footer {
+    grid-area: footer;
+}
