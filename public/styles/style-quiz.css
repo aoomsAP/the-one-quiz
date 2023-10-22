@@ -94,6 +94,10 @@ h2, .navbar-nav {
     max-width: 720px;
 }
 
+q {
+    quotes: "“" "”";
+}
+
 /* favorites, character and blacklist */
 
 #character,
