@@ -8,13 +8,31 @@
     https://www.fontspace.com/ringbearer-font-f2246 */
 }
 
+/* header */
+.navbar-brand {
+  height: 3rem;
+}
+
+.navbar-brand img{
+    height: 100%;
+    width: 100%;
+  }
+
 body {
     font-family: 'Signika', sans-serif;
     font-size: 1.1rem;
+    background-color: rgb(244, 223, 169);
     background-image: url("/assets/images/parchment.jpg");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    display: grid;
+    grid-template-areas: 
+        'header'
+        'main'
+        'footer';
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
 }
 
 h1, h2, .navbar-nav {
@@ -30,14 +48,34 @@ h2, .navbar-nav {
 }
 
 /* Quizpagina */
+#quiz {
+    margin: auto;
+    max-width: 1250px;
+}
 
 #quiz .heading {
     text-align: center;
 }
 
-#quiz {
-    margin: auto;
-    max-width: 1250px;
+#quiz .card{
+    height: 100%;
+
+}
+
+#quiz article{
+    margin-bottom: 2rem;
+
+}
+
+#quiz .card-body{
+    display: flex;
+    flex-direction: column;
+}
+
+#quiz .card-text{
+    flex-grow: 1;
+    margin: 0;
+    
 }
 
 
@@ -57,19 +95,6 @@ h2, .navbar-nav {
 }
 
 /* favorites, character and blacklist */
-
-.scroll-to-top {
-    font-size: 2.5rem;
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    opacity: 50%;
-    transition: opacity .2s;
-}
-
-.scroll-to-top:hover {
-    opacity: 100%;
-}
 
 #character,
 #favorites,
@@ -102,6 +127,26 @@ h2, .navbar-nav {
 #character .table-quote,
 #favorites .table-quote {
     flex-basis: 100%;
+}
+
+.modal-content {
+    background-color: rgb(244, 223, 169);
+    background-image: url("/assets/images/parchment.jpg");
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.scroll-to-top {
+    font-size: 2.5rem;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    opacity: 50%;
+    transition: opacity .2s;
+}
+
+.scroll-to-top:hover {
+    opacity: 100%;
 }
 
 @media screen and (max-width: 768px) {
@@ -143,10 +188,30 @@ h2, .navbar-nav {
     #blacklist .table-icons button {
         width: 100%;
     }
+
+    #quizpage {
+
+        padding-left: 0;
+        padding-right: 0;
+
+    }
+
 }
 
 #score {
     margin: auto;
     height: 50vh;
-    max-width: 50%;
+    max-width: 500px;
+}
+
+header {
+    grid-area: header;
+}
+
+main {
+    grid-area: main;
+}
+
+footer {
+    grid-area: footer;
 }

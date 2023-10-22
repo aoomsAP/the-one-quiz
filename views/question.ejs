@@ -21,15 +21,17 @@
                 
                 <!-- Thumbs-up & Thumbs-down buttons -->
                 <div class="d-sm-block pb-3" role="group">
-                    <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsUp" autocomplete="off">
-                    <label class="btn btn-outline-success" for="btnradioThumbsUp" title="Voeg toe aan jouw favorieten"><i class="bi bi-hand-thumbs-up"></i></label>
+                    <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsUp" autocomplete="off" onclick="onlyOneThumb(this)">
+                    <label class="btn btn-outline-primary" for="btnradioThumbsUp" title="Voeg toe aan jouw favorieten"><i class="bi bi-hand-thumbs-up"></i></label>
 
-                    <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsDown" autocomplete="off" data-bs-toggle="collapse" data-bs-target="#collapseComment" aria-expanded="false" aria-controls="collapseComment">
-                    <label class="btn btn-outline-danger" for="btnradioThumbsDown" title="Voeg toe aan jouw blacklist"><i class="bi bi-hand-thumbs-down"></i></label>
+                    <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsDown" autocomplete="off"  onclick="onlyOneThumb(this)" data-bs-toggle="collapse" data-bs-target="#collapseComment" aria-expanded="false" aria-controls="collapseComment">
+                    <label class="btn btn-outline-primary" for="btnradioThumbsDown" title="Voeg toe aan jouw blacklist"><i class="bi bi-hand-thumbs-down"></i></label>
                 </div>
-                <div class="collapse col-sm-6 px-2 mx-auto" id="collapseComment">
-                    <label for="editComment" class="form-label pt-2">Reden voor blacklisting?</label>
-                    <textarea class="form-control" id="blacklistComment" rows="3">Corny ass...</textarea>
+                <div class="collapse p-0 m-0" id="collapseComment">
+                    <div class="col-sm-6 px-2 mx-auto">
+                        <label for="blacklistComment" class="form-label pt-2">Reden voor blacklisting?</label>
+                        <textarea class="form-control" id="blacklistComment" rows="3" placeholder="Ik blacklist deze quote omdat..."></textarea>
+                    </div>    
                 </div>
                 
                 <!-- First row: 3 Characters -->
@@ -63,6 +65,7 @@
             </form>
         </div>
     </section>
+    
 </main>
 
 <%- include('./partials/footer'); %>
