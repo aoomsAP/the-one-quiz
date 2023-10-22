@@ -1,71 +1,79 @@
 <%- include('./partials/header-quiz'); %>
 
-<main class="question-container container-md mt-5">
-    <section class="text-center">
-        <h1>Quiz: 10 rounds</h1>
-    </section>
+    <main class="question-container container-md mt-5">
+        <section class="text-center">
+            <h1>Quiz: 10 rounds</h1>
+        </section>
 
-    <section class="card" id="quiz-question-card">
-        <h2 class="card-header text-center fs-4">vraag 1</h2>
-        <div class="card-body text-center">
+        <section class="card" id="quiz-question-card">
+            <h2 class="card-header text-center fs-4">vraag 1</h2>
+            <div class="card-body text-center">
 
-            <!-- Quote -->
-            <p class="card-text lotr-quote mx-sm-3 "><span>"</span>
-                A day may come when the courage of men fails, when we forsake our friends and
-                break all bonds of fellowship, but it is not this day.
-                <span>"</span>
-            </p>
+                <!-- Quote -->
+                <p class="blockquote lotr-quote mx-sm-3 my-5 fw-bold">
+                    <q>
+                        A day may come when the courage of men fails, when we forsake our friends and
+                        break all bonds of fellowship, but it is not this day.
+                    </q>
+                </p>
 
-            <!-- Form Questions -->
-            <form id="radio-btn-group" class="row justify-content-center" action="" method="POST">
-                
-                <!-- Thumbs-up & Thumbs-down buttons -->
-                <div class="d-sm-block pb-3" role="group">
-                    <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsUp" autocomplete="off" onclick="onlyOneThumb(this)">
-                    <label class="btn btn-outline-primary" for="btnradioThumbsUp" title="Voeg toe aan jouw favorieten"><i class="bi bi-hand-thumbs-up"></i></label>
+                <!-- Form Questions -->
+                <form id="radio-btn-group" class="row justify-content-center" action="" method="POST">
 
-                    <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsDown" autocomplete="off"  onclick="onlyOneThumb(this)" data-bs-toggle="collapse" data-bs-target="#collapseComment" aria-expanded="false" aria-controls="collapseComment">
-                    <label class="btn btn-outline-primary" for="btnradioThumbsDown" title="Voeg toe aan jouw blacklist"><i class="bi bi-hand-thumbs-down"></i></label>
-                </div>
-                <div class="collapse p-0 m-0" id="collapseComment">
-                    <div class="col-sm-6 px-2 mx-auto">
-                        <label for="blacklistComment" class="form-label pt-2">Reden voor blacklisting?</label>
-                        <textarea class="form-control" id="blacklistComment" rows="3" placeholder="Ik blacklist deze quote omdat..."></textarea>
-                    </div>    
-                </div>
-                
-                <!-- First row: 3 Characters -->
-                <p class="pb-3">Van welk personage komt deze quote? </p>
-                <div class="d-grid gap-2 col-6 mx-auto" role="group">
-                    <input type="radio" class="btn-check" name="btnradioChar" id="btnradio1" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio1">Gandalf</label>
+                    <!-- Thumbs-up & Thumbs-down buttons -->
+                    <div class="d-sm-block pb-3" role="group">
+                        <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsUp"
+                            autocomplete="off" onclick="onlyOneThumb(this)">
+                        <label class="btn btn-outline-success" for="btnradioThumbsUp"
+                            title="Voeg toe aan jouw favorieten"><i class="bi bi-hand-thumbs-up"></i></label>
 
-                    <input type="radio" class="btn-check" name="btnradioChar" id="btnradio2" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio2">Aragorn II Elessar</label>
+                        <input type="checkbox" class="btn-check" name="btnThumbs" id="btnradioThumbsDown"
+                            autocomplete="off" onclick="onlyOneThumb(this)" data-bs-toggle="collapse"
+                            data-bs-target="#collapseComment" aria-expanded="false" aria-controls="collapseComment">
+                        <label class="btn btn-outline-danger" for="btnradioThumbsDown"
+                            title="Voeg toe aan jouw blacklist"><i class="bi bi-hand-thumbs-down"></i></label>
+                    </div>
+                    <div class="collapse p-0 m-0" id="collapseComment">
+                        <div class="col-sm-6 px-2 mx-auto">
+                            <label for="blacklistComment" class="form-label pt-2">Reden voor blacklisting?</label>
+                            <textarea class="form-control" id="blacklistComment" rows="3"
+                                placeholder="Ik blacklist deze quote omdat..."></textarea>
+                        </div>
+                    </div>
 
-                    <input type="radio" class="btn-check" name="btnradioChar" id="btnradio3" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio3">Galadriel</label>
-                </div>
+                    <!-- First row: 3 Characters -->
+                    <p class="pb-3">Van welk personage komt deze quote? </p>
+                    <div class="d-grid gap-2 col-6 mx-auto" role="group">
+                        <input type="radio" class="btn-check" name="btnradioChar" id="btnradio1" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="btnradio1">Gandalf</label>
 
-                <!-- Second row: 3 movies -->
-                <p class="pb-3">Uit welke film komt deze quote? </p>
-                <div class="d-grid gap-2 col-6 mx-auto" role="group">
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio4">The Fellowship of the Ring</label>
+                        <input type="radio" class="btn-check" name="btnradioChar" id="btnradio2" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="btnradio2">Aragorn II Elessar</label>
 
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio5">The Two Towers</label>
+                        <input type="radio" class="btn-check" name="btnradioChar" id="btnradio3" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="btnradio3">Galadriel</label>
+                    </div>
 
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio6">The Return of the King</label>
-                </div>
+                    <!-- Second row: 3 movies -->
+                    <p class="pb-3">Uit welke film komt deze quote? </p>
+                    <div class="d-grid gap-2 col-6 mx-auto" role="group">
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="btnradio4">The Fellowship of the Ring</label>
 
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary col-sm-3 mx-auto">Volgende vraag <i class="bi bi-chevron-right"></i></button>
-            </form>
-        </div>
-    </section>
-    
-</main>
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="btnradio5">The Two Towers</label>
 
-<%- include('./partials/footer'); %>
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="btnradio6">The Return of the King</label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary col-sm-3 mx-auto">Volgende vraag <i
+                            class="bi bi-chevron-right"></i></button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <%- include('./partials/footer'); %>
