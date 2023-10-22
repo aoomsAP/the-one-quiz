@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 
+    <link rel="preload" href="/assets/images/background-parchment.jpg" as="image">
+
     <!-- Bootstrap Stylesheet -->
     <link rel="stylesheet" href="/styles/custom.css">
 
-    <!-- Personal CSS -->
+    <!-- Additional CSS -->
     <link rel="stylesheet" href="/styles/style-quiz.css">
 
     <!-- Bootstrap Icons -->
@@ -20,29 +22,32 @@
     <!-- JQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-    <!-- Optional JavaScript -->
+    <!-- Additional JavaScript -->
     <script src="/scripts/thumbs.js"></script>
 
-    <link rel="icon" href="/assets/images/One-Ring-favicon.ico" type="image/x-icon">
-    <!--The One Ring by Peter J. Yost (link = https://commons.wikimedia.org/w/index.php?curid=98351026) 
+    <link rel="icon" href="/assets/images/favicon-onequiz.ico" type="image/x-icon">
+    <!--The One Ring by Peter J. Yost (https://commons.wikimedia.org/w/index.php?curid=98351026) 
         gebruikt in logo onder het Creative Commons Attribution-Share Alike 4.0 International license.  -->
 
     <title>The One Quiz</title>
 </head>
+
+<body id="top">
+
 <header>
-    <nav class="navbar navbar-expand-md" id="navbar">
+    <nav class="navbar navbar-expand-md mb-5" id="navbar">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><img src="/assets/images/logo.PNG" alt="The One Quiz Logo"
-                title="BronTeDoen"></a>
+            <a class="navbar-brand" href="/user/1/quiz"><img src="/assets/images/logo.png" alt="The One Quiz logo"
+                title="The One Quiz logo"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/">Projecten</a>
+                        <a class="nav-link" href="/">Projecten</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/user/1/quiz">Quiz</a>
