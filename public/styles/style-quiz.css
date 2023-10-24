@@ -1,6 +1,7 @@
 /* fonts */
 
 @import url('https://fonts.googleapis.com/css2?family=Signika:wght@300&display=swap');
+
 @font-face {
     font-family: Ringbearer;
     src: url("/assets/fonts/RingbearerMedium-51mgZ.ttf");
@@ -8,26 +9,18 @@
     https://www.fontspace.com/ringbearer-font-f2246 */
 }
 
-/* header */
-.navbar-brand {
-  height: 3rem;
-}
-
-.navbar-brand img{
-    height: 100%;
-    width: 100%;
-  }
+/* body */
 
 body {
     font-family: 'Signika', sans-serif;
     font-size: 1.1rem;
     background-color: rgb(244, 223, 169);
-    background-image: url("/assets/images/parchment.jpg");
+    background-image: url("/assets/images/background-parchment.jpg");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     display: grid;
-    grid-template-areas: 
+    grid-template-areas:
         'header'
         'main'
         'footer';
@@ -35,49 +28,96 @@ body {
     height: 100vh;
 }
 
-h1, h2, .navbar-nav {
+header {
+    grid-area: header;
+}
+
+main {
+    grid-area: main;
+}
+
+footer {
+    grid-area: footer;
+}
+
+h1,
+h2,
+.navbar-nav {
     font-family: 'Ringbearer', serif;
 }
 
-h2, .navbar-nav {
+h2,
+.navbar-nav {
     text-transform: lowercase;
 }
 
-.table-quote, .lotr-quote {
+.table-quote,
+.lotr-quote {
     font-style: italic;
 }
 
-/* Quizpagina */
+.table-custom, .card {
+    box-shadow: 0px 8px 20px 0px rgb(129, 80, 6, 0.5);
+}
+
+/* navbar */
+
+.navbar {
+    font-size: 1.2rem;
+    background-color: var(--bs-tertiary-bg);
+    background-image: linear-gradient(
+        rgba(255,255,255,0),
+        rgba(255,255,255,0.5)
+    );
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.navbar .container-fluid {
+    align-items: center;
+}
+
+.navbar-brand {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand img {
+    height: 100%;
+    width: 100%;
+}
+
+/* quiz page */
+
 #quiz {
     margin: auto;
     max-width: 1250px;
 }
 
 #quiz .heading {
+    margin: 0 auto;
     text-align: center;
+    max-width: 800px;
 }
 
-#quiz .card{
+#quiz .card {
     height: 100%;
-
 }
 
-#quiz article{
+#quiz article {
     margin-bottom: 2rem;
-
 }
 
-#quiz .card-body{
+#quiz .card-body {
     display: flex;
     flex-direction: column;
 }
 
-#quiz .card-text{
+#quiz .card-text {
     flex-grow: 1;
     margin: 0;
-    
-}
 
+}
 
 /* question page */
 
@@ -98,6 +138,17 @@ q {
     quotes: "“" "”";
 }
 
+/* score page */
+
+#score {
+    margin: 0 auto;
+    max-width: 720px;
+}
+
+#score img {
+    width: 100%;
+}
+
 /* favorites, character and blacklist */
 
 #character,
@@ -110,9 +161,7 @@ q {
     background-color: var(--bs-secondary-bg);
 }
 
-.table-custom article:nth-child(even),
-#navbar,
-#footer {
+.table-custom article:nth-child(even) {
     background-color: var(--bs-tertiary-bg);
 }
 
@@ -135,7 +184,7 @@ q {
 
 .modal-content {
     background-color: rgb(244, 223, 169);
-    background-image: url("/assets/images/parchment.jpg");
+    background-image: url("/assets/images/background-parchment.jpg");
     background-position: center;
     background-attachment: fixed;
 }
@@ -153,19 +202,34 @@ q {
     opacity: 100%;
 }
 
+/* footer */
+
+footer {
+    font-size: 0.9rem;
+    background-color: var(--bs-tertiary-bg);
+}
+
+footer p {
+    margin: 0;
+    margin: .5rem auto;
+}
+
 @media screen and (max-width: 768px) {
     #character .table-custom>article,
     #favorites .table-custom>article {
         flex-wrap: wrap;
         justify-content: space-between;
     }
+
     #favorites .table-name {
         flex-basis: 6rem;
     }
+
     #favorites .table-count {
         flex-basis: 6rem;
         flex-grow: 1;
     }
+
     #character .table-quote,
     #favorites .table-quote {
         order: 1;
@@ -174,48 +238,27 @@ q {
     #blacklist .table-id {
         margin-left: 0 !important;
     }
+
     #blacklist .table-quote,
     #blacklist .table-comment {
         flex-basis: 100%;
         margin: 0 !important;
     }
+
     #blacklist article>div {
         flex-wrap: wrap;
     }
+
     #blacklist .table-icons {
         display: flex;
         flex-basis: 100%;
     }
+
     #blacklist .table-icons div {
         flex-basis: 50%;
     }
+
     #blacklist .table-icons button {
         width: 100%;
     }
-
-    #quizpage {
-
-        padding-left: 0;
-        padding-right: 0;
-
-    }
-
-}
-
-#score {
-    margin: auto;
-    height: 50vh;
-    max-width: 500px;
-}
-
-header {
-    grid-area: header;
-}
-
-main {
-    grid-area: main;
-}
-
-footer {
-    grid-area: footer;
 }

@@ -1,3 +1,80 @@
+/* colors */
+
+:root {
+    --landing-link: rgb(37, 43, 122);
+    --landing-primary: rgb(61, 71, 199);
+    --landing-border: rgb(162, 169, 255);
+    --landing-light: rgb(198, 205, 255);
+    --landing-card: rgb(190, 190, 190);
+}
+
+a {
+    color: var(--landing-link);
+}
+
+.card,
+.card-img-top,
+.card-header,
+input {
+    border-color: var(--landing-card) !important;
+}
+
+.btn-primary,
+.btn-secondary {
+    border-color: var(--landing-border) !important;
+}
+
+.btn-primary {
+    background-color: var(--landing-primary);
+    border-color: var(--landing-link) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus {
+    background-color: var(--landing-link) !important;
+}
+
+.btn-outline-secondary {
+    color: var(--landing-primary);
+    border-color: var(--landing-primary) !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--landing-light) !important;
+}
+
+.btn-outline-secondary:active,
+.btn-outline-secondary:focus {
+    background-color: var(--landing-border) !important;
+}
+
+.form-control:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem var(--landing-light);
+}
+
+/* body */
+
+body {
+    display: grid;
+    grid-template-areas:
+        'main'
+        'footer';
+    grid-template-rows: 1fr auto;
+    height: 100vh;
+}
+
+main {
+    grid-area: main;
+}
+
+footer {
+    grid-area: footer;
+}
+
+/* landing page */
+
 #landing-page article {
     margin-bottom: 2rem;
 }
@@ -29,31 +106,46 @@
     opacity: 100%;
 }
 
+/* login, register */
+
 #login section,
 #register section {
     margin: auto;
 }
 
 #login,
-#register,
-#login .card,
-#register .card {
+#register {
     max-width: 500px;
 }
 
-body {
-    display: grid;
-    grid-template-areas: 
-        'main'
-        'footer';
-    grid-template-rows: 1fr auto;
-    height: 100vh;
+/* footer */
+
+.custom-hr {
+    font-size: .6rem;
+    text-align: center;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+    color: var(--landing-light);
+    max-width: 500px;
 }
 
-main {
-    grid-area: main;
+.custom-hr-symbol {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 .5rem;
+}
+
+.custom-hr-line {
+    display: inline-block;
+    width: 40%;
+    border-bottom: 1px solid var(--landing-light);
 }
 
 footer {
-    grid-area: footer;
+    font-size: 0.9rem;
+}
+
+footer p {
+    margin: 0;
+    margin: .5rem auto;
 }
