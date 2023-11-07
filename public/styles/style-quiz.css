@@ -261,4 +261,9 @@ footer p {
     #blacklist .table-icons button {
         width: 100%;
     }
+
+    .navbar-nav {
+        text-align: center;
+    }
+    
 }
