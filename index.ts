@@ -2,6 +2,11 @@ import express from "express";
 import { connect } from "./db";
 import { User, Favorite, Blacklist, Question, Film, Character } from "./Types";
 
+import { characters} from "./characters";
+import { movies } from "./movies";
+import { quotes } from "./quotes";
+
+
 const app = express();
 
 app.set("port", 3000);
