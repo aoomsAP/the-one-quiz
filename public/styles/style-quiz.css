@@ -51,6 +51,21 @@ h2,
     text-transform: lowercase;
 }
 
+figure {
+    margin: 0;
+    position: relative;
+}
+
+figcaption {
+    color: rgba(255,255,255,1);
+    text-shadow: 1px 1px 2px black;
+    font-size: .8rem;
+    line-height: .8rem;
+    position: absolute;
+    right: .8rem;
+    bottom: .8rem;
+}
+
 .table-quote,
 .lotr-quote {
     font-style: italic;
@@ -116,7 +131,6 @@ h2,
 #quiz .card-text {
     flex-grow: 1;
     margin: 0;
-
 }
 
 /* question page */
