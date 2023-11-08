@@ -1,5 +1,6 @@
 import express from "express";
 import { connect } from "./db";
+import { User, Favorite, Blacklist, Question, Film, Character } from "./Types";
 
 const app = express();
 
