@@ -1,4 +1,5 @@
 import express from "express";
+import { connect } from "./db";
 
 const app = express();
 
@@ -59,6 +60,12 @@ app.use((req, res) => {
     res.send("Error 404 - Page Not Found");
 })
 
-app.listen(app.get("port"), () => {
-    console.log(`Local url: htpp://localhost:${app.get("port")}`)
+app.listen(app.get("port"), async () => {
+    console.log(`Local url: htpp://localhost:${app.get("port")}`);
+
+    try {
+        await connect();
+    } catch (e) {
+        console.log("Error: MongoDB connection failed.");
+    }
 })
