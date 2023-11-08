@@ -1,3 +1,5 @@
+export const characters =
+
 [
     {
         "_id": "5cd99d4bde30eff6ebccfbbe",

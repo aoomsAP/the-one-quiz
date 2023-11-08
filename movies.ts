@@ -1,3 +1,5 @@
+export const movies =
+
 [
     {
         "_id": "5cd95395de30eff6ebccde56",

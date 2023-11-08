@@ -1,5 +1,10 @@
 import express from "express";
 
+import { characters} from "./characters";
+import { movies } from "./movies";
+import { quotes } from "./quotes";
+
+
 const app = express();
 
 app.set("port", 3000);

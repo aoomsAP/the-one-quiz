@@ -1,3 +1,5 @@
+
+export const quotes =
 [
     {
         "_id": "5cd96e05de30eff6ebccefc1",
