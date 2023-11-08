@@ -1,5 +1,7 @@
+import { ObjectId } from "mongodb";
+
 export interface User {
-    _id?: number,
+    _id?: ObjectId,
     username: string,
     password: string,
     email: string,
@@ -10,45 +12,42 @@ export interface User {
 }
 
 export interface Favorite {
-    quote_id: number,
+    quote_id: string,
     dialog: string,
-    character: Character,
-    character_id?: number
-    wikiUrl: string
+    character: Character
 }
 
 export interface Blacklist {
-    quote_id: number,
+    quote_id: string,
     dialog: string,
     comment: string
 }
 
 export interface Question {
-    quote_id: number,
+    quote_id: string,
     dialog: string,
     correct_character: Character,
     wrong_characters: Character[],
-    correct_film: string,
-    wrong_films: Film[],
-    wikiUrl: string,
+    correct_movie: Movie,
+    wrong_movies: Movie[],
     answer_character?: Character,
-    answer_film?: Film
+    answer_movie?: Movie
 }
 
-export interface Film {
-    movie_id: number,
+export interface Movie {
+    movie_id: string,
     name: string
 }
 
 export interface Quote {
-    quote_id: number,
+    quote_id: string,
     dialog: string,
     movie_id: number,
     character_id: number
 }
 
 export interface Character {
-    character_id: number,
+    character_id: string,
     name: string,
     wikiUrl: string
 }
