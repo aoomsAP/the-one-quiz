@@ -1,4 +1,4 @@
-interface User {
+export interface User {
     _id?: number,
     username: string,
     password: string,
@@ -9,7 +9,7 @@ interface User {
     highscore_suddendeath: number,
 }
 
-interface Favorite {
+export interface Favorite {
     quote_id: number,
     dialog: string,
     character: Character,
@@ -17,13 +17,13 @@ interface Favorite {
     wikiUrl: string
 }
 
-interface Blacklist {
+export interface Blacklist {
     quote_id: number,
     dialog: string,
     comment: string
 }
 
-interface Question {
+export interface Question {
     quote_id: number,
     dialog: string,
     correct_character: Character,
@@ -35,19 +35,19 @@ interface Question {
     answer_film?: Film
 }
 
-interface Film {
+export interface Film {
     movie_id: number,
     name: string
 }
 
-interface Quote {
+export interface Quote {
     quote_id: number,
     dialog: string,
     movie_id: number,
     character_id: number
 }
 
-interface Character {
+export interface Character {
     character_id: number,
     name: string,
     wikiUrl: string
