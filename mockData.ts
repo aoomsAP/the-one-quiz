@@ -245,7 +245,9 @@ export let mockQuestions: Question[] = [
         correct_character: mockCharacters[0],
         wrong_characters: [mockCharacters[1], mockCharacters[2]],
         correct_movie: mockMovies[0],
-        wrong_movies: [mockMovies[1], mockMovies[2]]
+        wrong_movies: [mockMovies[1], mockMovies[2]],
+        answer_character: mockCharacters[0],
+        answer_movie: mockMovies[0],
     },
     {
         quote_id: "5cd96e05de30eff6ebccefc2",
@@ -253,7 +255,9 @@ export let mockQuestions: Question[] = [
         correct_character: mockCharacters[1],
         wrong_characters: [mockCharacters[2], mockCharacters[3]],
         correct_movie: mockMovies[0],
-        wrong_movies: [mockMovies[1], mockMovies[2]]
+        wrong_movies: [mockMovies[1], mockMovies[2]],
+        answer_character: mockCharacters[0],
+        answer_movie: mockMovies[0],
     },
     {
         quote_id: "5cd96e05de30eff6ebccefc3",
@@ -261,7 +265,9 @@ export let mockQuestions: Question[] = [
         correct_character: mockCharacters[2],
         wrong_characters: [mockCharacters[1], mockCharacters[3]],
         correct_movie: mockMovies[0],
-        wrong_movies: [mockMovies[1], mockMovies[2]]
+        wrong_movies: [mockMovies[1], mockMovies[2]],
+        answer_character: mockCharacters[0],
+        answer_movie: mockMovies[0],
     },
     {
         quote_id: "5cd96e05de30eff6ebccefcb",
@@ -269,7 +275,9 @@ export let mockQuestions: Question[] = [
         correct_character: mockCharacters[2],
         wrong_characters: [mockCharacters[1], mockCharacters[3]],
         correct_movie: mockMovies[0],
-        wrong_movies: [mockMovies[1], mockMovies[2]]
+        wrong_movies: [mockMovies[1], mockMovies[2]],
+        answer_character: mockCharacters[0],
+        answer_movie: mockMovies[0],
     },
     {
         quote_id: "5cd96e05de30eff6ebccefd2",
@@ -277,7 +285,9 @@ export let mockQuestions: Question[] = [
         correct_character: mockCharacters[2],
         wrong_characters: [mockCharacters[3], mockCharacters[4]],
         correct_movie: mockMovies[0],
-        wrong_movies: [mockMovies[1], mockMovies[2]]
+        wrong_movies: [mockMovies[1], mockMovies[2]],
+        answer_character: mockCharacters[0],
+        answer_movie: mockMovies[0],
     },
     {
         quote_id: "5cd96e05de30eff6ebccefda",
@@ -285,7 +295,9 @@ export let mockQuestions: Question[] = [
         correct_character: mockCharacters[2],
         wrong_characters: [mockCharacters[0], mockCharacters[4]],
         correct_movie: mockMovies[2],
-        wrong_movies: [mockMovies[0], mockMovies[1]]
+        wrong_movies: [mockMovies[0], mockMovies[1]],
+        answer_character: mockCharacters[0],
+        answer_movie: mockMovies[0],
     },
     {
         quote_id: "5cd96e05de30eff6ebccefe1",
@@ -293,7 +305,9 @@ export let mockQuestions: Question[] = [
         correct_character: mockCharacters[3],
         wrong_characters: [mockCharacters[2], mockCharacters[1]],
         correct_movie: mockMovies[2],
-        wrong_movies: [mockMovies[0], mockMovies[1]]
+        wrong_movies: [mockMovies[0], mockMovies[1]],
+        answer_character: mockCharacters[0],
+        answer_movie: mockMovies[0],
     },
     {
         quote_id: "5cd96e05de30eff6ebccefcf",
@@ -301,7 +315,9 @@ export let mockQuestions: Question[] = [
         correct_character: mockCharacters[1],
         wrong_characters: [mockCharacters[0], mockCharacters[3]],
         correct_movie: mockMovies[2],
-        wrong_movies: [mockMovies[0], mockMovies[1]]
+        wrong_movies: [mockMovies[0], mockMovies[1]],
+        answer_character: mockCharacters[0],
+        answer_movie: mockMovies[0],
     },
     {
         quote_id: "5cd96e05de30eff6ebccf000",
@@ -309,7 +325,7 @@ export let mockQuestions: Question[] = [
         correct_character: mockCharacters[2],
         wrong_characters: [mockCharacters[1], mockCharacters[3]],
         correct_movie: mockMovies[0],
-        wrong_movies: [mockMovies[1], mockMovies[2]]
+        wrong_movies: [mockMovies[1], mockMovies[2]],
     },
     {
         quote_id: "5cd96e05de30eff6ebccefde",
