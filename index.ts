@@ -14,11 +14,11 @@ app.use(express.urlencoded({ extended: true }));
 
 let user: User|null = null;
 
-let quotes: Quote[] = mockQuotes;
-let characters: Character[] = mockCharacters;
-let movies: Movie[] = mockMovies;
+let quotes: Quote[] = mockQuotes; // TODO: replace with empty array and then fill in with loadData function in app.listen
+let characters: Character[] = mockCharacters; // TODO: replace with empty array and then fill in with loadData function in app.listen
+let movies: Movie[] = mockMovies; // TODO: replace with empty array and then fill in with loadData function in app.listen
 
-let questions: Question[] = mockQuestions;
+let questions: Question[] = mockQuestions; // TODO: replace with empty array and then fill in with generateQuestions function in /quite/:type/question route
 
 app.get("/", (req, res) => {
     // e.g. http://localhost:3000/
