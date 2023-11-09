@@ -1,12 +1,9 @@
 require("dotenv").config();
 import express from "express";
 import { connect } from "./db";
-import { User, Favorite, Blacklist, Question, Movie, Character } from "./types";
-import { characters} from "./characters";
-import { movies } from "./movies";
-import { quotes } from "./quotes";
+import { User, Favorite, Blacklist, Question, Quote, Movie, Character } from "./types";
 import { ObjectId } from "mongodb";
-import { mockUser } from "./mockData";
+import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
 
 const app = express();
 
@@ -20,6 +17,12 @@ if (typeof(process.env.API_KEY) === "undefined") throw Error(`Error: .env var "A
 const API_KEY = process.env.API_KEY; // API_KEY in .env file
 
 let user: User|null = null;
+
+let quotes: Quote[] = mockQuotes; // TODO: replace with empty array and then fill in with loadData function in app.listen
+let characters: Character[] = mockCharacters; // TODO: replace with empty array and then fill in with loadData function in app.listen
+let movies: Movie[] = mockMovies; // TODO: replace with empty array and then fill in with loadData function in app.listen
+
+let questions: Question[] = mockQuestions; // TODO: replace with empty array and then fill in with generateQuestions function in /quite/:type/question route
 
 app.get("/", (req, res) => {
     // e.g. http://localhost:3000/
