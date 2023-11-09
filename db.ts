@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { User, Favorite, Blacklist, Question, Film, Character } from "./Types";
+import { User, Favorite, Blacklist, Question, Movie, Character } from "./types";
 
 const uri = "mongodb+srv://theonequiz:zVJqbl0LO1eExdmR@theonequiz.fh8kyjq.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri);

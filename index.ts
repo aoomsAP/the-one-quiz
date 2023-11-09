@@ -1,11 +1,11 @@
 import express from "express";
 import { connect } from "./db";
-import { User, Favorite, Blacklist, Question, Film, Character } from "./Types";
-
+import { User, Favorite, Blacklist, Question, Movie, Character } from "./types";
 import { characters} from "./characters";
 import { movies } from "./movies";
 import { quotes } from "./quotes";
-
+import { ObjectId } from "mongodb";
+import { mockUser } from "./mockData";
 
 const app = express();
 
@@ -15,14 +15,16 @@ app.use(express.static("public"));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+let user: User|null = null;
 
 app.get("/", (req, res) => {
     // e.g. http://localhost:3000/
     res.render("index");
 })
 
-app.get("/login", (req, res) => {
+app.post("/login", (req, res) => {
     // e.g. http://localhost:3000/login
+ 
     res.render("login");
 })
 
