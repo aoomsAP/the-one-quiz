@@ -1,3 +1,4 @@
+require("dotenv").config();
 import express from "express";
 import { connect } from "./db";
 import { User, Favorite, Blacklist, Question, Movie, Character } from "./types";
@@ -14,6 +15,9 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
+
+if (typeof(process.env.API_KEY) === "undefined") throw Error(`Error: .env var "API_KEY" is undefined`); // needs to be added because typescript gives error if process.env is string/undefined
+const API_KEY = process.env.API_KEY; // API_KEY in .env file
 
 let user: User|null = null;
 
