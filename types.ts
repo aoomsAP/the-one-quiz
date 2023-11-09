@@ -42,8 +42,8 @@ export interface Movie {
 export interface Quote {
     quote_id: string,
     dialog: string,
-    movie_id: number,
-    character_id: number
+    movie_id: string,
+    character_id: string
 }
 
 export interface Character {
