@@ -18,7 +18,7 @@ const API_KEY = process.env.API_KEY; // API_KEY in .env file
 
 let user: User|null = null;
 
-let activeUser: User|null = mockUser; // TEMPORARY: testing quiz/score functionality requires an active user
+let activeUser: User | null = mockUser; // TEMPORARY: testing quiz/score functionality requires an active user
 
 let quotes: Quote[] = mockQuotes; // TODO: delete mockQuotes & fill in with loadData function in app.listen
 let characters: Character[] = mockCharacters; // TODO: delete mockCharacters & fill in with loadData function in app.listen
@@ -33,7 +33,6 @@ app.get("/", (req, res) => {
 
 app.post("/login", (req, res) => {
     // e.g. http://localhost:3000/login
- 
     res.render("login");
 })
 
@@ -115,7 +114,7 @@ app.get("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
 
             let correctMovie: Movie | undefined = movies.find(movie => quote.movie_id === movie.movie_id);
             if (correctMovie === undefined) return res.status(404).send("Movie not found.");
-            
+
             const newQuestion: Question = {
                 quote_id: quote.quote_id,
                 dialog: quote.dialog,
@@ -144,27 +143,21 @@ app.get("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
         typeOfQuizTitle: typeOfQuizTitle,
         questionId: questionId,
         question: questions[questionId],
-    } );
+    });
 })
 
 app.post("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
-    // 
-    
-    // TODO: alert when both answers are not selected
-
-    //
-    
-    const questionId: number = parseInt(req.params.questionId);
-    const typeOfQuiz: string = req.params.type;
-
     //
 
     // TODO: handle thumbs up & thumbs down functionality
 
     //
 
+    const questionId: number = parseInt(req.params.questionId);
+    const typeOfQuiz: string = req.params.type;
     const characterAnswer = req.body.btnradioChar;
     const movieAnswer = req.body.btnradioMovie;
+
     const characterIsCorrect = characterAnswer === questions[questionId].correct_character.character_id;
     const movieIsCorrect = movieAnswer === questions[questionId].correct_movie.movie_id
 

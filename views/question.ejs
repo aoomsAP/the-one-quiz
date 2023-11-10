@@ -40,12 +40,13 @@
                         </div>
                     </div>
 
+                    <!-- randomizes order of character options -->
                     <% let characterOptions = [...question.wrong_characters,question.correct_character].sort(() => Math.random() - 0.5); %>
 
                     <!-- First row: 3 Characters -->
                     <p class="pb-3">Van welk personage komt deze quote? </p>
                     <div class="d-grid gap-2 col-6 mx-auto" role="group">
-                        <input type="radio" class="btn-check" name="btnradioChar" id="btnradio1" autocomplete="off" value=<%= characterOptions[0].character_id %> >
+                        <input type="radio" class="btn-check" name="btnradioChar" id="btnradio1" autocomplete="off" required value=<%= characterOptions[0].character_id %> >
                         <label class="btn btn-outline-primary" for="btnradio1"><%= characterOptions[0].name %></label>
 
                         <input type="radio" class="btn-check" name="btnradioChar" id="btnradio2" autocomplete="off" value=<%= characterOptions[1].character_id %> >
@@ -58,7 +59,7 @@
                     <!-- Second row: 3 movies -->
                     <p class="pb-3">Uit welke film komt deze quote? </p>
                     <div class="d-grid gap-2 col-6 mx-auto" role="group">
-                        <input type="radio" class="btn-check" name="btnradioMovie" id="btnradio4" autocomplete="off" value="5cd95395de30eff6ebccde5c" >
+                        <input type="radio" class="btn-check" name="btnradioMovie" id="btnradio4" autocomplete="off" required value="5cd95395de30eff6ebccde5c" >
                         <label class="btn btn-outline-primary" for="btnradio4">The Fellowship of the Ring</label>
 
                         <input type="radio" class="btn-check" name="btnradioMovie" id="btnradio5" autocomplete="off" value="5cd95395de30eff6ebccde5b" >
