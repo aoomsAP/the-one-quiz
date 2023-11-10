@@ -7,45 +7,49 @@
                 personage en de juiste film voor elke quote. Selecteer hieronder het type quiz dat jij aandurft.</p>
         </section>
 
-
-        <section class="row justify-content-center gx-xxl-5">
-            <article class="col-sm-6">
-                <div class="card mb-4">
-                    <figure>
-                        <img src="/assets/images/quiz-gandalfmoria.jpg" alt="Gandalf in Moria" title="Gandalf in Moria"
-                            class="card-img-top">
-                        <!-- source for the image: https://wall.alphacoders.com/big.php?i=86190 -->
-                        <figcaption>
-                            &copy; <cite>The Lord of the Rings</cite>
-                        </figcaption>
-                    </figure>
-                    <div class="card-body">
-                        <h2 class="card-title">Ten rounds</h2>
-                        <p class="card-text">Je gaat op pad, en als je niet oplet, weet je nooit waar je terechtkomt.
-                            Deze quiz is 10 vragen lang. Zal jij 10 op 10 kunnen halen?</p>
-                        <a href="/user/1/quiz/tenrounds/question/0" class="btn btn-primary w-100">I will take the ring</a>
+        <section>
+            <form class="row justify-content-center gx-xxl-5" action="/user/1/quiz/" method="POST">
+                <article class="col-sm-6">
+                    <div class="card mb-4">
+                        <figure>
+                            <img src="/assets/images/quiz-gandalfmoria.jpg" alt="Gandalf in Moria"
+                                title="Gandalf in Moria" class="card-img-top">
+                            <!-- source for the image: https://wall.alphacoders.com/big.php?i=86190 -->
+                            <figcaption>
+                                &copy; <cite>The Lord of the Rings</cite>
+                            </figcaption>
+                        </figure>
+                        <div class="card-body">
+                            <h2 class="card-title">Ten rounds</h2>
+                            <p class="card-text">Je gaat op pad, en als je niet oplet, weet je nooit waar je
+                                terechtkomt.
+                                Deze quiz is 10 vragen lang. Zal jij 10 op 10 kunnen halen?</p>
+                            <button role="submit" name="typeOfQuiz" value="tenrounds" class="btn btn-primary w-100">
+                                I will take the ring</button>
+                        </div>
                     </div>
-                </div>
-            </article>
+                </article>
 
-            <article class="col-sm-6">
-                <div class="card mb-4">
-                    <figure>
-                        <img src="/assets/images/quiz-eyeofsauron.jpg" alt="Eye of Sauron" title="Eye of Sauron"
-                            class="card-img-top">
-                        <!-- source for the image: https://wall.alphacoders.com/big.php?i=172374 -->
-                        <figcaption>
-                            &copy; <cite>The Lord of the Rings</cite>
-                        </figcaption>
-                    </figure>
-                    <div class="card-body">
-                        <h2 class="card-title">Sudden Death</h2>
-                        <p class="card-text">De quiz eindigt zodra je verkeerd antwoordt. Hoe lang kan jij het
-                            volhouden? Of struikel je over de eerste vraag?</p>
-                        <a href="/user/1/quiz/suddendeath/question/0" class="btn btn-primary w-100">I do not fear death</a>
+                <article class="col-sm-6">
+                    <div class="card mb-4">
+                        <figure>
+                            <img src="/assets/images/quiz-eyeofsauron.jpg" alt="Eye of Sauron" title="Eye of Sauron"
+                                class="card-img-top">
+                            <!-- source for the image: https://wall.alphacoders.com/big.php?i=172374 -->
+                            <figcaption>
+                                &copy; <cite>The Lord of the Rings</cite>
+                            </figcaption>
+                        </figure>
+                        <div class="card-body">
+                            <h2 class="card-title">Sudden Death</h2>
+                            <p class="card-text">De quiz eindigt zodra je verkeerd antwoordt. Hoe lang kan jij het
+                                volhouden? Of struikel je over de eerste vraag?</p>
+                            <button role="submit" name="typeOfQuiz" value="suddendeath" class="btn btn-primary w-100">
+                                I do not fear death</button>
+                        </div>
                     </div>
-                </div>
-            </article>
+                </article>
+            </form>
         </section>
     </main>
 

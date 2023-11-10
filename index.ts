@@ -13,10 +13,10 @@ app.use(express.static("public"));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-if (typeof(process.env.API_KEY) === "undefined") throw Error(`Error: .env var "API_KEY" is undefined`); // needs to be added because typescript gives error if process.env is string/undefined
+if (typeof (process.env.API_KEY) === "undefined") throw Error(`Error: .env var "API_KEY" is undefined`); // needs to be added because typescript gives error if process.env is string/undefined
 const API_KEY = process.env.API_KEY; // API_KEY in .env file
 
-let user: User|null = null;
+let user: User | null = null;
 
 let activeUser: User | null = mockUser; // TEMPORARY: testing quiz/score functionality requires an active user
 
@@ -46,15 +46,15 @@ app.get("/user/:userId/quiz", (req, res) => {
     res.render("quiz");
 })
 
-app.get("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
-    // e.g. http://localhost:3000/user/1/quiz/10rounds/question/1
+app.post("/user/:userId/quiz", (req, res) => {
+    // e.g. http://localhost:3000/user/1/quiz
 
     const quoteAppearsInBlacklist = (quoteId: string) => {
         if (activeUser === null) { // TODO: replace "activeUser" with "user"
             return res.status(404).send("User not found.");
         }
         else {
-            const blacklistedIds : string[] = activeUser.blacklist.map(q => q.quote_id); // TODO: replace "activeUser" with "user"
+            const blacklistedIds: string[] = activeUser.blacklist.map(q => q.quote_id); // TODO: replace "activeUser" with "user"
             return blacklistedIds.includes(quoteId);
         }
     }
@@ -128,15 +128,19 @@ app.get("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
         }
     }
 
+    questions = [];
+    generateQuestions();
+
+    const typeOfQuiz: string = req.body.typeOfQuiz;
+    res.redirect(`/user/1/quiz/${typeOfQuiz}/question/0`);
+})
+
+app.get("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
+    // e.g. http://localhost:3000/user/1/quiz/10rounds/question/1
+
     const typeOfQuiz: string = req.params.type;
     const typeOfQuizTitle: string = typeOfQuiz === "tenrounds" ? "Ten Rounds" : "Sudden Death";
     const questionId: number = parseInt(req.params.questionId);
-
-    // only at the start of the quiz, clear previous questions & generate new ones
-    if (questionId === 0) {
-        questions = [];
-        generateQuestions();
-    }
 
     res.render("question", {
         typeOfQuiz: typeOfQuiz,
@@ -208,7 +212,7 @@ app.post("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
 
         case "suddendeath":
             // sudden death ends when answer is wrong or when end of questions has been reached
-            if (!characterIsCorrect || !movieIsCorrect || questionId === questions.length-1) {
+            if (!characterIsCorrect || !movieIsCorrect || questionId === questions.length - 1) {
                 return res.redirect(`/user/1/quiz/${typeOfQuiz}/score`,);
             }
             break;
