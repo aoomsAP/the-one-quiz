@@ -2,23 +2,22 @@
 
     <main class="question-container container-md p-3">
         <section class="text-center mb-4">
-            <h1>Quiz: Ten Rounds</h1>
+            <h1>Quiz: <%= typeOfQuizTitle %></h1>
         </section>
 
         <section class="card" id="quiz-question-card">
-            <h2 class="card-header text-center fs-4">vraag 1</h2>
+            <h2 class="card-header text-center fs-4">vraag <%= questionId+1 %></h2>
             <div class="card-body text-center">
 
                 <!-- Quote -->
                 <p class="blockquote lotr-quote mx-sm-3 my-5 fw-bold">
                     <q>
-                        A day may come when the courage of men fails, when we forsake our friends and
-                        break all bonds of fellowship, but it is not this day.
+                        <%= question.dialog %>
                     </q>
                 </p>
 
                 <!-- Form Questions -->
-                <form id="radio-btn-group" class="row justify-content-center px-3" action="" method="POST">
+                <form id="radio-btn-group" class="row justify-content-center px-3" action="/user/1/quiz/<%= typeOfQuiz %>/question/<%= questionId %>" method="POST">
 
                     <!-- Thumbs-up & Thumbs-down buttons -->
                     <div class="d-sm-block pb-3" role="group">
@@ -41,34 +40,36 @@
                         </div>
                     </div>
 
+                    <% let characterOptions = [...question.wrong_characters,question.correct_character].sort(() => Math.random() - 0.5); %>
+
                     <!-- First row: 3 Characters -->
                     <p class="pb-3">Van welk personage komt deze quote? </p>
                     <div class="d-grid gap-2 col-6 mx-auto" role="group">
-                        <input type="radio" class="btn-check" name="btnradioChar" id="btnradio1" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="btnradio1">Gandalf</label>
+                        <input type="radio" class="btn-check" name="btnradioChar" id="btnradio1" autocomplete="off" value=<%= characterOptions[0].character_id %> >
+                        <label class="btn btn-outline-primary" for="btnradio1"><%= characterOptions[0].name %></label>
 
-                        <input type="radio" class="btn-check" name="btnradioChar" id="btnradio2" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="btnradio2">Aragorn II Elessar</label>
+                        <input type="radio" class="btn-check" name="btnradioChar" id="btnradio2" autocomplete="off" value=<%= characterOptions[1].character_id %> >
+                        <label class="btn btn-outline-primary" for="btnradio2"><%= characterOptions[1].name %></label>
 
-                        <input type="radio" class="btn-check" name="btnradioChar" id="btnradio3" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="btnradio3">Galadriel</label>
+                        <input type="radio" class="btn-check" name="btnradioChar" id="btnradio3" autocomplete="off" value=<%= characterOptions[2].character_id %> >
+                        <label class="btn btn-outline-primary" for="btnradio3"><%= characterOptions[2].name %></label>
                     </div>
 
                     <!-- Second row: 3 movies -->
                     <p class="pb-3">Uit welke film komt deze quote? </p>
                     <div class="d-grid gap-2 col-6 mx-auto" role="group">
-                        <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+                        <input type="radio" class="btn-check" name="btnradioMovie" id="btnradio4" autocomplete="off" value="5cd95395de30eff6ebccde5c" >
                         <label class="btn btn-outline-primary" for="btnradio4">The Fellowship of the Ring</label>
 
-                        <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
+                        <input type="radio" class="btn-check" name="btnradioMovie" id="btnradio5" autocomplete="off" value="5cd95395de30eff6ebccde5b" >
                         <label class="btn btn-outline-primary" for="btnradio5">The Two Towers</label>
 
-                        <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
+                        <input type="radio" class="btn-check" name="btnradioMovie" id="btnradio6" autocomplete="off" value="5cd95395de30eff6ebccde5d" >
                         <label class="btn btn-outline-primary" for="btnradio6">The Return of the King</label>
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary col-sm-3 mx-auto">Volgende vraag <i
+                    <button type="submit" class="btn btn-primary col-md-3 mx-auto">Volgende vraag <i
                             class="bi bi-chevron-right"></i></button>
                 </form>
             </div>

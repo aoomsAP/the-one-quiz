@@ -20,11 +20,11 @@ let user: User|null = null;
 
 let activeUser: User|null = mockUser; // TEMPORARY: testing quiz/score functionality requires an active user
 
-let quotes: Quote[] = mockQuotes; // TODO: replace with empty array and then fill in with loadData function in app.listen
-let characters: Character[] = mockCharacters; // TODO: replace with empty array and then fill in with loadData function in app.listen
-let movies: Movie[] = mockMovies; // TODO: replace with empty array and then fill in with loadData function in app.listen
+let quotes: Quote[] = mockQuotes; // TODO: delete mockQuotes & fill in with loadData function in app.listen
+let characters: Character[] = mockCharacters; // TODO: delete mockCharacters & fill in with loadData function in app.listen
+let movies: Movie[] = mockMovies; // TODO: delete mockMovies & fill in with loadData function in app.listen
 
-let questions: Question[] = mockQuestions; // TODO: replace with empty array and then fill in with generateQuestions function in /quiz/:type/question/:questionId route
+let questions: Question[];
 
 app.get("/", (req, res) => {
     // e.g. http://localhost:3000/
@@ -51,45 +51,41 @@ app.get("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
     // e.g. http://localhost:3000/user/1/quiz/10rounds/question/1
 
     const quoteAppearsInBlacklist = (quoteId: string) => {
-        if (activeUser === null) { // TODO: replace with "user"
+        if (activeUser === null) { // TODO: replace "activeUser" with "user"
             return res.status(404).send("User not found.");
         }
         else {
-            const blacklistedIds : string[] = activeUser.blacklist.map(q => q.quote_id); // TODO: replace with "user"
+            const blacklistedIds : string[] = activeUser.blacklist.map(q => q.quote_id); // TODO: replace "activeUser" with "user"
             return blacklistedIds.includes(quoteId);
         }
     }
 
-    const quoteAlreadyInQuotes = (quoteId: string) => {
-        const quoteIds: string[] = quotes.map(q => q.quote_id);
+    const quoteAlreadyInQuestions = (quoteId: string) => {
+        const quoteIds: string[] = questions.map(q => q.quote_id);
         return quoteIds.includes(quoteId);
     }
 
     const getQuote = () => {
         let quote: Quote;
         do {
-            let randomIndex = Math.floor(Math.random() * (quotes.length - 1));
+            let randomIndex = Math.floor(Math.random() * quotes.length);
             quote = quotes[randomIndex];
-        } while (quoteAppearsInBlacklist(quote.quote_id) || quoteAlreadyInQuotes(quote.quote_id))
+        } while (quoteAppearsInBlacklist(quote.quote_id) || quoteAlreadyInQuestions(quote.quote_id))
         return quote
     }
 
     const getTwoWrongCharacters = (character_id: string) => {
         const wrongCharacters: Character[] = [];
 
-        let firstChar: Character;
         do {
-            let randomIndex = Math.floor(Math.random() * (characters.length - 1));
-            firstChar = characters[randomIndex];
-        } while (character_id === firstChar.character_id);
-        wrongCharacters[0] = firstChar;
+            let randomIndex = Math.floor(Math.random() * characters.length);
+            wrongCharacters[0] = characters[randomIndex];
+        } while (character_id === wrongCharacters[0].character_id);
 
-        let secondChar: Character;
         do {
-            let randomIndex = Math.floor(Math.random() * (characters.length - 1));
-            secondChar = characters[randomIndex];
-        } while (character_id === secondChar.character_id && firstChar != secondChar);
-        wrongCharacters[1] = secondChar;
+            let randomIndex = Math.floor(Math.random() * characters.length);
+            wrongCharacters[1] = characters[randomIndex];
+        } while (character_id === wrongCharacters[1].character_id || wrongCharacters[0] === wrongCharacters[1]);
 
         return wrongCharacters;
     }
@@ -97,25 +93,21 @@ app.get("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
     const getTwoWrongMovies = (movie_id: string) => {
         const wrongMovies: Movie[] = [];
 
-        let firstMovie: Movie;
         do {
-            let randomIndex = Math.floor(Math.random() * (movies.length - 1));
-            firstMovie = movies[randomIndex];
-        } while (movie_id === firstMovie.movie_id);
-        wrongMovies[0] = firstMovie;
+            let randomIndex = Math.floor(Math.random() * movies.length);
+            wrongMovies[0] = movies[randomIndex];
+        } while (movie_id === wrongMovies[0].movie_id);
 
-        let secondMovie: Movie;
         do {
-            let randomIndex = Math.floor(Math.random() * (movies.length - 1));
-            secondMovie = movies[randomIndex];
-        } while (movie_id === secondMovie.movie_id && firstMovie != secondMovie);
-        wrongMovies[1] = secondMovie;
+            let randomIndex = Math.floor(Math.random() * movies.length);
+            wrongMovies[1] = movies[randomIndex];
+        } while (movie_id === wrongMovies[1].movie_id || wrongMovies[0] === wrongMovies[1]);
 
         return wrongMovies;
     }
 
     const generateQuestions = () => {
-        for (let i: number = 0; i < 10; i++) {
+        for (let i: number = 0; i < 10; i++) { // TODO: change count to 200
             let quote: Quote = getQuote();
 
             let correctCharacter: Character | undefined = characters.find(character => quote.character_id === character.character_id);
@@ -128,24 +120,40 @@ app.get("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
                 quote_id: quote.quote_id,
                 dialog: quote.dialog,
                 correct_character: correctCharacter,
-                wrong_characters: getTwoWrongCharacters(quote.character_id),
+                wrong_characters: getTwoWrongCharacters(correctCharacter.character_id),
                 correct_movie: correctMovie,
-                wrong_movies: getTwoWrongMovies(quote.movie_id),
+                wrong_movies: getTwoWrongMovies(correctMovie.movie_id),
             };
+
             questions.push(newQuestion);
         }
     }
 
+    const typeOfQuiz: string = req.params.type;
+    const typeOfQuizTitle: string = typeOfQuiz === "tenrounds" ? "Ten Rounds" : "Sudden Death";
     const questionId: number = parseInt(req.params.questionId);
+
+    // only at the start of the quiz, clear previous questions & generate new ones
     if (questionId === 0) {
         questions = [];
         generateQuestions();
     }
 
-    res.render("question");
+    res.render("question", {
+        typeOfQuiz: typeOfQuiz,
+        typeOfQuizTitle: typeOfQuizTitle,
+        questionId: questionId,
+        question: questions[questionId],
+    } );
 })
 
-app.post("/quiz/:type/question/:questionId", (req, res) => {
+app.post("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
+    // 
+    
+    // TODO: alert when both answers are not selected
+
+    //
+    
     const questionId: number = parseInt(req.params.questionId);
     const typeOfQuiz: string = req.params.type;
 
@@ -157,13 +165,15 @@ app.post("/quiz/:type/question/:questionId", (req, res) => {
 
     const characterAnswer = req.body.btnradioChar;
     const movieAnswer = req.body.btnradioMovie;
-    const characterIsCorrect: boolean = characterAnswer === questions[questionId].correct_character.character_id;
-    const movieIsCorrect: boolean = movieAnswer === questions[questionId].correct_movie.movie_id
+    const characterIsCorrect = characterAnswer === questions[questionId].correct_character.character_id;
+    const movieIsCorrect = movieAnswer === questions[questionId].correct_movie.movie_id
 
     const addCharacterAnswerToQuestion = (character_id: string) => {
+        // if answer is correct, answer = correct_character
         if (character_id === questions[questionId].correct_character.character_id) {
             questions[questionId].answer_character = questions[questionId].correct_character;
         }
+        // if answer is incorrect, answer is one of the wrong_characters
         else {
             if (character_id === questions[questionId].wrong_characters[0].character_id) {
                 questions[questionId].answer_character = questions[questionId].wrong_characters[0];
@@ -175,9 +185,11 @@ app.post("/quiz/:type/question/:questionId", (req, res) => {
     }
 
     const addMovieAnswerToQuestion = (movie_id: string) => {
+        // if answer is correct, answer = correct_movie
         if (movie_id === questions[questionId].correct_movie.movie_id) {
-            questions[questionId].answer_character = questions[questionId].correct_character;
+            questions[questionId].answer_movie = questions[questionId].correct_movie;
         }
+        // if answer is incorrect, answer is one of the wrong_movies
         else {
             if (movie_id === questions[questionId].wrong_movies[0].movie_id) {
                 questions[questionId].answer_movie = questions[questionId].wrong_movies[0];
@@ -188,29 +200,29 @@ app.post("/quiz/:type/question/:questionId", (req, res) => {
         }
     }
 
+    // write answers to question array
+    addCharacterAnswerToQuestion(characterAnswer);
+    addMovieAnswerToQuestion(movieAnswer);
+
+    // if end of quiz: redirect to score
     switch (typeOfQuiz) {
         case "tenrounds":
-            addCharacterAnswerToQuestion(characterAnswer);
-            addMovieAnswerToQuestion(movieAnswer);
+            // ten rounds ends after 10 questions
             if (questionId === 9) {
-                res.render("score", { questions: questions });
-            }
-            else {
-                res.render(`/quiz/${typeOfQuiz}/question/${questionId + 1}`, { question: questions[questionId + 1] })
+                return res.redirect(`/user/1/quiz/${typeOfQuiz}/score`,);
             }
             break;
 
         case "suddendeath":
-            addCharacterAnswerToQuestion(characterAnswer);
-            addMovieAnswerToQuestion(movieAnswer);
-            if (!characterIsCorrect || !movieIsCorrect) {
-                res.render("score", { questions: questions })
-            }
-            else {
-                res.render(`/quiz/${typeOfQuiz}/question/${questionId + 1}`, { question: questions[questionId + 1] })
+            // sudden death ends when answer is wrong or when end of questions has been reached
+            if (!characterIsCorrect || !movieIsCorrect || questionId === questions.length-1) {
+                return res.redirect(`/user/1/quiz/${typeOfQuiz}/score`,);
             }
             break;
     }
+
+    // default redirect: go to next question
+    res.redirect(`/user/1/quiz/${typeOfQuiz}/question/${questionId + 1}`);
 })
 
 app.get("/user/:userId/quiz/:type/score", (req, res) => {
