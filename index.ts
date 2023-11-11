@@ -46,8 +46,7 @@ app.get("/user/:userId/quiz", (req, res) => {
     res.render("quiz");
 })
 
-app.post("/user/:userId/quiz", (req, res) => {
-    // e.g. http://localhost:3000/user/1/quiz
+app.post("/quiz", (req, res) => {
 
     const quoteAppearsInBlacklist = (quoteId: string) => {
         if (activeUser === null) { // TODO: replace "activeUser" with "user"
@@ -132,11 +131,10 @@ app.post("/user/:userId/quiz", (req, res) => {
     generateQuestions();
 
     const typeOfQuiz: string = req.body.typeOfQuiz;
-    res.redirect(`/user/1/quiz/${typeOfQuiz}/question/0`);
+    res.redirect(`/quiz/${typeOfQuiz}/question/0`);
 })
 
-app.get("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
-    // e.g. http://localhost:3000/user/1/quiz/10rounds/question/1
+app.get("/quiz/:type/question/:questionId", (req, res) => {
 
     const typeOfQuiz: string = req.params.type;
     const typeOfQuizTitle: string = typeOfQuiz === "tenrounds" ? "Ten Rounds" : "Sudden Death";
@@ -150,7 +148,7 @@ app.get("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
     });
 })
 
-app.post("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
+app.post("/quiz/:type/question/:questionId", (req, res) => {
     //
 
     // TODO: handle thumbs up & thumbs down functionality
@@ -206,20 +204,20 @@ app.post("/user/:userId/quiz/:type/question/:questionId", (req, res) => {
         case "tenrounds":
             // ten rounds ends after 10 questions
             if (questionId === 9) {
-                return res.redirect(`/user/1/quiz/${typeOfQuiz}/score`,);
+                return res.redirect(`/quiz/${typeOfQuiz}/score`,);
             }
             break;
 
         case "suddendeath":
             // sudden death ends when answer is wrong or when end of questions has been reached
             if (!characterIsCorrect || !movieIsCorrect || questionId === questions.length - 1) {
-                return res.redirect(`/user/1/quiz/${typeOfQuiz}/score`,);
+                return res.redirect(`/quiz/${typeOfQuiz}/score`,);
             }
             break;
     }
 
     // default redirect: go to next question
-    res.redirect(`/user/1/quiz/${typeOfQuiz}/question/${questionId + 1}`);
+    res.redirect(`/quiz/${typeOfQuiz}/question/${questionId + 1}`);
 })
 
 app.get("/user/:userId/quiz/:type/score", (req, res) => {
