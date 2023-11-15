@@ -30,9 +30,32 @@ app.get("/", (req, res) => {
     res.render("index");
 })
 
-app.post("/login", (req, res) => {
+app.get("/login", (req, res) => {
+    // e.g. http://localhost:3000/login
+    res.render("login");
+})
+
+app.post("/login", async (req, res) => {
     // e.g. http://localhost:3000/login
 
+    let username: string = req.body.username;
+    let password: string = req.body.password;
+
+    let foundUser: User | null = await getUser(username);
+
+    if (!foundUser) {
+        return res.status(401).json({ "error": "The user does not exist or wrong credentials." });
+    }
+    
+    if (foundUser.password === password) {
+
+        user = foundUser;
+        return res.status(200).redirect("/");
+        
+    } else {
+        return res.status(401).json({ "error": "The user does not exist or wrong credentials." });
+    }
+    
 })
 
 app.get("/register", (req, res) => {
@@ -48,6 +71,8 @@ app.post("/register", async (req, res) => {
     let password: string = req.body.password;
     let email: string = req.body.email;
 
+    let foundUser: User | null = await getUser(username);
+
     let newUser: User = {
         username: username,
         password: password,
@@ -57,8 +82,6 @@ app.post("/register", async (req, res) => {
         highscore_tenrounds: 0,
         highscore_suddendeath: 0
     }
-
-    let foundUser: User | null = await getUser(newUser);
 
     if (foundUser) {
         return res.status(409).json({ "error": "User already exists." });

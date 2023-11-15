@@ -37,10 +37,11 @@ const createUser = async (newUser: User) => {
 
 // return user or null if not found in DB
 
-const getUser = async (user: User): Promise<User | null> => {
+const getUser = async (username: string): Promise<User | null> => {
     let foundUser: User | null = null;
+    
     try {
-        foundUser = await client.db("TheOneQuiz").collection("Users").findOne<User>({ username: user.username });
+        foundUser = await client.db("TheOneQuiz").collection("Users").findOne<User>({ username: username });
     } catch (err) {
         console.log(err);
     }
