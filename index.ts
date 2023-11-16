@@ -287,7 +287,7 @@ app.get("/favorites/:characterId", (req, res) => {
 })
 
 app.get("/blacklist", (req, res) => {
-    // e.g. http://localhost:3000//blacklist
+    // e.g. http://localhost:3000/blacklist
     res.render("blacklist");
 })
 
