@@ -1,8 +1,7 @@
 require("dotenv").config();
 import express from "express";
-import { connect } from "./db";
+import { connect, createUser, getUser } from "./db";
 import { User, Favorite, Blacklist, Question, Quote, Movie, Character } from "./types";
-import { ObjectId } from "mongodb";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
 
 const app = express();
@@ -31,14 +30,66 @@ app.get("/", (req, res) => {
     res.render("index");
 })
 
-app.post("/login", (req, res) => {
+app.get("/login", (req, res) => {
     // e.g. http://localhost:3000/login
     res.render("login");
 })
 
+app.post("/login", async (req, res) => {
+    // e.g. http://localhost:3000/login
+
+    let username: string = req.body.username;
+    let password: string = req.body.password;
+
+    let foundUser: User | null = await getUser(username);
+
+    if (!foundUser) {
+        return res.status(401).json({ "error": "The user does not exist or wrong credentials." });
+    }
+    
+    if (foundUser.password === password) {
+
+        user = foundUser;
+        return res.status(200).redirect("/");
+        
+    } else {
+        return res.status(401).json({ "error": "The user does not exist or wrong credentials." });
+    }
+    
+})
+
 app.get("/register", (req, res) => {
     // e.g. http://localhost:3000/register
+
     res.render("register");
+})
+
+app.post("/register", async (req, res) => {
+    // e.g. http://localhost:3000/register
+
+    let username: string = req.body.username;
+    let password: string = req.body.password;
+    let email: string = req.body.email;
+
+    let foundUser: User | null = await getUser(username);
+
+    let newUser: User = {
+        username: username,
+        password: password,
+        email: email,
+        favorites: [],
+        blacklist: [],
+        highscore_tenrounds: 0,
+        highscore_suddendeath: 0
+    }
+
+    if (foundUser) {
+        return res.status(409).json({ "error": "User already exists." });
+    }
+
+    await createUser(newUser);
+    user = newUser;
+    return res.status(201).redirect("/");
 })
 
 app.get("/user/:userId/quiz", (req, res) => {
@@ -254,3 +305,7 @@ app.listen(app.get("port"), async () => {
         console.log("Error: MongoDB connection failed.");
     }
 })
+
+function findUser(username: string) {
+    throw new Error("Function not implemented.");
+}

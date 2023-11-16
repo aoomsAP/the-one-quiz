@@ -2,7 +2,8 @@ require("dotenv").config();
 import { MongoClient } from "mongodb";
 import { User, Favorite, Blacklist, Question, Movie, Character } from "./types";
 
-if (typeof(process.env.URI) === "undefined") throw Error(`Error: .env var "URI" is undefined`); // needs to be added because typescript gives error if process.env is string/undefined
+
+if (typeof (process.env.URI) === "undefined") throw Error(`Error: .env var "URI" is undefined`); // needs to be added because typescript gives error if process.env is string/undefined
 const client = new MongoClient(process.env.URI); // mongo URI in .env file
 
 const exit = async () => {
@@ -23,8 +24,29 @@ const connect = async () => {
 
 // other database calls underneath:
 
+//  Create user by adding the user to the DB
+//  and assign it to the global variable 'user'
 
+const createUser = async (newUser: User) => {
+    try {
+        await client.db("TheOneQuiz").collection("Users").insertOne(newUser);
+    } catch (err) {
+        console.log(err);
+    }
+}
 
+// return user or null if not found in DB
 
+const getUser = async (username: string): Promise<User | null> => {
+    let foundUser: User | null = null;
+    
+    try {
+        foundUser = await client.db("TheOneQuiz").collection("Users").findOne<User>({ username: username });
+    } catch (err) {
+        console.log(err);
+    }
 
-export { connect }
+    return foundUser;
+}
+
+export { connect, createUser, getUser }
