@@ -92,8 +92,8 @@ app.post("/register", async (req, res) => {
     return res.status(201).redirect("/");
 })
 
-app.get("/user/:userId/quiz", (req, res) => {
-    // e.g. http://localhost:3000/user/1/quiz
+app.get("/quiz", (req, res) => {
+    // e.g. http://localhost:3000/quiz
     res.render("quiz");
 })
 
@@ -271,23 +271,23 @@ app.post("/quiz/:type/question/:questionId", (req, res) => {
     res.redirect(`/quiz/${typeOfQuiz}/question/${questionId + 1}`);
 })
 
-app.get("/user/:userId/quiz/:type/score", (req, res) => {
-    // e.g. http://localhost:3000/user/1/quiz/10rounds/score
+app.get("/quiz/:type/score", (req, res) => {
+    // e.g. http://localhost:3000/quiz/10rounds/score
     res.render("score");
 })
 
-app.get("/user/:userId/favorites", (req, res) => {
-    // e.g. http://localhost:3000/user/1/favorites
+app.get("/favorites", (req, res) => {
+    // e.g. http://localhost:3000/favorites
     res.render("favorites");
 })
 
-app.get("/user/:userId/favorites/:characterId", (req, res) => {
-    // e.g. http://localhost:3000/user/1/favorites/28392
+app.get("/favorites/:characterId", (req, res) => {
+    // e.g. http://localhost:3000/favorites/28392
     res.render("character");
 })
 
-app.get("/user/:userId/blacklist", (req, res) => {
-    // e.g. http://localhost:3000/user/1/blacklist
+app.get("/blacklist", (req, res) => {
+    // e.g. http://localhost:3000//blacklist
     res.render("blacklist");
 })
 
