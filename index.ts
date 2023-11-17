@@ -510,14 +510,14 @@ const loadCharacters = async () => {
          }
          
      }
-         //PUUR TESTING
-         console.log("Print nu alle quotes lijst af:")
-         //console.log(`Voor we beginnen, dit is element 0 dialoog: ${quoteList[0].dialog}`);
-         for (let index = 0; index < quoteList.length; index++) {
-             console.log(quoteList[index].dialog) // 
-             console.log(quoteList[index].movie_id);
-             console.log(quoteList[index].character_id)
-    }
+    //      //PUUR TESTING
+    //      console.log("Print nu alle quotes lijst af:")
+    //      //console.log(`Voor we beginnen, dit is element 0 dialoog: ${quoteList[0].dialog}`);
+    //      for (let index = 0; index < quoteList.length; index++) {
+    //          console.log(quoteList[index].dialog) // 
+    //          console.log(quoteList[index].movie_id);
+    //          console.log(quoteList[index].character_id)
+    // }
  
 
          
