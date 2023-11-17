@@ -304,10 +304,8 @@ app.get("/quiz/:type/score", async (req, res) => {
             highScore = user.highscore_tenrounds;
             break;
         case "suddendeath":
-            let consecutiveCorrect = 0;
             scores = questions.map(q => {
                 if (q.correct_character === q.answer_character && q.correct_movie === q.answer_movie) {
-                    consecutiveCorrect++;
                     return 1;
                 } else {
                     return 0;
