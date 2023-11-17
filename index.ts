@@ -327,7 +327,6 @@ app.get("/quiz/:type/score", async (req, res) => {
         await loadUser(user.username);
     }
 
-    res.render("score", { sumOfScores, highScore });
     res.render("score", {
         questions: questions,
         score: sumOfScores,

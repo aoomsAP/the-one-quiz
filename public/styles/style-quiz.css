@@ -163,6 +163,40 @@ q {
     width: 100%;
 }
 
+.answer .card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.answer .card-header {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.answer .card-body {
+    margin: 0;
+}
+
+.answer-section {
+    display: flex;
+    align-items: center;
+}
+
+.character,
+.character-corrected,
+.movie,
+.movie-corrected {
+    margin: 0;
+}
+
+.arrow {
+    margin: 0 5px;
+}
+
+
 /* favorites, character and blacklist */
 
 #character,
