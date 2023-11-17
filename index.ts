@@ -284,39 +284,39 @@ app.post("/quiz/:type/question/:questionId", (req, res) => {
 app.get("/quiz/:type/score", async (req, res) => {
     const typeOfQuiz = req.params.type;
     let scores: number[] = [];
-    let highScore: number;
+    let highScore: number = 0;
     
     if (user === null) {
-        throw "User not found";
-    } else {
-        switch (typeOfQuiz) {
-            case "tenrounds":
-                scores = questions.map(q => {
-                    if (q.correct_character === q.answer_character && q.correct_movie === q.answer_movie) {
-                        return 1;
-                    } else if (q.correct_character === q.answer_character || q.correct_movie === q.answer_movie) {
-                        return 0.5;
-                    } else {
-                        return 0;
-                    }
-                });
-                highScore = user.highscore_tenrounds;
-                break;
-            case "suddendeath":
-                let consecutiveCorrect = 0;
-                scores = questions.map(q => {
-                    if (q.correct_character === q.answer_character && q.correct_movie === q.answer_movie) {
-                        consecutiveCorrect++;
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                });
-                highScore = user.highscore_suddendeath;
-                break;
-            default:
-                break;
-        }
+        return res.status(404).send("User not found");
+    } 
+
+    switch (typeOfQuiz) {
+        case "tenrounds":
+            scores = questions.map(q => {
+                if (q.correct_character === q.answer_character && q.correct_movie === q.answer_movie) {
+                    return 1;
+                } else if (q.correct_character === q.answer_character || q.correct_movie === q.answer_movie) {
+                    return 0.5;
+                } else {
+                    return 0;
+                }
+            });
+            highScore = user.highscore_tenrounds;
+            break;
+        case "suddendeath":
+            let consecutiveCorrect = 0;
+            scores = questions.map(q => {
+                if (q.correct_character === q.answer_character && q.correct_movie === q.answer_movie) {
+                    consecutiveCorrect++;
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+            highScore = user.highscore_suddendeath;
+            break;
+        default:
+            break;
     }
     
     let sumOfScores: number = scores.reduce((prev, curr) => prev + curr, 0);
@@ -324,10 +324,15 @@ app.get("/quiz/:type/score", async (req, res) => {
     //highScore used before being assigned error. Ik zit vast met hoe ik dit het best kan oplossen.
     if (highScore < sumOfScores) {
         await createNewHighScore(user, typeOfQuiz, sumOfScores);
+        await loadUser(user.username);
     }
 
-    await loadUser(user.username);
     res.render("score", { sumOfScores, highScore });
+    res.render("score", {
+        questions: questions,
+        score: sumOfScores,
+        highScore: highScore
+    });
 });
 
 
