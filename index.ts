@@ -1,9 +1,8 @@
 require("dotenv").config();
 import express from "express";
 import { connect, createUser, getUser } from "./db";
-import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter } from "./types";
+import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote } from "./types";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
-import { charactersApi } from "./characters";
 
 const app = express();
 
@@ -335,21 +334,22 @@ app.listen(app.get("port"), async () => {
     } catch (e) {
         console.log("Error: MongoDB connection failed.");
     }
-    await loadCharacters();
+    await loadCharacters(); // this function will load all characters from the one api
+    await loadQuotes();
 })
 
-// ---------- API Logic
+// ----------------------------------------------- START OVERVIEW API LOGIC ---------------------------------------------------------------------------------
 
+// ----------------------------------------------- START CHARACTER API LOGIC ---------------------------------------------------------------------------------
   // create root object
   let rootCharacter : RootCharacter; // just existing
+  let characterList: Character[] = []; // this is the final list where all characters will be in 
 
 const loadCharacters = async () => {
 
     let responseCharacters = await fetch("https://the-one-api.dev/v2/character", { //"https://reqres.in/api/users" //https://the-one-api.dev/v2/character
 
-  
-
-    headers: {Authorization: "Bearer 7XwJ43vXu50dNvldq5gi"} // {Authorization: `Bearer ${API_KEY}`} werkt niet? te bekijken...
+    headers: {Authorization: `Bearer ${API_KEY}`} // {Authorization: `Bearer ${API_KEY}`} werkt niet? te bekijken...
     } 
     ) 
         .then(function(response){
@@ -364,11 +364,11 @@ const loadCharacters = async () => {
     // let data = await responseCharacters.json();
     // console.log(data);
 
-    console.log(responseCharacters);
+    //console.log(responseCharacters);
 
     // test tonen characters
 
-    let rootCharacterOriginal : RootCharacter = require('./characters.json'); // ORIGINEEL, NIET NODIG NORMAAL
+    //let rootCharacterOriginal : RootCharacter = require('./characters.json'); // ORIGINEEL, NIET NODIG NORMAAL
     // console.log("dit is rootCharacter hieronder:");
     // console.log(rootCharacter);
     
@@ -383,25 +383,25 @@ const loadCharacters = async () => {
     //     console.log(character);
     // }
 
-    let characterList: Character[] = [];
-    let characterTemp: Character;
+    //let characterList: Character[] = []; // this is the final list where all characters will be in -- moved higher up
+    let characterTemp: Character; // this is a dummy character that will fill characterList
 
     // filtering + converting APICharacters to Characters objects
     for (let index = 0; index < rootCharacter.docs.length; index++) {
         if (rootCharacter.docs[index].name != ''){
             //console.log(rootCharacter.docs[index].name) // was ffe om te testen (werkt)
 
-            if (rootCharacter.docs[index].wikiUrl != ""){
-            characterTemp = // omzetten API character naar ons object character
-
             // first check if data exists (only full objects?)
+            if (rootCharacter.docs[index].wikiUrl != null && rootCharacter.docs[index].wikiUrl != ""){
+            characterTemp = // omzetten API character naar ons object character (ID + Name + URL)
+
             
             
-            {character_id: rootCharacter.docs[index]._id,
+                {character_id: rootCharacter.docs[index]._id,
                 name: rootCharacter.docs[index].name,
                 wikiUrl: rootCharacter.docs[index].wikiUrl}
 
-            characterList.push(characterTemp); // character toevoegen aan de lijst
+            characterList.push(characterTemp); // character toevoegen aan de lijst ==> characterList is dus de finale lijst met Character[] in
             }
             
             else{
@@ -414,16 +414,113 @@ const loadCharacters = async () => {
         
     }
 
-    console.log("Print nu alle namen lijst af:")
-    for (let index = 0; index < characterList.length; index++) {
-        console.log(characterList[index].name)
-        console.log(characterList[index].character_id);
-        console.log(characterList[index].wikiUrl)
+    // //PUUR TESTING
+    // console.log("Print nu alle namen lijst af:")
+    // for (let index = 0; index < characterList.length; index++) {
+    //     console.log(characterList[index].name)
+    //     console.log(characterList[index].character_id);
+    //     console.log(characterList[index].wikiUrl)
         
-    }
+    // }
 
-    console.log("KLAAR");
+    // console.log("KLAAR");
         
     
 
-}
+} // END ROOT CHARACTER LOGIC
+
+// ----------------------------------------------- START QUOTE API LOGIC ---------------------------------------------------------------------------------
+
+ // create root object
+ let rootQuote : RootQuote; // just existing
+ let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
+
+ const loadQuotes = async () => {
+ 
+     let responseQuotes = await fetch("https://the-one-api.dev/v2/quote/?page=1", { //"https://reqres.in/api/users" //https://the-one-api.dev/v2/character
+ 
+     headers: {Authorization: `Bearer ${API_KEY}`} // {Authorization: `Bearer ${API_KEY}`} werkt niet? te bekijken...
+     } 
+     ) 
+         .then(function(response){
+             return response.json()
+         })
+         .then(function(response){
+             //console.log(response.docs) // hier data heeft geen zin (is uit cursus) ??? not sure ? moet DOCS zijn !!!!
+             rootQuote = response;
+         })
+         ;
+ 
+     // let data = await responseCharacters.json();
+     // console.log(data);
+ 
+     //console.log(responseCharacters);
+ 
+     // test tonen characters
+ 
+     //let rootCharacterOriginal : RootCharacter = require('./characters.json'); // ORIGINEEL, NIET NODIG NORMAAL
+     // console.log("dit is rootCharacter hieronder:");
+     // console.log(rootCharacter);
+     
+     // console.log("dit is de loop nu:");
+ 
+    //  console.log("start test rootQuote")
+    //  console.log(rootQuote.docs);
+    //  for (let quote of rootQuote.docs){
+    //      console.log(quote)
+    //  }
+    //  console.log("einde test rootQuote")
+ 
+
+ 
+     //let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
+     let quoteTemp: Quote; // this is a dummy quote that will fill quoteList
+ 
+     // filtering + converting APIQuotes to Quotes objects
+     for (let index = 0; index < rootQuote.docs.length; index++) {
+        
+         if (rootQuote.docs[index].dialog != ''){ // quote cant be empty
+            
+ 
+             // first check if data exists (only full objects?)
+             if (rootQuote.docs[index].movie != "" && rootQuote.docs[index].character != ""){ // must have a movie and a character linked to the quote
+                
+             quoteTemp = // omzetten API quote naar ons object quote (id + dialog + movie + character (API) ==> id + dialog + movie_ID + character_ID)           
+             
+                {quote_id: rootQuote.docs[index]._id,
+                 dialog: rootQuote.docs[index].dialog,
+                 movie_id: rootQuote.docs[index].movie,
+                 character_id: rootQuote.docs[index].character                
+                }
+
+                
+               
+ 
+             quoteList.push(quoteTemp); // quote toevoegen aan de lijst ==> quoteList is dus de finale lijst met Quotes[] in
+             // console.log(`De quotetemp is toegevoegd aan de lijst, toon de dialoog: ${quoteList[index].dialog}`); // --> DIT WERKT TOCH ???
+
+             }
+             
+             else{
+                 // er ontbrak data
+             }            
+         }
+         else{
+             console.log(`${rootQuote.docs[index].dialog} werd niet toegevoegd aan de lijst`)
+         }
+         
+     }
+         //PUUR TESTING
+         console.log("Print nu alle quotes lijst af:")
+         //console.log(`Voor we beginnen, dit is element 0 dialoog: ${quoteList[0].dialog}`);
+         for (let index = 0; index < quoteList.length; index++) {
+             console.log(quoteList[index].dialog) // 
+             console.log(quoteList[index].movie_id);
+             console.log(quoteList[index].character_id)
+    }
+ 
+
+         
+     }
+ 
+         

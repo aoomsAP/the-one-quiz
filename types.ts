@@ -52,7 +52,7 @@ export interface Character {
     wikiUrl: string
 }
 
-// Different object Charter (API)
+// Different object Character (API)
 
 export interface CharacterApi{
     _id: string,
@@ -74,6 +74,25 @@ export interface RootCharacter{
     total: number,
     limit: number,
     offset: number,
+    page: number,
+    pages: number
+}
+
+// Different object quote (API)
+
+export interface QuoteApi{
+    _id: string,
+    dialog: string,
+    movie: string,
+    character: string,
+    id: string
+}
+
+// Root Object voor Quote (API)
+export interface RootQuote{
+    docs: QuoteApi[];
+    total: number,
+    limit: number,
     page: number,
     pages: number
 }
