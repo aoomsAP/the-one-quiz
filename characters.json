@@ -1,5 +1,3 @@
-import { CharacterApi } from "./types"
-export const charactersApi =
 {
     "docs": [
       {

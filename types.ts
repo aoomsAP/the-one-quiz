@@ -51,3 +51,29 @@ export interface Character {
     name: string,
     wikiUrl: string
 }
+
+// Different object Charter (API)
+
+export interface CharacterApi{
+    _id: string,
+    height: string,
+    race: string,
+    gender: string,
+    birth: string,
+    spouse: string,
+    death: string,
+    realm: string,
+    hair: string,
+    name: string,
+    wikiUrl: string
+}
+
+// Root Object voor Character (API)
+export interface RootCharacter{
+    docs: CharacterApi[];
+    total: number,
+    limit: number,
+    offset: number,
+    page: number,
+    pages: number
+}

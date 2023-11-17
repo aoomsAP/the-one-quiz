@@ -1,8 +1,9 @@
 require("dotenv").config();
 import express from "express";
 import { connect, createUser, getUser } from "./db";
-import { User, Favorite, Blacklist, Question, Quote, Movie, Character } from "./types";
+import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter } from "./types";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
+import { charactersApi } from "./characters";
 
 const app = express();
 
@@ -334,4 +335,95 @@ app.listen(app.get("port"), async () => {
     } catch (e) {
         console.log("Error: MongoDB connection failed.");
     }
+    await loadCharacters();
 })
+
+// ---------- API Logic
+
+  // create root object
+  let rootCharacter : RootCharacter; // just existing
+
+const loadCharacters = async () => {
+
+    let responseCharacters = await fetch("https://the-one-api.dev/v2/character", { //"https://reqres.in/api/users" //https://the-one-api.dev/v2/character
+
+  
+
+    headers: {Authorization: "Bearer 7XwJ43vXu50dNvldq5gi"} // {Authorization: `Bearer ${API_KEY}`} werkt niet? te bekijken...
+    } 
+    ) 
+        .then(function(response){
+            return response.json()
+        })
+        .then(function(response){
+            //console.log(response.docs) // hier data heeft geen zin (is uit cursus) ??? not sure ? moet DOCS zijn !!!!
+            rootCharacter = response;
+        })
+        ;
+
+    // let data = await responseCharacters.json();
+    // console.log(data);
+
+    console.log(responseCharacters);
+
+    // test tonen characters
+
+    let rootCharacterOriginal : RootCharacter = require('./characters.json'); // ORIGINEEL, NIET NODIG NORMAAL
+    // console.log("dit is rootCharacter hieronder:");
+    // console.log(rootCharacter);
+    
+    // console.log("dit is de loop nu:");
+
+    // console.log(rootCharacter.docs);
+    // for (let character of rootCharacter.docs){
+    //     console.log(character)
+    // }
+
+    // for (let character of rootCharacter.docs){
+    //     console.log(character);
+    // }
+
+    let characterList: Character[] = [];
+    let characterTemp: Character;
+
+    // filtering + converting APICharacters to Characters objects
+    for (let index = 0; index < rootCharacter.docs.length; index++) {
+        if (rootCharacter.docs[index].name != ''){
+            //console.log(rootCharacter.docs[index].name) // was ffe om te testen (werkt)
+
+            if (rootCharacter.docs[index].wikiUrl != ""){
+            characterTemp = // omzetten API character naar ons object character
+
+            // first check if data exists (only full objects?)
+            
+            
+            {character_id: rootCharacter.docs[index]._id,
+                name: rootCharacter.docs[index].name,
+                wikiUrl: rootCharacter.docs[index].wikiUrl}
+
+            characterList.push(characterTemp); // character toevoegen aan de lijst
+            }
+            
+            else{
+                // er was geen URl
+            }            
+        }
+        else{
+            console.log(`${rootCharacter.docs[index].name} werd niet toegevoegd aan de lijst`)
+        }
+        
+    }
+
+    console.log("Print nu alle namen lijst af:")
+    for (let index = 0; index < characterList.length; index++) {
+        console.log(characterList[index].name)
+        console.log(characterList[index].character_id);
+        console.log(characterList[index].wikiUrl)
+        
+    }
+
+    console.log("KLAAR");
+        
+    
+
+}
