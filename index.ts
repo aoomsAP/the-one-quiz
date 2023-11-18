@@ -433,11 +433,16 @@ const loadCharacters = async () => {
 
  // create root object
  let rootQuote : RootQuote; // just existing
+ let rootQuoteTemp : RootQuote; // just existing temporary to combine the rest
  let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
 
  const loadQuotes = async () => {
  
-     let responseQuotes = await fetch("https://the-one-api.dev/v2/quote/?page=1", { //"https://reqres.in/api/users" //https://the-one-api.dev/v2/character
+    for (let index = 0; index < 3; index++) {
+        
+        
+    
+     let responseQuotes = await fetch(`https://the-one-api.dev/v2/quote/?page=${index+1}`, { //"https://reqres.in/api/users" //https://the-one-api.dev/v2/character
  
      headers: {Authorization: `Bearer ${API_KEY}`} // {Authorization: `Bearer ${API_KEY}`} werkt niet? te bekijken...
      } 
@@ -447,30 +452,21 @@ const loadCharacters = async () => {
          })
          .then(function(response){
              //console.log(response.docs) // hier data heeft geen zin (is uit cursus) ??? not sure ? moet DOCS zijn !!!!
-             rootQuote = response;
+             rootQuoteTemp = response;
          })
          ;
+        
+         if (index == 0){
+            rootQuote = rootQuoteTemp; // initialize object
+
+         }
+         else{
+            rootQuote.docs = rootQuote.docs.concat(rootQuoteTemp.docs); // add the rest of quotes page 2 and 3
+
+         }
+         
  
-     // let data = await responseCharacters.json();
-     // console.log(data);
- 
-     //console.log(responseCharacters);
- 
-     // test tonen characters
- 
-     //let rootCharacterOriginal : RootCharacter = require('./characters.json'); // ORIGINEEL, NIET NODIG NORMAAL
-     // console.log("dit is rootCharacter hieronder:");
-     // console.log(rootCharacter);
-     
-     // console.log("dit is de loop nu:");
- 
-    //  console.log("start test rootQuote")
-    //  console.log(rootQuote.docs);
-    //  for (let quote of rootQuote.docs){
-    //      console.log(quote)
-    //  }
-    //  console.log("einde test rootQuote")
- 
+        }
 
  
      //let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
@@ -510,14 +506,16 @@ const loadCharacters = async () => {
          }
          
      }
-    //      //PUUR TESTING
-    //      console.log("Print nu alle quotes lijst af:")
-    //      //console.log(`Voor we beginnen, dit is element 0 dialoog: ${quoteList[0].dialog}`);
-    //      for (let index = 0; index < quoteList.length; index++) {
-    //          console.log(quoteList[index].dialog) // 
-    //          console.log(quoteList[index].movie_id);
-    //          console.log(quoteList[index].character_id)
-    // }
+         //PUUR TESTING
+         console.log("Print nu alle quotes lijst af:")
+         //console.log(`Voor we beginnen, dit is element 0 dialoog: ${quoteList[0].dialog}`);
+         for (let index = 0; index < quoteList.length; index++) {
+             console.log(quoteList[index].dialog) // 
+             console.log(quoteList[index].movie_id);
+             console.log(quoteList[index].character_id)
+    }
+
+    console.log(`de lengte bij het einde is: ${quoteList.length}`);
  
 
          
