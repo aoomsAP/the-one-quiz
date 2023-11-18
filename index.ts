@@ -1,7 +1,7 @@
 require("dotenv").config();
 import express from "express";
 import { connect, createUser, getUser } from "./db";
-import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote } from "./types";
+import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie } from "./types";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
 
 const app = express();
@@ -336,6 +336,7 @@ app.listen(app.get("port"), async () => {
     }
     await loadCharacters(); // this function will load all characters from the one api
     await loadQuotes();
+    await loadMovies();
 })
 
 // ----------------------------------------------- START OVERVIEW API LOGIC ---------------------------------------------------------------------------------
@@ -506,19 +507,87 @@ const loadCharacters = async () => {
          }
          
      }
-         //PUUR TESTING
-         console.log("Print nu alle quotes lijst af:")
-         //console.log(`Voor we beginnen, dit is element 0 dialoog: ${quoteList[0].dialog}`);
-         for (let index = 0; index < quoteList.length; index++) {
-             console.log(quoteList[index].dialog) // 
-             console.log(quoteList[index].movie_id);
-             console.log(quoteList[index].character_id)
-    }
+    //      //PUUR TESTING
+    //      console.log("Print nu alle quotes lijst af:")
+    //      //console.log(`Voor we beginnen, dit is element 0 dialoog: ${quoteList[0].dialog}`);
+    //      for (let index = 0; index < quoteList.length; index++) {
+    //          console.log(quoteList[index].dialog) // 
+    //          console.log(quoteList[index].movie_id);
+    //          console.log(quoteList[index].character_id)
+    // }
 
-    console.log(`de lengte bij het einde is: ${quoteList.length}`);
+    // console.log(`de lengte bij het einde is: ${quoteList.length}`);
  
 
          
      }
+
+     // ----------------------------------------------- START MOVIE API LOGIC ---------------------------------------------------------------------------------
+  // create root object
+  let rootMovie : RootMovie; // just existing
+  let movieList: Movie[] = []; // this is the final list where all movies will be in 
+
+const loadMovies = async () => {
+
+    let responseMovies = await fetch("https://the-one-api.dev/v2/movie", { 
+
+    headers: {Authorization: `Bearer ${API_KEY}`} 
+    } 
+    ) 
+        .then(function(response){
+            return response.json()
+        })
+        .then(function(response){
+            
+            rootMovie = response;
+        })
+        ;
+
+
+    //let characterList: Character[] = []; // this is the final list where all characters will be in -- moved higher up
+    let movieTemp: Movie; // this is a dummy movie that will fill characterList
+
+    // filtering + converting APIMovies to Movie objects
+    for (let index = 0; index < rootMovie.docs.length; index++) {
+        if (rootMovie.docs[index].name == "The Fellowship of the Ring" || rootMovie.docs[index].name == "The Two Towers" || rootMovie.docs[index].name == "The Return of the King"){ // the 3 movies we need
+            
+
+            // first check if data exists (only full objects? for movie this is only the ID)
+            if (rootMovie.docs[index]._id != null){
+            movieTemp = // omzetten API movies naar ons object movies (ID + Name)
+
+            
+            
+                {movie_id: rootMovie.docs[index]._id,
+                name: rootMovie.docs[index].name}
+
+            movieList.push(movieTemp); // movie toevoegen aan de lijst ==> movieList is dus de finale lijst met Movies[] in
+            }
+            
+            else{
+                // er was geen ID
+            }            
+        }
+        else{
+            // console.log(`${rootMovie.docs[index].name} werd niet toegevoegd aan de lijst`) // --> testing purposes / works ok
+        }
+        
+    }
+
+    // //PUUR TESTING
+    // console.log("Print nu alle namen filmlijst af:")
+    // for (let index = 0; index < movieList.length; index++) {
+    //     console.log(movieList[index].name)
+    //     console.log(movieList[index].movie_id);
+        
+        
+    // }
+
+    // console.log("KLAAR");
+        
+    
+
+} // END ROOT CHARACTER LOGIC
  
-         
+// ----------------------------------------------- END API LOGIC ---------------------------------------------------------------------------------
+      

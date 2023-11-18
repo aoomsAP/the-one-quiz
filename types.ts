@@ -96,3 +96,27 @@ export interface RootQuote{
     page: number,
     pages: number
 }
+
+// Different object Movie (API)
+
+export interface MovieApi{
+    _id: string,
+    name: string,
+    runtimeInMinutes: number,
+    budgetInMillions: number,
+    boxOfficeRevenueInMillions: number,
+    academyAwardNominations: number,
+    academyAwardWins: number,
+    rottenTomatoesScore: number
+}
+
+// Root Object voor movie (API)
+export interface RootMovie{
+    docs: MovieApi[];
+    total: number,
+    limit: number,
+    offset: number,
+    page: number,
+    pages: number
+}
+
