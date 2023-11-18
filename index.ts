@@ -362,28 +362,6 @@ const loadCharacters = async () => {
         })
         ;
 
-    // let data = await responseCharacters.json();
-    // console.log(data);
-
-    //console.log(responseCharacters);
-
-    // test tonen characters
-
-    //let rootCharacterOriginal : RootCharacter = require('./characters.json'); // ORIGINEEL, NIET NODIG NORMAAL
-    // console.log("dit is rootCharacter hieronder:");
-    // console.log(rootCharacter);
-    
-    // console.log("dit is de loop nu:");
-
-    // console.log(rootCharacter.docs);
-    // for (let character of rootCharacter.docs){
-    //     console.log(character)
-    // }
-
-    // for (let character of rootCharacter.docs){
-    //     console.log(character);
-    // }
-
     //let characterList: Character[] = []; // this is the final list where all characters will be in -- moved higher up
     let characterTemp: Character; // this is a dummy character that will fill characterList
 
@@ -413,19 +391,7 @@ const loadCharacters = async () => {
             console.log(`${rootCharacter.docs[index].name} werd niet toegevoegd aan de lijst`)
         }
         
-    }
-
-    // //PUUR TESTING
-    // console.log("Print nu alle namen lijst af:")
-    // for (let index = 0; index < characterList.length; index++) {
-    //     console.log(characterList[index].name)
-    //     console.log(characterList[index].character_id);
-    //     console.log(characterList[index].wikiUrl)
-        
-    // }
-
-    // console.log("KLAAR");
-        
+    }      
     
 
 } // END ROOT CHARACTER LOGIC
@@ -443,16 +409,16 @@ const loadCharacters = async () => {
         
         
     
-     let responseQuotes = await fetch(`https://the-one-api.dev/v2/quote/?page=${index+1}`, { //"https://reqres.in/api/users" //https://the-one-api.dev/v2/character
+     let responseQuotes = await fetch(`https://the-one-api.dev/v2/quote/?page=${index+1}`, { 
  
-     headers: {Authorization: `Bearer ${API_KEY}`} // {Authorization: `Bearer ${API_KEY}`} werkt niet? te bekijken...
+     headers: {Authorization: `Bearer ${API_KEY}`} 
      } 
      ) 
          .then(function(response){
              return response.json()
          })
          .then(function(response){
-             //console.log(response.docs) // hier data heeft geen zin (is uit cursus) ??? not sure ? moet DOCS zijn !!!!
+             
              rootQuoteTemp = response;
          })
          ;
@@ -466,7 +432,6 @@ const loadCharacters = async () => {
 
          }
          
- 
         }
 
  
@@ -489,36 +454,21 @@ const loadCharacters = async () => {
                  movie_id: rootQuote.docs[index].movie,
                  character_id: rootQuote.docs[index].character                
                 }
-
-                
-               
+             
  
              quoteList.push(quoteTemp); // quote toevoegen aan de lijst ==> quoteList is dus de finale lijst met Quotes[] in
-             // console.log(`De quotetemp is toegevoegd aan de lijst, toon de dialoog: ${quoteList[index].dialog}`); // --> DIT WERKT TOCH ???
 
              }
              
              else{
-                 // er ontbrak data
+                 // er ontbrak data - niet toevoegen
              }            
          }
          else{
-             console.log(`${rootQuote.docs[index].dialog} werd niet toegevoegd aan de lijst`)
+             // er ontbrak data - niet toevoegen
          }
          
      }
-    //      //PUUR TESTING
-    //      console.log("Print nu alle quotes lijst af:")
-    //      //console.log(`Voor we beginnen, dit is element 0 dialoog: ${quoteList[0].dialog}`);
-    //      for (let index = 0; index < quoteList.length; index++) {
-    //          console.log(quoteList[index].dialog) // 
-    //          console.log(quoteList[index].movie_id);
-    //          console.log(quoteList[index].character_id)
-    // }
-
-    // console.log(`de lengte bij het einde is: ${quoteList.length}`);
- 
-
          
      }
 
@@ -543,8 +493,6 @@ const loadMovies = async () => {
         })
         ;
 
-
-    //let characterList: Character[] = []; // this is the final list where all characters will be in -- moved higher up
     let movieTemp: Movie; // this is a dummy movie that will fill characterList
 
     // filtering + converting APIMovies to Movie objects
@@ -569,23 +517,11 @@ const loadMovies = async () => {
             }            
         }
         else{
-            // console.log(`${rootMovie.docs[index].name} werd niet toegevoegd aan de lijst`) // --> testing purposes / works ok
+            // het was geen van de 3 main LOTR films - niet toevoegen aan lijst
         }
         
     }
-
-    // //PUUR TESTING
-    // console.log("Print nu alle namen filmlijst af:")
-    // for (let index = 0; index < movieList.length; index++) {
-    //     console.log(movieList[index].name)
-    //     console.log(movieList[index].movie_id);
-        
-        
-    // }
-
-    // console.log("KLAAR");
-        
-    
+   
 
 } // END ROOT CHARACTER LOGIC
  
