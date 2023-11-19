@@ -106,6 +106,12 @@ footer {
     opacity: 100%;
 }
 
+#welcome-text p{
+   margin: 0.25px;
+   text-align: center;
+   font-size: 1.75rem;
+   padding: 1rem 0.5rem 1rem 0.5rem ;
+}
 /* login, register */
 
 #login section,

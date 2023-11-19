@@ -29,7 +29,11 @@ let questions: Question[];
 
 app.get("/", (req, res) => {
     // e.g. http://localhost:3000/
-    res.render("index");
+    
+    res.render("index", {
+        user: user,
+    });
+    
 })
 
 app.get("/login", (req, res) => {
