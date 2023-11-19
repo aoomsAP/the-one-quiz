@@ -86,7 +86,9 @@ app.post("/register", async (req, res) => {
     }
 
     if (foundUser) {
-        return res.status(409).json({ "error": "User already exists." });
+        return res.render("register", {
+            message: "Gebruikersnaam is al in gebruik."
+        });
     }
 
     await createUser(newUser);
@@ -378,18 +380,13 @@ const loadCharacters = async () => {
             if (rootCharacter.docs[index].wikiUrl != null && rootCharacter.docs[index].wikiUrl != ""){
             characterTemp = // convert API character to our object character (ID + Name + URL)
 
-            
-            
                 {character_id: rootCharacter.docs[index]._id,
                 name: rootCharacter.docs[index].name,
                 wikiUrl: rootCharacter.docs[index].wikiUrl}
 
             characterList.push(characterTemp); // character added to list ==> characterList is final list with Character[] in
             }
-            
-            else{
-                // er was geen URl
-            }            
+                        
         }
         else{
             console.log(`${rootCharacter.docs[index].name} werd niet toegevoegd aan de lijst`)
