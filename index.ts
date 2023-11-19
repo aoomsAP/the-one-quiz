@@ -39,7 +39,11 @@ const loadUser = async (userName: string) => {
 
 app.get("/", (req, res) => {
     // e.g. http://localhost:3000/
-    res.render("index");
+    
+    res.render("index", {
+        user: user,
+    });
+    
 })
 
 app.get("/login", (req, res) => {
@@ -56,7 +60,9 @@ app.post("/login", async (req, res) => {
     let foundUser: User | null = await getUser(username);
 
     if (!foundUser) {
-        return res.status(401).json({ "error": "The user does not exist or wrong credentials." });
+        return res.render("login", {
+            message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
+        });
     }
     
     if (foundUser.password === password) {
@@ -65,7 +71,9 @@ app.post("/login", async (req, res) => {
         return res.status(200).redirect("/");
         
     } else {
-        return res.status(401).json({ "error": "The user does not exist or wrong credentials." });
+        return res.render("login", {
+            message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
+        });
     }
     
 })
@@ -96,7 +104,9 @@ app.post("/register", async (req, res) => {
     }
 
     if (foundUser) {
-        return res.status(409).json({ "error": "User already exists." });
+        return res.render("register", {
+            message: "Gebruikersnaam is al in gebruik."
+        });
     }
 
     await createUser(newUser);
@@ -434,18 +444,13 @@ const loadCharacters = async () => {
             if (rootCharacter.docs[index].wikiUrl != null && rootCharacter.docs[index].wikiUrl != ""){
             characterTemp = // convert API character to our object character (ID + Name + URL)
 
-            
-            
                 {character_id: rootCharacter.docs[index]._id,
                 name: rootCharacter.docs[index].name,
                 wikiUrl: rootCharacter.docs[index].wikiUrl}
 
             characterList.push(characterTemp); // character added to list ==> characterList is final list with Character[] in
             }
-            
-            else{
-                // er was geen URl
-            }            
+                        
         }
         else{
             console.log(`${rootCharacter.docs[index].name} werd niet toegevoegd aan de lijst`)
