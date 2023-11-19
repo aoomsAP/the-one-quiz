@@ -384,7 +384,7 @@ const loadCharacters = async () => {
                 name: rootCharacter.docs[index].name,
                 wikiUrl: rootCharacter.docs[index].wikiUrl}
 
-            characterList.push(characterTemp); // character toevoegen aan de lijst ==> characterList is dus de finale lijst met Character[] in
+            characterList.push(characterTemp); // character added to list ==> characterList is final list with Character[] in
             }
             
             else{
