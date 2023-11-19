@@ -46,7 +46,9 @@ app.post("/login", async (req, res) => {
     let foundUser: User | null = await getUser(username);
 
     if (!foundUser) {
-        return res.status(401).json({ "error": "The user does not exist or wrong credentials." });
+        return res.render("login", {
+            message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
+        });
     }
     
     if (foundUser.password === password) {
@@ -55,7 +57,9 @@ app.post("/login", async (req, res) => {
         return res.status(200).redirect("/");
         
     } else {
-        return res.status(401).json({ "error": "The user does not exist or wrong credentials." });
+        return res.render("login", {
+            message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
+        });
     }
     
 })
