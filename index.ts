@@ -17,9 +17,13 @@ const API_KEY = process.env.API_KEY; // API_KEY in .env file
 
 let user: User | null = null;
 
-let quotes: Quote[] = mockQuotes; // TODO: delete mockQuotes & fill in with loadData function in app.listen
-let characters: Character[] = mockCharacters; // TODO: delete mockCharacters & fill in with loadData function in app.listen
-let movies: Movie[] = mockMovies; // TODO: delete mockMovies & fill in with loadData function in app.listen
+let quoteList: Quote[] = []; // this is the final list where all quotes will be in from the API
+let characterList: Character[] = []; // this is the final list where all characters will be in
+let movieList: Movie[] = []; // this is the final list where all movies will be in 
+
+let quotes: Quote[] = quoteList; 
+let characters: Character[] = characterList; 
+let movies: Movie[] = movieList; // TODO: delete mockMovies & fill in with loadData function in app.listen
 
 let questions: Question[];
 
@@ -344,7 +348,7 @@ app.listen(app.get("port"), async () => {
 // ----------------------------------------------- START CHARACTER API LOGIC ---------------------------------------------------------------------------------
   // create root object
   let rootCharacter : RootCharacter; // just existing
-  let characterList: Character[] = []; // this is the final list where all characters will be in 
+  //let characterList: Character[] = []; // this is the final list where all characters will be in -- moved up to top 
 
 const loadCharacters = async () => {
 
@@ -401,7 +405,7 @@ const loadCharacters = async () => {
  // create root object
  let rootQuote : RootQuote; // just existing
  let rootQuoteTemp : RootQuote; // just existing temporary to combine the rest
- let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
+ //let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
 
  const loadQuotes = async () => {
  
@@ -477,25 +481,13 @@ const loadCharacters = async () => {
          
      }
 
-          //PUUR TESTING
-         console.log("Print nu alle quotes lijst af:")
-         //console.log(`Voor we beginnen, dit is element 0 dialoog: ${quoteList[0].dialog}`);
-         for (let index = 0; index < quoteList.length; index++) {
-             console.log(quoteList[index].dialog) // 
-             console.log(quoteList[index].movie_id);
-             console.log(quoteList[index].character_id)
-             console.log(quoteList.length)
-    }
-
-
-
          
      }
 
      // ----------------------------------------------- START MOVIE API LOGIC ---------------------------------------------------------------------------------
   // create root object
   let rootMovie : RootMovie; // just existing
-  let movieList: Movie[] = []; // this is the final list where all movies will be in 
+  //let movieList: Movie[] = []; // this is the final list where all movies will be in - moved up to top
 
 const loadMovies = async () => {
 
