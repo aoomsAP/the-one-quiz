@@ -352,16 +352,16 @@ app.listen(app.get("port"), async () => {
 
 const loadCharacters = async () => {
 
-    let responseCharacters = await fetch("https://the-one-api.dev/v2/character", { //"https://reqres.in/api/users" //https://the-one-api.dev/v2/character
+    let responseCharacters = await fetch("https://the-one-api.dev/v2/character", { 
 
-    headers: {Authorization: `Bearer ${API_KEY}`} // {Authorization: `Bearer ${API_KEY}`} werkt niet? te bekijken...
+    headers: {Authorization: `Bearer ${API_KEY}`} 
     } 
     ) 
         .then(function(response){
             return response.json()
         })
         .then(function(response){
-            //console.log(response.docs) // hier data heeft geen zin (is uit cursus) ??? not sure ? moet DOCS zijn !!!!
+        
             rootCharacter = response;
         })
         ;
@@ -372,11 +372,11 @@ const loadCharacters = async () => {
     // filtering + converting APICharacters to Characters objects
     for (let index = 0; index < rootCharacter.docs.length; index++) {
         if (rootCharacter.docs[index].name != ''){
-            //console.log(rootCharacter.docs[index].name) // was ffe om te testen (werkt)
+            
 
             // first check if data exists (only full objects?)
             if (rootCharacter.docs[index].wikiUrl != null && rootCharacter.docs[index].wikiUrl != ""){
-            characterTemp = // omzetten API character naar ons object character (ID + Name + URL)
+            characterTemp = // convert API character to our object character (ID + Name + URL)
 
             
             
