@@ -403,7 +403,7 @@ const loadCharacters = async () => {
 // ----------------------------------------------- START QUOTE API LOGIC ---------------------------------------------------------------------------------
 
  // create root object
- let rootQuote : RootQuote; // just existing
+ let rootQuote : RootQuote; // just existing to extract data
  let rootQuoteTemp : RootQuote; // just existing temporary to combine the rest
  //let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
 
@@ -450,7 +450,7 @@ const loadCharacters = async () => {
              // first check if data exists (only full objects?)
              if (rootQuote.docs[index].movie != "" && rootQuote.docs[index].character != ""){ // must have a movie and a character linked to the quote
                 
-             quoteTemp = // omzetten API quote naar ons object quote (id + dialog + movie + character (API) ==> id + dialog + movie_ID + character_ID)           
+             quoteTemp = // convert api quote to our object quote (id + dialog + movie + character (API) ==> id + dialog + movie_ID + character_ID)           
              
                 {quote_id: rootQuote.docs[index]._id,
                  dialog: rootQuote.docs[index].dialog,
@@ -460,7 +460,7 @@ const loadCharacters = async () => {
 
                 for (let i = 0; i < characterList.length; i++) {
                     if(quoteTemp.character_id == characterList[i].character_id){ // check if person linked with quote is in the characterlist
-                        quoteList.push(quoteTemp); // quote toevoegen aan de lijst ==> quoteList is dus de finale lijst met Quotes[] in
+                        quoteList.push(quoteTemp); // add quote to list ==> quoteList is final list with Quotes[] in
                         break;
                     }
                     else{
@@ -472,11 +472,11 @@ const loadCharacters = async () => {
              }
              
              else{
-                 // er ontbrak data - niet toevoegen
+                 // data missing - dont add
              }            
          }
          else{
-             // er ontbrak data - niet toevoegen
+             // data missing - dont add
          }
          
      }
@@ -486,7 +486,7 @@ const loadCharacters = async () => {
 
      // ----------------------------------------------- START MOVIE API LOGIC ---------------------------------------------------------------------------------
   // create root object
-  let rootMovie : RootMovie; // just existing
+  let rootMovie : RootMovie; // just existing to extract data
   //let movieList: Movie[] = []; // this is the final list where all movies will be in - moved up to top
 
 const loadMovies = async () => {
@@ -514,22 +514,22 @@ const loadMovies = async () => {
 
             // first check if data exists (only full objects? for movie this is only the ID)
             if (rootMovie.docs[index]._id != null){
-            movieTemp = // omzetten API movies naar ons object movies (ID + Name)
+            movieTemp = // convert API Movies to our object Movie (ID + Name)
 
             
             
                 {movie_id: rootMovie.docs[index]._id,
                 name: rootMovie.docs[index].name}
 
-            movieList.push(movieTemp); // movie toevoegen aan de lijst ==> movieList is dus de finale lijst met Movies[] in
+            movieList.push(movieTemp); // add movie to list ==> movieList is final list with Movies[] in
             }
             
             else{
-                // er was geen ID
+                // there was no ID
             }            
         }
         else{
-            // het was geen van de 3 main LOTR films - niet toevoegen aan lijst
+            // it was not one of the 3 major LOTR movies - dont add to list
         }
         
     }
