@@ -319,7 +319,6 @@ app.get("/quiz/:type/score", async (req, res) => {
     
     let sumOfScores: number = scores.reduce((prev, curr) => prev + curr, 0);
 
-    //highScore used before being assigned error. Ik zit vast met hoe ik dit het best kan oplossen.
     if (highScore < sumOfScores) {
         await createNewHighScore(user, typeOfQuiz, sumOfScores);
         await loadUser(user.username);
