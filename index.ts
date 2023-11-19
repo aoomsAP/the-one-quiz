@@ -1,6 +1,6 @@
 require("dotenv").config();
 import express from "express";
-import { connect, createUser, getUser } from "./db";
+import { connect, createUser, getUser, createNewHighScore } from "./db";
 import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie } from "./types";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
 
@@ -26,6 +26,16 @@ let characters: Character[] = characterList;
 let movies: Movie[] = movieList; // TODO: delete mockMovies & fill in with loadData function in app.listen
 
 let questions: Question[];
+
+const loadUser = async (userName: string) => {
+    let foundUser: User | null = await getUser(userName);
+    if (!foundUser) {
+        throw "User not found in db";
+    }
+    else {
+        user = foundUser;
+    }
+}
 
 app.get("/", (req, res) => {
     // e.g. http://localhost:3000/
@@ -305,10 +315,56 @@ app.post("/quiz/:type/question/:questionId", (req, res) => {
     res.redirect(`/quiz/${typeOfQuiz}/question/${questionId + 1}`);
 })
 
-app.get("/quiz/:type/score", (req, res) => {
-    // e.g. http://localhost:3000/quiz/10rounds/score
-    res.render("score");
-})
+app.get("/quiz/:type/score", async (req, res) => {
+    const typeOfQuiz = req.params.type;
+    let scores: number[] = [];
+    let highScore: number = 0;
+    
+    if (user === null) {
+        return res.status(404).send("User not found");
+    } 
+
+    switch (typeOfQuiz) {
+        case "tenrounds":
+            scores = questions.map(q => {
+                if (q.correct_character === q.answer_character && q.correct_movie === q.answer_movie) {
+                    return 1;
+                } else if (q.correct_character === q.answer_character || q.correct_movie === q.answer_movie) {
+                    return 0.5;
+                } else {
+                    return 0;
+                }
+            });
+            highScore = user.highscore_tenrounds;
+            break;
+        case "suddendeath":
+            scores = questions.map(q => {
+                if (q.correct_character === q.answer_character && q.correct_movie === q.answer_movie) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+            highScore = user.highscore_suddendeath;
+            break;
+        default:
+            break;
+    }
+    
+    let sumOfScores: number = scores.reduce((prev, curr) => prev + curr, 0);
+
+    if (highScore < sumOfScores) {
+        await createNewHighScore(user, typeOfQuiz, sumOfScores);
+        await loadUser(user.username);
+    }
+
+    res.render("score", {
+        questions: questions,
+        score: sumOfScores,
+        highScore: highScore
+    });
+});
+
 
 app.get("/favorites", (req, res) => {
     // e.g. http://localhost:3000/favorites

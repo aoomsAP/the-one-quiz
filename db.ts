@@ -49,4 +49,27 @@ const getUser = async (username: string): Promise<User | null> => {
     return foundUser;
 }
 
-export { connect, createUser, getUser }
+const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: number) => {
+    switch (typeOfQuiz) {
+        case "tenrounds":
+            user.highscore_tenrounds = newHighScore; 
+            try {
+                await client.db("TheOneQuiz").collection("Users").updateOne({username: user.username}, {$set:{highscore_tenrounds: newHighScore}});
+            } catch (err) {
+                console.log(err);
+            }
+            break;
+        case "suddendeath":
+            user.highscore_suddendeath = newHighScore;
+            try {
+                await client.db("TheOneQuiz").collection("Users").updateOne({username: user.username}, {$set:{highscore_suddendeath: newHighScore}});
+            } catch (err) {
+                console.log(err);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+export { connect, createUser, getUser, createNewHighScore }
