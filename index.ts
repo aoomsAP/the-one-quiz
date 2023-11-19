@@ -434,7 +434,6 @@ const loadCharacters = async () => {
          
         }
 
- 
      //let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
      let quoteTemp: Quote; // this is a dummy quote that will fill quoteList
  
@@ -454,10 +453,18 @@ const loadCharacters = async () => {
                  movie_id: rootQuote.docs[index].movie,
                  character_id: rootQuote.docs[index].character                
                 }
-             
- 
-             quoteList.push(quoteTemp); // quote toevoegen aan de lijst ==> quoteList is dus de finale lijst met Quotes[] in
 
+                for (let i = 0; i < characterList.length; i++) {
+                    if(quoteTemp.character_id == characterList[i].character_id){ // check if person linked with quote is in the characterlist
+                        quoteList.push(quoteTemp); // quote toevoegen aan de lijst ==> quoteList is dus de finale lijst met Quotes[] in
+                        break;
+                    }
+                    else{
+                        // dont add quote to the list, since its relevant character is not in it
+                    }
+                    
+                } 
+             
              }
              
              else{
@@ -469,6 +476,19 @@ const loadCharacters = async () => {
          }
          
      }
+
+          //PUUR TESTING
+         console.log("Print nu alle quotes lijst af:")
+         //console.log(`Voor we beginnen, dit is element 0 dialoog: ${quoteList[0].dialog}`);
+         for (let index = 0; index < quoteList.length; index++) {
+             console.log(quoteList[index].dialog) // 
+             console.log(quoteList[index].movie_id);
+             console.log(quoteList[index].character_id)
+             console.log(quoteList.length)
+    }
+
+
+
          
      }
 
