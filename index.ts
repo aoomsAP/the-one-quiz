@@ -89,6 +89,7 @@ app.post("/register", async (req, res) => {
 
     let username: string = req.body.username;
     let password: string = req.body.password;
+    let confirmPassword: string = req.body.confirmPassword;
     let email: string = req.body.email;
 
     let foundUser: User | null = await getUser(username);
@@ -107,6 +108,12 @@ app.post("/register", async (req, res) => {
         return res.render("register", {
             message: "Gebruikersnaam is al in gebruik."
         });
+    }
+
+    if (password !== confirmPassword) {
+        return res.render("register", {
+            message: "De ingevoerde wachtwoorden komen niet overeen. Probeer het opnieuw."
+        }); 
     }
 
     await createUser(newUser);

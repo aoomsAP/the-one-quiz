@@ -28,7 +28,7 @@ alertTriggers.forEach((alertTrigger) => {
 const alertTrigger = document.getElementById("accessDeniedWithoutLoginBtn");
 if (alertTrigger) {
   alertTrigger.addEventListener("click", () => {
-    const message = "Meld zich aan om toegang te krijgen tot het project 'Lord of the Rings'.";
+    const message = "Meld je aan om toegang te krijgen tot het project 'Lord of the Rings'.";
     appendAlert(message, "danger");
   });
 }
