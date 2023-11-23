@@ -384,8 +384,13 @@ app.get("/quiz/:type/score", async (req, res) => {
 
 
 app.get("/favorites", (req, res) => {
-    // e.g. http://localhost:3000/favorites
-    res.render("favorites");
+    if (user === null) {
+        return res.status(404).send("User not found");
+    }
+
+    res.render("favorites", {
+        favorites: user.favorites,
+    });
 })
 
 app.get("/favorites/:characterId", (req, res) => {
