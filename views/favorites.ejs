@@ -6,9 +6,8 @@
                 <h1>Favorieten</h1>
                 <p>Hieronder vind je een lijst met je favoriete quotes. Klik op een naam om uitsluitend quotes van een
                     bepaald personage te zien. Verwijder quotes uit je favorietenlijst door op het vuilbakje te klikken.
-                    De
-                    printknop opent een printbaar bestand.</p>
-                <button type="button" class="btn btn-primary position-absolute top-0 end-0 text"
+                    De printknop opent een printbaar bestand.</p>
+                    <button onclick="printWindow('<%= username %>')" role="button" class="btn btn-primary position-absolute top-0 end-0 text"
                     title="Print deze lijst uit"><i class="bi bi-printer"></i>&nbsp;Print</button>
             </section>
 
@@ -28,7 +27,7 @@
                             <%= fav.character.name %>
                         </a>
                     </div>
-                    <% const characterCount = favorites.filter(x => x.character.character_id === fav.character.character_id).length %>
+                    <% const characterCount = favorites.filter(f => f.character.character_id === fav.character.character_id).length %>
                     <div class="table-count p-2">
                         <%= characterCount %> <%= (characterCount === 1) ? "quote" : "quotes" %>
                     </div>

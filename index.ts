@@ -3,6 +3,7 @@ import express from "express";
 import { connect, createUser, getUser, createNewHighScore } from "./db";
 import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie } from "./types";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
+import fs from "fs";
 
 const app = express();
 
@@ -388,8 +389,16 @@ app.get("/favorites", (req, res) => {
         return res.status(404).send("User not found");
     }
 
+    let favoritesString : string = "";
+    user.favorites.forEach(fav => {
+        favoritesString+= `${fav.dialog} - ${fav.character.name}\r\n`;
+    });
+
+    fs.writeFileSync(`./public/${user.username}-favorites.txt`,favoritesString,"utf8");
+
     res.render("favorites", {
         favorites: user.favorites,
+        username: user.username,
     });
 })
 
