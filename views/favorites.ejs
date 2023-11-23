@@ -6,9 +6,11 @@
                 <h1>Favorieten</h1>
                 <p>Hieronder vind je een lijst met je favoriete quotes. Klik op een naam om uitsluitend quotes van een
                     bepaald personage te zien. Verwijder quotes uit je favorietenlijst door op het vuilbakje te klikken.
-                    De printknop opent een printbaar bestand.</p>
-                    <button onclick="printWindow('<%= username %>')" role="button" class="btn btn-primary position-absolute top-0 end-0 text"
-                    title="Print deze lijst uit"><i class="bi bi-printer"></i>&nbsp;Print</button>
+                    Download een tekstbestand van deze lijst met de downloadknop.</p>
+                    <form action="/favorites/download" METHOD="GET">
+                        <button type="submit" class="btn btn-primary position-absolute top-0 end-0 text"
+                        title="Download je favorietenlijst"><i class="bi bi-download"></i>&nbsp;&nbsp;Download</button>
+                    </form>
             </section>
 
             <!-- Table with favorite quotes -->

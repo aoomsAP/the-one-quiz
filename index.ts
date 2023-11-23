@@ -389,18 +389,24 @@ app.get("/favorites", (req, res) => {
         return res.status(404).send("User not found");
     }
 
-    let favoritesString : string = "";
-    user.favorites.forEach(fav => {
-        favoritesString+= `${fav.dialog} - ${fav.character.name}\r\n`;
-    });
-
-    fs.writeFileSync(`./public/${user.username}-favorites.txt`,favoritesString,"utf8");
-
     res.render("favorites", {
         favorites: user.favorites,
-        username: user.username,
     });
 })
+
+app.get("/favorites/download", (req, res) => {
+    if (user === null) {
+        return res.status(404).send("User not found");
+    }
+
+    const favList : string = user.favorites.reduce((favList: string,fav: Favorite) => {
+        return favList + `${fav.dialog} - ${fav.character.name}\r\n`;
+    },"");
+
+    fs.writeFileSync(`./public/${user.username}_favorites.txt`,favList,"utf8");
+
+    res.download(`./public/${user.username}_favorites.txt`);
+});
 
 app.get("/favorites/:characterId", (req, res) => {
     // e.g. http://localhost:3000/favorites/28392
