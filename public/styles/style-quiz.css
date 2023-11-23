@@ -206,6 +206,12 @@ q {
     text-decoration: line-through;
 }
 
+.new-highscore {
+    padding: 1.2rem;
+    border: 2px dashed var(--bs-secondary);
+    border-radius: 10px;
+}
+
 /* favorites, character and blacklist */
 
 #character,

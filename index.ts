@@ -370,16 +370,19 @@ app.get("/quiz/:type/score", async (req, res) => {
     
     let sumOfScores: number = scores.reduce((prev, curr) => prev + curr, 0);
 
-    if (highScore < sumOfScores) {
+    const newHighScore: boolean = highScore < sumOfScores;
+    if (newHighScore) {
         await createNewHighScore(user, typeOfQuiz, sumOfScores);
         await loadUser(user.username);
+        highScore = typeOfQuiz === "tenrounds" ? user.highscore_tenrounds : user.highscore_suddendeath;
     }
 
     res.render("score", {
         typeOfQuiz: typeOfQuiz,
         questions: questions,
         score: sumOfScores,
-        highScore: highScore
+        highScore: highScore,
+        newHighScore: newHighScore
     });
 });
 
