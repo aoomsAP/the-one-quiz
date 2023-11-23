@@ -376,6 +376,7 @@ app.get("/quiz/:type/score", async (req, res) => {
     }
 
     res.render("score", {
+        typeOfQuiz: typeOfQuiz,
         questions: questions,
         score: sumOfScores,
         highScore: highScore
