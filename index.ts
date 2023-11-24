@@ -1,6 +1,6 @@
 require("dotenv").config();
 import express from "express";
-import { connect, createUser, getUser, createNewHighScore } from "./db";
+import { connect, createUser, getUser, createNewHighScore, addToFavorites } from "./db";
 import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie } from "./types";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
 
@@ -21,8 +21,8 @@ let quoteList: Quote[] = []; // this is the final list where all quotes will be 
 let characterList: Character[] = []; // this is the final list where all characters will be in
 let movieList: Movie[] = []; // this is the final list where all movies will be in 
 
-let quotes: Quote[] = quoteList; 
-let characters: Character[] = characterList; 
+let quotes: Quote[] = quoteList;
+let characters: Character[] = characterList;
 let movies: Movie[] = movieList; // TODO: delete mockMovies & fill in with loadData function in app.listen
 
 let questions: Question[];
@@ -39,11 +39,11 @@ const loadUser = async (userName: string) => {
 
 app.get("/", (req, res) => {
     // e.g. http://localhost:3000/
-    
+
     res.render("index", {
         user: user,
     });
-    
+
 })
 
 app.get("/login", (req, res) => {
@@ -64,18 +64,18 @@ app.post("/login", async (req, res) => {
             message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
         });
     }
-    
+
     if (foundUser.password === password) {
 
         user = foundUser;
         return res.status(200).redirect("/");
-        
+
     } else {
         return res.render("login", {
             message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
         });
     }
-    
+
 })
 
 app.get("/register", (req, res) => {
@@ -113,7 +113,7 @@ app.post("/register", async (req, res) => {
     if (password !== confirmPassword) {
         return res.render("register", {
             message: "De ingevoerde wachtwoorden komen niet overeen. Probeer het opnieuw."
-        }); 
+        });
     }
 
     await createUser(newUser);
@@ -163,7 +163,7 @@ const getTwoWrongCharacters = (correctCharacterId: string) => {
         wrongCharacters[0] = characters[randomIndex];
     } while (correctCharacterId === wrongCharacters[0].character_id);
 
-     // 2nd wrong character can't be the same as the correct answer, or the first wrong character
+    // 2nd wrong character can't be the same as the correct answer, or the first wrong character
     do {
         let randomIndex = Math.floor(Math.random() * characters.length);
         wrongCharacters[1] = characters[randomIndex];
@@ -218,7 +218,7 @@ const addNextQuestion = () => {
 
 app.post("/quiz", (req, res) => {
     // clear previous questions array, start fresh
-    questions = []; 
+    questions = [];
 
     // add first question to questions array
     try {
@@ -284,12 +284,7 @@ const addMovieAnswerToQuestion = (answerMovieId: string, q: Question) => {
 
 // ---------- 
 
-app.post("/quiz/:type/question/:questionId", (req, res) => {
-    //
-
-    // TODO: handle thumbs up & thumbs down functionality
-
-    //
+app.post("/quiz/:type/question/:questionId", async (req, res) => {
 
     const questionId: number = parseInt(req.params.questionId);
     const typeOfQuiz: string = req.params.type;
@@ -302,6 +297,25 @@ app.post("/quiz/:type/question/:questionId", (req, res) => {
     // write answers to question array
     addCharacterAnswerToQuestion(characterAnswer, questions[questionId]);
     addMovieAnswerToQuestion(movieAnswer, questions[questionId]);
+
+    // handle thumbs up & thumbs down functionality
+    console.log(req.body.btnThumbs);
+
+    if (user) {
+        if (req.body.btnThumbs === "thumbsUp") {
+            await addToFavorites(user,
+                {
+                    quote_id: questions[questionId].quote_id,
+                    dialog: questions[questionId].dialog,
+                    character: questions[questionId].correct_character
+                });
+        }
+        
+
+    } else {
+        throw "User not found";
+    }
+
 
     // CHECK if end of quiz: redirect to score
     switch (typeOfQuiz) {
@@ -336,10 +350,10 @@ app.get("/quiz/:type/score", async (req, res) => {
     const typeOfQuiz = req.params.type;
     let scores: number[] = [];
     let highScore: number = 0;
-    
+
     if (user === null) {
         return res.status(404).send("User not found");
-    } 
+    }
 
     switch (typeOfQuiz) {
         case "tenrounds":
@@ -367,7 +381,7 @@ app.get("/quiz/:type/score", async (req, res) => {
         default:
             break;
     }
-    
+
     let sumOfScores: number = scores.reduce((prev, curr) => prev + curr, 0);
 
     if (highScore < sumOfScores) {
@@ -419,22 +433,22 @@ app.listen(app.get("port"), async () => {
 // ----------------------------------------------- START OVERVIEW API LOGIC ---------------------------------------------------------------------------------
 
 // ----------------------------------------------- START CHARACTER API LOGIC ---------------------------------------------------------------------------------
-  // create root object
-  let rootCharacter : RootCharacter; // just existing
-  //let characterList: Character[] = []; // this is the final list where all characters will be in -- moved up to top 
+// create root object
+let rootCharacter: RootCharacter; // just existing
+//let characterList: Character[] = []; // this is the final list where all characters will be in -- moved up to top 
 
 const loadCharacters = async () => {
 
-    let responseCharacters = await fetch("https://the-one-api.dev/v2/character", { 
+    let responseCharacters = await fetch("https://the-one-api.dev/v2/character", {
 
-    headers: {Authorization: `Bearer ${API_KEY}`} 
-    } 
-    ) 
-        .then(function(response){
+        headers: { Authorization: `Bearer ${API_KEY}` }
+    }
+    )
+        .then(function (response) {
             return response.json()
         })
-        .then(function(response){
-        
+        .then(function (response) {
+
             rootCharacter = response;
         })
         ;
@@ -444,131 +458,134 @@ const loadCharacters = async () => {
 
     // filtering + converting APICharacters to Characters objects
     for (let index = 0; index < rootCharacter.docs.length; index++) {
-        if (rootCharacter.docs[index].name != ''){
-            
+        if (rootCharacter.docs[index].name != '') {
+
 
             // first check if data exists (only full objects?)
-            if (rootCharacter.docs[index].wikiUrl != null && rootCharacter.docs[index].wikiUrl != ""){
-            characterTemp = // convert API character to our object character (ID + Name + URL)
+            if (rootCharacter.docs[index].wikiUrl != null && rootCharacter.docs[index].wikiUrl != "") {
+                characterTemp = // convert API character to our object character (ID + Name + URL)
 
-                {character_id: rootCharacter.docs[index]._id,
-                name: rootCharacter.docs[index].name,
-                wikiUrl: rootCharacter.docs[index].wikiUrl}
+                {
+                    character_id: rootCharacter.docs[index]._id,
+                    name: rootCharacter.docs[index].name,
+                    wikiUrl: rootCharacter.docs[index].wikiUrl
+                }
 
-            characterList.push(characterTemp); // character added to list ==> characterList is final list with Character[] in
+                characterList.push(characterTemp); // character added to list ==> characterList is final list with Character[] in
             }
-                        
+
         }
-        else{
+        else {
             console.log(`${rootCharacter.docs[index].name} werd niet toegevoegd aan de lijst`)
         }
-        
-    }      
-    
+
+    }
+
 
 } // END ROOT CHARACTER LOGIC
 
 // ----------------------------------------------- START QUOTE API LOGIC ---------------------------------------------------------------------------------
 
- // create root object
- let rootQuote : RootQuote; // just existing to extract data
- let rootQuoteTemp : RootQuote; // just existing temporary to combine the rest
- //let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
+// create root object
+let rootQuote: RootQuote; // just existing to extract data
+let rootQuoteTemp: RootQuote; // just existing temporary to combine the rest
+//let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
 
- const loadQuotes = async () => {
- 
+const loadQuotes = async () => {
+
     for (let index = 0; index < 3; index++) {
-        
-        
-    
-     let responseQuotes = await fetch(`https://the-one-api.dev/v2/quote/?page=${index+1}`, { 
- 
-     headers: {Authorization: `Bearer ${API_KEY}`} 
-     } 
-     ) 
-         .then(function(response){
-             return response.json()
-         })
-         .then(function(response){
-             
-             rootQuoteTemp = response;
-         })
-         ;
-        
-         if (index == 0){
+
+
+
+        let responseQuotes = await fetch(`https://the-one-api.dev/v2/quote/?page=${index + 1}`, {
+
+            headers: { Authorization: `Bearer ${API_KEY}` }
+        }
+        )
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function (response) {
+
+                rootQuoteTemp = response;
+            })
+            ;
+
+        if (index == 0) {
             rootQuote = rootQuoteTemp; // initialize object
 
-         }
-         else{
+        }
+        else {
             rootQuote.docs = rootQuote.docs.concat(rootQuoteTemp.docs); // add the rest of quotes page 2 and 3
 
-         }
-         
         }
 
-     //let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
-     let quoteTemp: Quote; // this is a dummy quote that will fill quoteList
- 
-     // filtering + converting APIQuotes to Quotes objects
-     for (let index = 0; index < rootQuote.docs.length; index++) {
-        
-         if (rootQuote.docs[index].dialog != ''){ // quote cant be empty
-            
- 
-             // first check if data exists (only full objects?)
-             if (rootQuote.docs[index].movie != "" && rootQuote.docs[index].character != ""){ // must have a movie and a character linked to the quote
-                
-             quoteTemp = // convert api quote to our object quote (id + dialog + movie + character (API) ==> id + dialog + movie_ID + character_ID)           
-             
-                {quote_id: rootQuote.docs[index]._id,
-                 dialog: rootQuote.docs[index].dialog,
-                 movie_id: rootQuote.docs[index].movie,
-                 character_id: rootQuote.docs[index].character                
+    }
+
+    //let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
+    let quoteTemp: Quote; // this is a dummy quote that will fill quoteList
+
+    // filtering + converting APIQuotes to Quotes objects
+    for (let index = 0; index < rootQuote.docs.length; index++) {
+
+        if (rootQuote.docs[index].dialog != '') { // quote cant be empty
+
+
+            // first check if data exists (only full objects?)
+            if (rootQuote.docs[index].movie != "" && rootQuote.docs[index].character != "") { // must have a movie and a character linked to the quote
+
+                quoteTemp = // convert api quote to our object quote (id + dialog + movie + character (API) ==> id + dialog + movie_ID + character_ID)           
+
+                {
+                    quote_id: rootQuote.docs[index]._id,
+                    dialog: rootQuote.docs[index].dialog,
+                    movie_id: rootQuote.docs[index].movie,
+                    character_id: rootQuote.docs[index].character
                 }
 
                 for (let i = 0; i < characterList.length; i++) {
-                    if(quoteTemp.character_id == characterList[i].character_id){ // check if person linked with quote is in the characterlist
+                    if (quoteTemp.character_id == characterList[i].character_id) { // check if person linked with quote is in the characterlist
                         quoteList.push(quoteTemp); // add quote to list ==> quoteList is final list with Quotes[] in
                         break;
                     }
-                    else{
+                    else {
                         // dont add quote to the list, since its relevant character is not in it
                     }
-                    
-                } 
-             
-             }
-             
-             else{
-                 // data missing - dont add
-             }            
-         }
-         else{
-             // data missing - dont add
-         }
-         
-     }
 
-         
-     }
+                }
 
-     // ----------------------------------------------- START MOVIE API LOGIC ---------------------------------------------------------------------------------
-  // create root object
-  let rootMovie : RootMovie; // just existing to extract data
-  //let movieList: Movie[] = []; // this is the final list where all movies will be in - moved up to top
+            }
+
+            else {
+                // data missing - dont add
+            }
+        }
+        else {
+            // data missing - dont add
+        }
+
+    }
+
+
+}
+
+// ----------------------------------------------- START MOVIE API LOGIC ---------------------------------------------------------------------------------
+// create root object
+let rootMovie: RootMovie; // just existing to extract data
+//let movieList: Movie[] = []; // this is the final list where all movies will be in - moved up to top
 
 const loadMovies = async () => {
 
-    let responseMovies = await fetch("https://the-one-api.dev/v2/movie", { 
+    let responseMovies = await fetch("https://the-one-api.dev/v2/movie", {
 
-    headers: {Authorization: `Bearer ${API_KEY}`} 
-    } 
-    ) 
-        .then(function(response){
+        headers: { Authorization: `Bearer ${API_KEY}` }
+    }
+    )
+        .then(function (response) {
             return response.json()
         })
-        .then(function(response){
-            
+        .then(function (response) {
+
             rootMovie = response;
         })
         ;
@@ -577,33 +594,35 @@ const loadMovies = async () => {
 
     // filtering + converting APIMovies to Movie objects
     for (let index = 0; index < rootMovie.docs.length; index++) {
-        if (rootMovie.docs[index].name == "The Fellowship of the Ring" || rootMovie.docs[index].name == "The Two Towers" || rootMovie.docs[index].name == "The Return of the King"){ // the 3 movies we need
-            
+        if (rootMovie.docs[index].name == "The Fellowship of the Ring" || rootMovie.docs[index].name == "The Two Towers" || rootMovie.docs[index].name == "The Return of the King") { // the 3 movies we need
+
 
             // first check if data exists (only full objects? for movie this is only the ID)
-            if (rootMovie.docs[index]._id != null){
-            movieTemp = // convert API Movies to our object Movie (ID + Name)
+            if (rootMovie.docs[index]._id != null) {
+                movieTemp = // convert API Movies to our object Movie (ID + Name)
 
-            
-            
-                {movie_id: rootMovie.docs[index]._id,
-                name: rootMovie.docs[index].name}
 
-            movieList.push(movieTemp); // add movie to list ==> movieList is final list with Movies[] in
+
+                {
+                    movie_id: rootMovie.docs[index]._id,
+                    name: rootMovie.docs[index].name
+                }
+
+                movieList.push(movieTemp); // add movie to list ==> movieList is final list with Movies[] in
             }
-            
-            else{
+
+            else {
                 // there was no ID
-            }            
+            }
         }
-        else{
+        else {
             // it was not one of the 3 major LOTR movies - dont add to list
         }
-        
+
     }
-   
+
 
 } // END ROOT CHARACTER LOGIC
- 
+
 // ----------------------------------------------- END API LOGIC ---------------------------------------------------------------------------------
-      
+
