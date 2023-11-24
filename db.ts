@@ -86,5 +86,17 @@ const addToFavorites = async (user: User, favorite: Favorite) => {
     }
 }
 
+const addToBlacklist = async (user: User, blacklistItem: Blacklist) => {
+    try {
+        await client.db("TheOneQuiz").collection("Users").updateOne(
+            {_id: user._id},
+            {
+                $addToSet: {blacklist: blacklistItem}
+            }
+        )
+    } catch (err) {
+        console.log(err);
+    }
+}
 
-export { connect, createUser, getUser, createNewHighScore, addToFavorites }
+export { connect, createUser, getUser, createNewHighScore, addToFavorites, addToBlacklist }

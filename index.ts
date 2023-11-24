@@ -1,6 +1,6 @@
 require("dotenv").config();
 import express from "express";
-import { connect, createUser, getUser, createNewHighScore, addToFavorites } from "./db";
+import { connect, createUser, getUser, createNewHighScore, addToFavorites, addToBlacklist } from "./db";
 import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie } from "./types";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
 
@@ -290,6 +290,7 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
     const typeOfQuiz: string = req.params.type;
     const characterAnswer = req.body.btnradioChar;
     const movieAnswer = req.body.btnradioMovie;
+    const comment: string = req.body.blacklistComment;
 
     const characterIsCorrect = characterAnswer === questions[questionId].correct_character.character_id;
     const movieIsCorrect = movieAnswer === questions[questionId].correct_movie.movie_id
@@ -299,9 +300,9 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
     addMovieAnswerToQuestion(movieAnswer, questions[questionId]);
 
     // handle thumbs up & thumbs down functionality
-    console.log(req.body.btnThumbs);
-
+    // if user exists
     if (user) {
+        // and if thumbs-up is checked, add quote to the user's favorites
         if (req.body.btnThumbs === "thumbsUp") {
             await addToFavorites(user,
                 {
@@ -310,8 +311,17 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
                     character: questions[questionId].correct_character
                 });
             await loadUser(user.username);
-        }
 
+        // and if thumbs-down is checked, add quote to the user's blacklist
+        } else if (req.body.btnThumbs === "thumbsDown") {
+            await addToBlacklist(user,
+                {
+                    quote_id: questions[questionId].quote_id,
+                    dialog: questions[questionId].dialog,
+                    comment: comment
+                });
+            await loadUser(user.username);
+        }
     } else {
         throw "User not found";
     }
