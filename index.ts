@@ -309,13 +309,13 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
                     dialog: questions[questionId].dialog,
                     character: questions[questionId].correct_character
                 });
+            await loadUser(user.username);
         }
-        
 
     } else {
         throw "User not found";
     }
-
+    
 
     // CHECK if end of quiz: redirect to score
     switch (typeOfQuiz) {
