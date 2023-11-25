@@ -72,4 +72,31 @@ const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: 
     }
 }
 
-export { connect, createUser, getUser, createNewHighScore }
+
+const addToFavorites = async (user: User, favorite: Favorite) => {
+    try {
+        await client.db("TheOneQuiz").collection("Users").updateOne(
+            {_id: user._id},
+            {
+                $addToSet: {favorites: favorite}
+            }
+        )
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const addToBlacklist = async (user: User, blacklistItem: Blacklist) => {
+    try {
+        await client.db("TheOneQuiz").collection("Users").updateOne(
+            {_id: user._id},
+            {
+                $addToSet: {blacklist: blacklistItem}
+            }
+        )
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export { connect, createUser, getUser, createNewHighScore, addToFavorites, addToBlacklist }
