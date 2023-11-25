@@ -24,8 +24,7 @@ const connect = async () => {
 
 // other database calls underneath:
 
-//  Create user by adding the user to the DB
-//  and assign it to the global variable 'user'
+// USER
 
 const createUser = async (newUser: User) => {
     try {
@@ -34,8 +33,6 @@ const createUser = async (newUser: User) => {
         console.log(err);
     }
 }
-
-// return user or null if not found in DB
 
 const getUser = async (username: string): Promise<User | null> => {
     let foundUser: User | null = null;
@@ -48,6 +45,8 @@ const getUser = async (username: string): Promise<User | null> => {
 
     return foundUser;
 }
+
+// SCORE
 
 const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: number) => {
     switch (typeOfQuiz) {
@@ -72,6 +71,14 @@ const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: 
     }
 }
 
+// FAVORITES
+
+const getUserFavorites = async (username: string): Promise<Favorite[] | undefined> => {
+    let foundUser: User | null = await getUser(username);
+    let favorites: Favorite[] | undefined = foundUser?.favorites;
+
+    return favorites;
+}
 
 const addToFavorites = async (user: User, favorite: Favorite) => {
     try {
@@ -84,6 +91,28 @@ const addToFavorites = async (user: User, favorite: Favorite) => {
     } catch (err) {
         console.log(err);
     }
+}
+
+const deleteFavorite = async (user: User, favorite: Favorite) => {
+    try {
+        await client.db("TheOneQuiz").collection("Users").updateOne(
+            {_id: user._id},
+            {
+                $pull: {favorites: favorite}
+            }
+        )
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+// BLACKLIST
+
+const getUserBlacklist = async (username: string): Promise<Blacklist[] | undefined> => {
+    let foundUser: User | null = await getUser(username);
+    let blacklist: Blacklist[] | undefined = foundUser?.blacklist;
+
+    return blacklist;
 }
 
 const addToBlacklist = async (user: User, blacklistItem: Blacklist) => {
@@ -99,4 +128,17 @@ const addToBlacklist = async (user: User, blacklistItem: Blacklist) => {
     }
 }
 
-export { connect, createUser, getUser, createNewHighScore, addToFavorites, addToBlacklist }
+// deleteBlacklistItem func
+
+
+export { 
+    connect, 
+    createUser, 
+    getUser, 
+    createNewHighScore, 
+    getUserFavorites, 
+    addToFavorites, 
+    addToBlacklist, 
+    deleteFavorite, 
+    getUserBlacklist 
+}
