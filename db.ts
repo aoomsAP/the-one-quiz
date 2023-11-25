@@ -46,6 +46,8 @@ const getUser = async (username: string): Promise<User | null> => {
     return foundUser;
 }
 
+// SCORE
+
 const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: number) => {
     switch (typeOfQuiz) {
         case "tenrounds":
