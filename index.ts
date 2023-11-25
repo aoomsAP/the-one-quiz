@@ -414,7 +414,34 @@ app.get("/favorites", (req, res) => {
 
 app.get("/favorites/:characterId", (req, res) => {
     // e.g. http://localhost:3000/favorites/28392
-    res.render("character");
+    const characterId: string = req.params.characterId;
+    
+
+    if (!user) {
+        return res.status(404).send("User not found");
+    }
+    let characterQuotes: Favorite[] = user.favorites.filter(fav => fav.character.character_id === characterId);
+    if (characterQuotes.length > 0) {
+        let foundCharacter:Character|undefined = characterQuotes.find(fav => fav.character.character_id === characterId)?.character;
+        
+        if(foundCharacter) {
+            console.log(characterQuotes);
+            console.log(foundCharacter);
+            res.render("character", {
+                character: foundCharacter,
+                characterQuotes: characterQuotes
+            });
+        }
+        
+    } else {
+        res.status(404).send("Character not found");
+    }
+
+})
+
+app.post("/favorites/:characterId/:quoteId/delete", (req, res) => {
+
+
 })
 
 app.get("/blacklist", (req, res) => {
