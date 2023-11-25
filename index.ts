@@ -1,6 +1,6 @@
 require("dotenv").config();
 import express from "express";
-import { connect, createUser, getUser, createNewHighScore, addToFavorites, addToBlacklist } from "./db";
+import { connect, createUser, getUser, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, getUserFavorites } from "./db";
 import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie } from "./types";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
 
@@ -412,36 +412,42 @@ app.get("/favorites", (req, res) => {
     res.render("favorites");
 })
 
-app.get("/favorites/:characterId", (req, res) => {
+app.get("/favorites/:characterId", async(req, res) => {
     // e.g. http://localhost:3000/favorites/28392
     const characterId: string = req.params.characterId;
     
-
     if (!user) {
         return res.status(404).send("User not found");
     }
+    let favorites: Favorite[] | undefined = await getUserFavorites(user?.username);
     let characterQuotes: Favorite[] = user.favorites.filter(fav => fav.character.character_id === characterId);
     if (characterQuotes.length > 0) {
-        let foundCharacter:Character|undefined = characterQuotes.find(fav => fav.character.character_id === characterId)?.character;
+        let foundCharacter:Character | undefined = characterQuotes.find(fav => fav.character.character_id === characterId)?.character;
         
         if(foundCharacter) {
-            console.log(characterQuotes);
-            console.log(foundCharacter);
             res.render("character", {
                 character: foundCharacter,
                 characterQuotes: characterQuotes
             });
-        }
-        
+        }        
     } else {
         res.status(404).send("Character not found");
     }
-
 })
 
-app.post("/favorites/:characterId/:quoteId/delete", (req, res) => {
+app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
+    const quoteId: string = req.params.quoteId;
+    const characterId: string = req.params.characterId;
 
-
+    if (!user) {
+        return res.status(404).send("User not found");
+    }
+    let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId); 
+    console.log(favorite);
+    if(favorite) {
+        await deleteFavorite(user, favorite);
+    }
+    res.redirect(`/favorites/${characterId}`);
 })
 
 app.get("/blacklist", (req, res) => {

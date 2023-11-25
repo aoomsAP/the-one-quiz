@@ -19,27 +19,29 @@
         <section class="table-custom text-start p-0 rounded border overflow-hidden">
 
             <% for (let i=0; i < characterQuotes.length; i++) { %>
+                
                 <!-- Favorite row -->
                 <article class="d-flex p-3 border-bottom">
-                    <div class="table-id p-2 fw-bold">#<%= i %>
-                    </div>
+                    <div class="table-id p-2 fw-bold">#<%= i+1 %></div>
                     <div class="table-quote p-2">
                         <%= characterQuotes[i].dialog %>
                     </div>
                     <div class="table-delete-button p-2">
                         <button type="button" class="btn btn-outline-primary" title="Verwijder uit je favorietenlijst"
-                            data-bs-toggle="modal" data-bs-target="#deleteFavorite1">
+                            data-bs-toggle="modal" data-bs-target="#deleteFavorite<%= i %>">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
+                   
                     <!-- Confirm delete window -->
-                    <div class="modal fade" id="deleteFavorite1" tabindex="-1" aria-labelledby="deleteFavorite1"
+                    <div class="modal fade" id="deleteFavorite<%= i %>" tabindex="-1" aria-labelledby="deleteFavorite<%= i %>"
                         aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="deleteFavorite1">Weet je zeker dat je deze
-                                        quote uit je favorieten wil verwijderen?</h2>
+                                    <h2 class="modal-title fs-5" id="deleteFavorite<%= i %>">Weet je zeker dat je deze
+                                        quote uit je favorieten wil verwijderen?
+                                    </h2>
                                 </div>
                                 <div class="modal-body">
                                     <p>
@@ -49,15 +51,16 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                                         aria-label="Close">Behouden</button>
-                                    <button type="button" class="btn btn-primary" formmethod="POST"
-                                        formaction="/">Verwijderen</button>
+                                    <form>
+                                        <button class="btn btn-primary" formmethod="POST"
+                                            formaction="/favorites/<%= character.character_id %>/<%= characterQuotes[i].quote_id %>/delete">Verwijderen</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </article>
             <% } %>
-            
                 <a href="#top" class="scroll-to-top"><i class="bi bi-arrow-up-square-fill"></i></a>
         </section>
     </main>
