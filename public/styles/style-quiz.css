@@ -163,39 +163,54 @@ q {
     width: 100%;
 }
 
-.answer .card {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    padding: 10px;
+#score .card {
+    background-color: transparent;
 }
 
-.answer .card-header {
+#score .card-body {
+    background-color: var(--bs-card-bg);
+}
+
+#score .card-footer {
+    overflow: hidden;
+    padding: 0;
+    background-color: var(--bs-card-cap-bg);
+}
+
+.answers div {
+    border-top: 1px solid var(--bs-card-border-color);
+}
+
+.answers div:nth-child(odd) {
+    background-color: var(--bs-secondary-bg);
+}
+
+.answers div:nth-child(even) {
+    background-color: var(--bs-tertiary-bg);
+}
+
+#score .lotr-quote {
     font-weight: bold;
-    margin-bottom: 5px;
 }
 
-.answer .card-body {
-    margin: 0;
+.answers i {
+    margin-right: .5rem;
 }
 
-.answer-section {
-    display: flex;
-    align-items: center;
+.correct-answer {
+    color: var(--bs-success);
 }
 
-.character,
-.character-corrected,
-.movie,
-.movie-corrected {
-    margin: 0;
+.wrong-answer {
+    color: var(--bs-danger);
+    text-decoration: line-through;
 }
 
-.arrow {
-    margin: 0 5px;
+.new-highscore {
+    padding: 1.2rem;
+    border: 2px dashed var(--bs-secondary);
+    border-radius: 10px;
 }
-
 
 /* favorites, character and blacklist */
 
