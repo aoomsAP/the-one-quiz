@@ -1,6 +1,6 @@
 require("dotenv").config();
 import express from "express";
-import { connect, createUser, getUser, createNewHighScore } from "./db";
+import { connect, createUser, getUser, createNewHighScore, deleteBlacklist, editBlacklist } from "./db";
 import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie } from "./types";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
 import fs from "fs";
@@ -415,7 +415,32 @@ app.get("/favorites/:characterId", (req, res) => {
 
 app.get("/blacklist", (req, res) => {
     // e.g. http://localhost:3000/blacklist
-    res.render("blacklist");
+    if (user == null) {
+        return res.status(404).send("User not found");
+    }
+    const blacklist: Blacklist[] = user.blacklist;
+    res.render("blacklist", {blacklist: blacklist});
+})
+
+app.post("/blacklist/:quoteId/delete", (req, res) => {
+    if (user == null) {
+        return res.status(404).send("User not found");
+    }
+
+    const quoteId = req.params.quoteId;
+    deleteBlacklist(user, quoteId);
+    loadUser(user.username);
+})
+
+app.post("/blacklist/:quoteId/edit", (req, res) => {
+    if (user == null) {
+        return res.status(404).send("User not found");
+    }
+
+    const quoteId = req.params.quoteId;
+    const newComment = req.body.editBlacklist;
+    editBlacklist(user, quoteId, newComment);
+    loadUser(user.username)
 })
 
 app.use((req, res) => {
