@@ -422,14 +422,16 @@ app.get("/blacklist", (req, res) => {
     res.render("blacklist", {blacklist: blacklist});
 })
 
-app.post("/blacklist/:quoteId/delete", (req, res) => {
+app.post("/blacklist/:quoteId/delete", async (req, res) => {
     if (user == null) {
         return res.status(404).send("User not found");
     }
 
     const quoteId = req.params.quoteId;
-    deleteBlacklist(user, quoteId);
-    loadUser(user.username);
+    await deleteBlacklist(user, quoteId);
+    await loadUser(user.username);
+
+    res.redirect("/blacklist");
 })
 
 app.post("/blacklist/:quoteId/edit", (req, res) => {
@@ -438,9 +440,11 @@ app.post("/blacklist/:quoteId/edit", (req, res) => {
     }
 
     const quoteId = req.params.quoteId;
-    const newComment = req.body.editBlacklist;
+    const newComment = req.body.editComment;
     editBlacklist(user, quoteId, newComment);
     loadUser(user.username)
+
+    res.redirect("/blacklist");
 })
 
 app.use((req, res) => {

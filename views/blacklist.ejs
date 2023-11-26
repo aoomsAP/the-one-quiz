@@ -41,12 +41,27 @@
                             </div>
                         </div>
                         <!-- Confirm delete window -->
-                        <form action="/blacklist/<%= item.quote_id %>/delete" method="post">
-                            <div class="modal fade" id="deleteBlackList<%= index + 1 %>" tabindex="-1"
-                                aria-labelledby="deleteBlackList<%= index + 1 %>" aria-hidden="true">
-                                <!-- Modal content -->
+                            <div class="modal fade" id="deleteBlackList<%= index + 1 %>" tabindex="-1" aria-labelledby="deleteBlackList1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h2 class="modal-title fs-5" id="deleteBlackList1">Weet je zeker dat je deze
+                                                quote uit je blacklist wil verwijderen?</h2>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><%= item.dialog %></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                                aria-label="Close">Behouden</button>
+                                            <form action="/blacklist/<%= item.quote_id %>/delete" method="post">
+                                                <button type="button" class="btn btn-primary" formmethod="post"
+                                                    formaction="/blacklist/<%= item.quote_id %>/delete">Verwijderen</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </form>
                     </div>
                     <!-- Edit comment window -->
                     <form class="table-edit-form collapse px-2" id="comment<%= index + 1 %>" action="/blacklist/<%= item.quote_id %>/edit" method="POST">
