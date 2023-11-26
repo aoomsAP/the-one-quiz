@@ -6,206 +6,69 @@
                 <h1>Favorieten</h1>
                 <p>Hieronder vind je een lijst met je favoriete quotes. Klik op een naam om uitsluitend quotes van een
                     bepaald personage te zien. Verwijder quotes uit je favorietenlijst door op het vuilbakje te klikken.
-                    De
-                    printknop opent een printbaar bestand.</p>
-                <button type="button" class="btn btn-primary position-absolute top-0 end-0 text"
-                    title="Print deze lijst uit"><i class="bi bi-printer"></i>&nbsp;Print</button>
+                    Download een tekstbestand van deze lijst met de downloadknop.</p>
+                    <form action="/favorites/download" METHOD="GET">
+                        <button type="submit" class="btn btn-primary position-absolute top-0 end-0 text"
+                        title="Download je favorietenlijst"><i class="bi bi-download"></i>&nbsp;&nbsp;Download</button>
+                    </form>
             </section>
 
             <!-- Table with favorite quotes -->
             <section class="table-custom text-start p-0 rounded border overflow-hidden">
 
+            <% favorites.forEach((fav,index)=> { %>
+
                 <!-- Favorite row -->
                 <article class="d-flex p-3 border-bottom">
-                    <div class="table-id p-2 fw-bold">#1</div>
-                    <div class="table-name p-2"><a href="/favorites/GandalfID"
-                            title="Zie enkel quotes van Gandalf">Gandalf</a></div>
-                    <div class="table-count p-2">11 quotes</div>
-                    <div class="table-quote p-2">Yes the white tree of Gondor. The tree of the King. Lord Denethor
-                        however, is not the King. He is a steward only, a caretaker of the throne.</div>
+                    <div class="table-id p-2 fw-bold">
+                        #<%= index+1 %>
+                    </div>
+                    <div class="table-name p-2">
+                        <a href="/favorites/<%= fav.character.character_id %>"
+                            title="Zie enkel quotes van <%= fav.character.name %>">
+                            <%= fav.character.name %>
+                        </a>
+                    </div>
+                    <% const characterCount = favorites.filter(f => f.character.character_id === fav.character.character_id).length %>
+                    <div class="table-count p-2">
+                        <%= characterCount %> <%= (characterCount === 1) ? "quote" : "quotes" %>
+                    </div>
+                    <div class="table-quote p-2">
+                        <%= fav.dialog %>
+                    </div>
                     <div class="table-delete-button p-2">
                         <button type="button" class="btn btn-outline-primary" title="Verwijder uit je favorietenlijst"
-                            data-bs-toggle="modal" data-bs-target="#deleteFavorite1">
+                            data-bs-toggle="modal" data-bs-target="#deleteFavorite<%= index %>">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
                     <!-- Confirm delete window -->
-                    <div class="modal fade" id="deleteFavorite1" tabindex="-1" aria-labelledby="deleteFavorite1"
-                        aria-hidden="true">
+                    <div class="modal fade" id="deleteFavorite<%= index %>" tabindex="-1"
+                        aria-labelledby="deleteFavorite<%= index %>" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="deleteFavorite1">Weet je zeker dat je deze
-                                        quote uit je favorieten wil verwijderen?</h2>
+                                    <h2 class="modal-title fs-5" id="deleteFavorite<%= index %>">
+                                        Weet je zeker dat je deze quote uit je favorieten wil verwijderen?</h2>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Yes the white tree of Gondor. The tree of the King. Lord Denethor
-                                        however, is not the King. He is a steward only, a caretaker of the
-                                        throne.</p>
+                                    <p><%= fav.dialog %></p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                                         aria-label="Close">Behouden</button>
-                                    <button type="button" class="btn btn-primary" formmethod="POST"
-                                        formaction="/">Verwijderen</button>
+                                    <form action="/favorites/<%= fav.quote_id %>/delete" method="POST">
+                                        <button type="submit" class="btn btn-primary">Verwijderen</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </article>
 
-                <article class="d-flex p-3 border-bottom">
-                    <div class="table-id p-2 fw-bold">#2</div>
-                    <div class="table-name p-2"><a href="/favorites/AragornID"
-                            title="Zie enkel quotes van Aragorn II Elessar">Aragorn II Elessar</a></div>
-                    <div class="table-count p-2">4 quotes</div>
-                    <div class="table-quote p-2">A day may come when the courage of men fails, when we forsake our
-                        friends and
-                        break all bonds of fellowship, but it is not this day.</div>
-                    <div class="table-delete-button p-2">
-                        <button type="button" class="btn btn-outline-primary" title="Verwijder uit je favorietenlijst"
-                            data-bs-toggle="modal" data-bs-target="#deleteFavorite2">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                    <div class="modal fade" id="deleteFavorite2" tabindex="-1" aria-labelledby="deleteFavorite2"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="deleteFavorite2">Weet je zeker dat je deze
-                                        quote uit je favorieten wil verwijderen?</h2>
-                                </div>
-                                <div class="modal-body">
-                                    <p>A day may come when the courage of men fails, when we
-                                        forsake our friends and break all bonds of fellowship, but it is not
-                                        this day.</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Behouden</button>
-                                    <button type="button" class="btn btn-primary" formmethod="POST"
-                                        formaction="/">Verwijderen</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+                <% }); %>
 
-                <article class="d-flex p-3 border-bottom">
-                    <div class="table-id p-2 fw-bold">#3</div>
-                    <div class="table-name p-2"><a href="/favorites/PippinID"
-                            title="Zie enkel quotes van Pippin">Pippin</a></div>
-                    <div class="table-count p-2">1 quote</div>
-                    <div class="table-quote p-2">It's the tree. Gandalf! Gandalf!</div>
-                    <div class="table-delete-button p-2">
-                        <button type="button" class="btn btn-outline-primary" title="Verwijder uit je favorietenlijst"
-                            data-bs-toggle="modal" data-bs-target="#deleteFavorite3">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                    <div class="modal fade" id="deleteFavorite3" tabindex="-1" aria-labelledby="deleteFavorite3"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="deleteFavorite3">Weet je zeker dat je deze
-                                        quote uit je favorieten wil verwijderen?</h2>
-                                </div>
-                                <div class="modal-body">
-                                    <p>It's the tree. Gandalf! Gandalf!</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Behouden</button>
-                                    <button type="button" class="btn btn-primary" formmethod="POST"
-                                        formaction="/">Verwijderen</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="d-flex p-3 border-bottom">
-                    <div class="table-id p-2 fw-bold">#4</div>
-                    <div class="table-name p-2"><a href="/favorites/GandalfID"
-                            title="Zie enkel quotes van Gandalf">Gandalf</a></div>
-                    <div class="table-count p-2">11 quotes</div>
-                    <div class="table-quote p-2">Now listen carefully. Lord Denethor is Boromir's father. To give him
-                        news of his
-                        beloved son's death would be most unwise. And do not mention Frodo or the Ring. And say nothing
-                        of Aragorn
-                        either. In fact, its better if you don't speak at all Peregrin Took.</div>
-                    <div class="table-delete-button p-2">
-                        <button type="button" class="btn btn-outline-primary" title="Verwijder uit je favorietenlijst"
-                            data-bs-toggle="modal" data-bs-target="#deleteFavorite4">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                    <div class="modal fade" id="deleteFavorite4" tabindex="-1" aria-labelledby="deleteFavorite4"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="deleteFavorite4">Weet je zeker dat je deze
-                                        quote uit je favorieten wil verwijderen?</h2>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Now listen carefully. Lord Denethor is Boromir's father.
-                                        To give him news of his beloved son's death would be most unwise. And do
-                                        not mention Frodo
-                                        or the Ring. And say nothing of Aragorn either. In fact, its better if
-                                        you don't speak at
-                                        all Peregrin Took.</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Behouden</button>
-                                    <button type="button" class="btn btn-primary" formmethod="POST"
-                                        formaction="/">Verwijderen</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="d-flex p-3 border-bottom">
-                    <div class="table-id p-2 fw-bold">#5</div>
-                    <div class="table-name p-2"><a href="/favorites/GaladrielID"
-                            title="Zie enkel quotes van Galadriel">Galadriel</a></div>
-                    <div class="table-count p-2">3 quotes</div>
-                    <div class="table-quote p-2">For the time will soon come when Hobbits will shape the fortunes of
-                        all.</div>
-                    <div class="table-delete-button p-2">
-                        <button type="button" class="btn btn-outline-primary" title="Verwijder uit je favorietenlijst"
-                            data-bs-toggle="modal" data-bs-target="#deleteFavorite5">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                    <div class="modal fade" id="deleteFavorite5" tabindex="-1" aria-labelledby="deleteFavorite5"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="deleteFavorite5">Weet je zeker dat je deze
-                                        quote uit je favorieten wil verwijderen?</h2>
-                                </div>
-                                <div class="modal-body">
-                                    <p>For the time will soon come when Hobbits will shape the
-                                        fortunes of all.</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Behouden</button>
-                                    <button type="button" class="btn btn-primary" formmethod="POST"
-                                        formaction="/">Verwijderen</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <a href="#top" class="scroll-to-top"><i class="bi bi-arrow-up-square-fill"></i></a>
+                    <a href="#top" class="scroll-to-top"><i class="bi bi-arrow-up-square-fill"></i></a>
 
             </section>
         </main>

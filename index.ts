@@ -3,6 +3,7 @@ import express from "express";
 import { connect, createUser, getUser, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, getUserFavorites } from "./db";
 import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie } from "./types";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
+import fs from "fs";
 
 const app = express();
 
@@ -412,9 +413,30 @@ app.get("/quiz/:type/score", async (req, res) => {
 
 
 app.get("/favorites", (req, res) => {
-    // e.g. http://localhost:3000/favorites
-    res.render("favorites");
+    if (user === null) {
+        return res.status(404).send("User not found");
+    }
+
+    res.render("favorites", {
+        favorites: user.favorites,
+    });
 })
+
+
+app.get("/favorites/download", (req, res) => {
+    if (user === null) {
+        return res.status(404).send("User not found");
+    }
+
+    const favList : string = user.favorites.reduce((favList: string,fav: Favorite) => {
+        return favList + `${fav.dialog} - ${fav.character.name}\r\n`;
+    },"");
+
+    fs.writeFileSync(`./public/${user.username}_favorites.txt`,favList,"utf8");
+
+    res.download(`./public/${user.username}_favorites.txt`);
+});
+
 
 app.get("/favorites/:characterId", async(req, res) => {
     // e.g. http://localhost:3000/favorites/28392
