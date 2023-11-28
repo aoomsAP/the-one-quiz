@@ -74,7 +74,7 @@ const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: 
 
 const deleteBlacklist = async (user: User, quoteId: string) => {
     try {
-        await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username }, { $pull: { blacklist: { quoteId: quoteId } } });
+        await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username }, { $pull: { blacklist: { quote_Id: quoteId } } });
     } catch (err) {
         console.log(err);
     }
@@ -82,7 +82,7 @@ const deleteBlacklist = async (user: User, quoteId: string) => {
 
 const editBlacklist = async (user: User, quoteId: string, newComment: string) => {
     try {
-        await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username, 'blacklist.quoteId': quoteId }, { $set: { 'blacklist.$.comment': newComment }});
+        await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username, 'blacklist.quote_id': quoteId }, { $set: { 'blacklist.$.comment': newComment }});
     } catch (err) {
         console.log(err);
     }

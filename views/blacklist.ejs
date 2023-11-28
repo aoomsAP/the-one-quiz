@@ -10,7 +10,7 @@
     <% if (blacklist.length === 0) { %>
         <!-- No quotes in blacklist -->
         <section>
-            <p>Nog geen quotes in uw blacklist</p>
+            <p><strong>Nog geen quotes in je blacklist.</strong> Gebruik de blacklist-knop tijdens de quiz om een quote toe te voegen.</p>
         </section>
     <% } else { %>
         <!-- Table with blacklisted quotes -->
@@ -41,11 +41,11 @@
                             </div>
                         </div>
                         <!-- Confirm delete window -->
-                            <div class="modal fade" id="deleteBlackList<%= index + 1 %>" tabindex="-1" aria-labelledby="deleteBlackList1" aria-hidden="true">
+                            <div class="modal fade" id="deleteBlackList<%= index + 1 %>" tabindex="-1" aria-labelledby="deleteBlackList<%= index + 1 %>" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h2 class="modal-title fs-5" id="deleteBlackList1">Weet je zeker dat je deze
+                                            <h2 class="modal-title fs-5" id="deleteBlackList<%= index + 1 %>">Weet je zeker dat je deze
                                                 quote uit je blacklist wil verwijderen?</h2>
                                         </div>
                                         <div class="modal-body">
@@ -55,8 +55,7 @@
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                                                 aria-label="Close">Behouden</button>
                                             <form action="/blacklist/<%= item.quote_id %>/delete" method="post">
-                                                <button type="button" class="btn btn-primary" formmethod="post"
-                                                    formaction="/blacklist/<%= item.quote_id %>/delete">Verwijderen</button>
+                                                <button type="submit" class="btn btn-primary">Verwijderen</button>
                                             </form>
                                         </div>
                                     </div>

@@ -434,15 +434,15 @@ app.post("/blacklist/:quoteId/delete", async (req, res) => {
     res.redirect("/blacklist");
 })
 
-app.post("/blacklist/:quoteId/edit", (req, res) => {
+app.post("/blacklist/:quoteId/edit", async (req, res) => {
     if (user == null) {
         return res.status(404).send("User not found");
     }
 
     const quoteId = req.params.quoteId;
     const newComment = req.body.editComment;
-    editBlacklist(user, quoteId, newComment);
-    loadUser(user.username)
+    await editBlacklist(user, quoteId, newComment);
+    await loadUser(user.username)
 
     res.redirect("/blacklist");
 })
