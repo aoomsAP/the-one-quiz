@@ -1,32 +1,27 @@
-import { Question, Quote, Movie, Character } from "./types";
+import { Question, Quote, Movie, Character, User } from "./types";
 import { quotes, characters, movies } from "./API"
-import { questions } from "./index"
+import { writeQuestion } from "./db";
+import { ObjectId } from "mongodb";
 
-// ---------- functions for adding questions
-
-const quoteAppearsInBlacklist = (quoteId: string) => {
-    if (user === null) {
-        throw "User not found";
-    }
-    else {
-        const blacklistedIds: string[] = user.blacklist.map(q => q.quote_id);
-        return blacklistedIds.includes(quoteId);
-    }
+const quoteAppearsInBlacklist = (quoteId: string, user: User) => {
+    const blacklistedIds: string[] = user.blacklist.map(q => q.quote_id);
+    return blacklistedIds.includes(quoteId);
 }
 
-const quoteAlreadyInQuestions = (quoteId: string) => {
+const quoteAlreadyInQuestions = (quoteId: string, questions: Question[]) => {
     const quoteIds: string[] = questions.map(q => q.quote_id);
     return quoteIds.includes(quoteId);
 }
 
-const getQuote = () => {
+const getQuote = (user: User) => {
     // get random quote, on two conditions:
-    // 1) it can't appear in the user's blacklist 2) it can't have been a question already
+    // 1) it can't appear in the user's blacklist 
+    // 2) it can't have been a question already
     let quote: Quote;
     do {
         let randomIndex = Math.floor(Math.random() * quotes.length);
         quote = quotes[randomIndex];
-    } while (quoteAppearsInBlacklist(quote.quote_id) || quoteAlreadyInQuestions(quote.quote_id))
+    } while (quoteAppearsInBlacklist(quote.quote_id, user) || quoteAlreadyInQuestions(quote.quote_id, user.questions))
     return quote
 }
 
@@ -66,9 +61,9 @@ const getTwoWrongMovies = (correctMovieId: string) => {
     return wrongMovies;
 }
 
-const addNextQuestion = () => {
+const addNextQuestion = async (user: User) => {
     // get random, valid, unique quote
-    let quote: Quote = getQuote();
+    let quote: Quote = getQuote(user);
 
     // search characters array for the character that the quote belongs to
     let correctCharacter: Character | undefined = characters.find(character => quote.character_id === character.character_id);
@@ -87,7 +82,7 @@ const addNextQuestion = () => {
         wrong_movies: getTwoWrongMovies(correctMovie.movie_id),
     };
 
-    questions.push(newQuestion);
+    await writeQuestion(new ObjectId(user._id) ,newQuestion);
 }
 
 // ---------- functions for adding answers to questions
@@ -126,3 +121,4 @@ const addMovieAnswerToQuestion = (answerMovieId: string, q: Question) => {
 
 
 export { addNextQuestion, addCharacterAnswerToQuestion, addMovieAnswerToQuestion }
+

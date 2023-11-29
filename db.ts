@@ -22,8 +22,6 @@ const connect = async () => {
     process.on('SIGINT', exit); // when process receives SIGINT (terminate process immediately) signal, function to close database will run
 }
 
-// other database calls underneath:
-
 // USER
 
 const createUser = async (newUser: User) => {
@@ -36,7 +34,7 @@ const createUser = async (newUser: User) => {
 
 const getUser = async (username: string): Promise<User | null> => {
     let foundUser: User | null = null;
-    
+
     try {
         foundUser = await client.db("TheOneQuiz").collection("Users").findOne<User>({ username: username });
     } catch (err) {
@@ -46,9 +44,9 @@ const getUser = async (username: string): Promise<User | null> => {
     return foundUser;
 }
 
-const getUserById = async(userId: ObjectId) => {
+const getUserById = async (userId: ObjectId) => {
     let foundUser: User | null = null;
-    
+
     try {
         foundUser = await client.db("TheOneQuiz").collection("Users").findOne<User>({ _id: new ObjectId(userId) });
     } catch (err) {
@@ -58,14 +56,50 @@ const getUserById = async(userId: ObjectId) => {
     return foundUser;
 }
 
+// QUESTION
+
+const clearQuestions = async (userId: ObjectId) => {
+    try {
+        await client.db("TheOneQuiz").collection("Users").updateOne({ _id: new ObjectId(userId) }, { $set: { questions: [] }});
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const writeQuestion = async (userId: ObjectId, question: Question) => {
+    try {
+        await client.db("TheOneQuiz").collection("Users").updateOne({ _id: new ObjectId(userId) }, { $push: { questions: question }});
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+// ANSWER
+
+const writeCharacterAnswer = async (userId: ObjectId, quoteId: string, characterAnswer: Character) => {
+    try {
+        await client.db("TheOneQuiz").collection("Users").updateOne({ _id: new ObjectId(userId), "questions.quote_id": quoteId }, { $set: { "questions.$.answer_character": characterAnswer }}, {upsert:true});
+    } catch (err) {
+        console.log(err);
+    } 
+}
+
+const writeMovieAnswer = async (userId: ObjectId, quoteId: string, movieAnswer: Movie) => {
+    try {
+        await client.db("TheOneQuiz").collection("Users").updateOne({ _id: new ObjectId(userId), "questions.quote_id": quoteId }, { $set: { "questions.$.answer_movie": movieAnswer }}, {upsert:true});
+    } catch (err) {
+        console.log(err);
+    } 
+}
+
 // SCORE
 
 const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: number) => {
     switch (typeOfQuiz) {
         case "tenrounds":
-            user.highscore_tenrounds = newHighScore; 
+            user.highscore_tenrounds = newHighScore;
             try {
-                await client.db("TheOneQuiz").collection("Users").updateOne({username: user.username}, {$set:{highscore_tenrounds: newHighScore}});
+                await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username }, { $set: { highscore_tenrounds: newHighScore } });
             } catch (err) {
                 console.log(err);
             }
@@ -73,7 +107,7 @@ const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: 
         case "suddendeath":
             user.highscore_suddendeath = newHighScore;
             try {
-                await client.db("TheOneQuiz").collection("Users").updateOne({username: user.username}, {$set:{highscore_suddendeath: newHighScore}});
+                await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username }, { $set: { highscore_suddendeath: newHighScore } });
             } catch (err) {
                 console.log(err);
             }
@@ -83,22 +117,9 @@ const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: 
     }
 }
 
-// FAVORITES
-
-const getUserFavorites = async (username: string): Promise<Favorite[] | undefined> => {
-    let foundUser: User | null = await getUser(username);
-    let favorites: Favorite[] | undefined = foundUser?.favorites;
-
-    return favorites;
-}
-
 const addToFavorites = async (user: User, favorite: Favorite) => {
     try {
-        await client.db("TheOneQuiz").collection("Users").updateOne(
-            {_id: user._id},
-            {
-                $addToSet: {favorites: favorite}
-            }
+        await client.db("TheOneQuiz").collection("Users").updateOne({ _id: user._id }, { $addToSet: { favorites: favorite } }
         )
     } catch (err) {
         console.log(err);
@@ -108,12 +129,7 @@ const addToFavorites = async (user: User, favorite: Favorite) => {
 const deleteFavorite = async (user: User, favorite: Favorite) => {
     console.log("inside deletefavorite")
     try {
-        await client.db("TheOneQuiz").collection("Users").updateOne(
-            {_id: user._id},
-            {
-                $pull: {favorites: favorite}
-            }
-        )
+        await client.db("TheOneQuiz").collection("Users").updateOne({ _id: user._id },{$pull: { favorites: favorite }});
     } catch (err) {
         console.log(err);
     }
@@ -131,9 +147,9 @@ const getUserBlacklist = async (username: string): Promise<Blacklist[] | undefin
 const addToBlacklist = async (user: User, blacklistItem: Blacklist) => {
     try {
         await client.db("TheOneQuiz").collection("Users").updateOne(
-            {_id: user._id},
+            { _id: user._id },
             {
-                $addToSet: {blacklist: blacklistItem}
+                $addToSet: { blacklist: blacklistItem }
             }
         )
     } catch (err) {
@@ -151,23 +167,26 @@ const deleteBlacklist = async (user: User, quoteId: string) => {
 
 const editBlacklist = async (user: User, quoteId: string, newComment: string) => {
     try {
-        await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username, 'blacklist.quote_id': quoteId }, { $set: { 'blacklist.$.comment': newComment }});
+        await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username, 'blacklist.quote_id': quoteId }, { $set: { 'blacklist.$.comment': newComment } });
     } catch (err) {
         console.log(err);
     }
 }
 
-export { 
+export {
     client,
-    connect, 
-    createUser, 
-    getUser, 
+    connect,
+    createUser,
+    getUser,
     getUserById,
-    createNewHighScore, 
-    getUserFavorites, 
-    addToFavorites, 
-    addToBlacklist, 
-    deleteFavorite, 
+    clearQuestions,
+    writeQuestion,
+    writeCharacterAnswer,
+    writeMovieAnswer,
+    createNewHighScore,
+    addToFavorites,
+    addToBlacklist,
+    deleteFavorite,
     getUserBlacklist,
     deleteBlacklist,
     editBlacklist
