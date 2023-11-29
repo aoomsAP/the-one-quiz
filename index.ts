@@ -1,22 +1,45 @@
 require("dotenv").config();
 import express from "express";
-import { connect, createUser, getUser, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, getUserFavorites, deleteBlacklist, editBlacklist } from "./db";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+
+import { client, connect, createUser, getUser,getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, getUserFavorites, deleteBlacklist, editBlacklist } from "./db";
 import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie } from "./types";
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
 import fs from "fs";
+import { ObjectId } from "mongodb";
 
 const app = express();
-
 app.set("port", 3000);
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+if (!process.env.SESSION_SECRET) throw Error('Error: .env var "SESSION_SECRET" is undefined');
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    store: MongoStore.create({ client, dbName: "TheOneQuiz", collectionName: "Sessions" }),
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        sameSite: 'strict',
+        secure: false,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    }
+}));
+
+declare module 'express-session' {
+    export interface SessionData {
+        userId: ObjectId;
+    }
+}
+
+
 if (typeof (process.env.API_KEY) === "undefined") throw Error(`Error: .env var "API_KEY" is undefined`); // needs to be added because typescript gives error if process.env is string/undefined
 const API_KEY = process.env.API_KEY; // API_KEY in .env file
-
-let user: User | null = null;
 
 let quoteList: Quote[] = []; // this is the final list where all quotes will be in from the API
 let characterList: Character[] = []; // this is the final list where all characters will be in
@@ -28,23 +51,15 @@ let movies: Movie[] = movieList; // TODO: delete mockMovies & fill in with loadD
 
 let questions: Question[];
 
-const loadUser = async (userName: string) => {
-    let foundUser: User | null = await getUser(userName);
-    if (!foundUser) {
-        throw "User not found in db";
+app.get("/", async (req, res) => {
+    let user: User|null = null;
+    if (req.session.userId) {
+        user = await getUserById(req.session.userId);
     }
-    else {
-        user = foundUser;
-    }
-}
-
-app.get("/", (req, res) => {
-    // e.g. http://localhost:3000/
 
     res.render("index", {
         user: user,
     });
-
 })
 
 app.get("/login", (req, res) => {
@@ -60,24 +75,22 @@ app.post("/login", async (req, res) => {
 
     let foundUser: User | null = await getUser(username);
 
+    // validate login
     if (!foundUser) {
         return res.render("login", {
             message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
         });
     }
-
-    if (foundUser.password === password) {
-
-        user = foundUser;
-        return res.status(200).redirect("/");
-
-    } else {
+    if (foundUser.password != password) {
         return res.render("login", {
             message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
         });
     }
 
-})
+    // create session
+    req.session.userId = foundUser._id;
+    req.session.save(() => res.status(200).redirect("/"));
+});
 
 app.get("/register", (req, res) => {
     // e.g. http://localhost:3000/register
@@ -86,15 +99,27 @@ app.get("/register", (req, res) => {
 })
 
 app.post("/register", async (req, res) => {
-    // e.g. http://localhost:3000/register
-
     let username: string = req.body.username;
     let password: string = req.body.password;
     let confirmPassword: string = req.body.confirmPassword;
     let email: string = req.body.email;
 
+    // check if username already exists in db
     let foundUser: User | null = await getUser(username);
+    if (foundUser) {
+        return res.render("register", {
+            message: "Gebruikersnaam is al in gebruik."
+        });
+    }
 
+    // check if passwords are the same
+    if (password !== confirmPassword) {
+        return res.render("register", {
+            message: "De ingevoerde wachtwoorden komen niet overeen. Probeer het opnieuw."
+        });
+    }
+
+    // create new user
     let newUser: User = {
         username: username,
         password: password,
@@ -104,22 +129,17 @@ app.post("/register", async (req, res) => {
         highscore_tenrounds: 0,
         highscore_suddendeath: 0
     }
-
-    if (foundUser) {
-        return res.render("register", {
-            message: "Gebruikersnaam is al in gebruik."
-        });
-    }
-
-    if (password !== confirmPassword) {
-        return res.render("register", {
-            message: "De ingevoerde wachtwoorden komen niet overeen. Probeer het opnieuw."
-        });
-    }
-
     await createUser(newUser);
-    user = newUser;
-    return res.status(201).redirect("/");
+
+    // load new user from db
+    let newUserInDb: User | null = await getUser(newUser.username);
+    if (!newUserInDb) {
+        return res.status(404).send("User not found");
+    }
+    else {
+        req.session.userId = newUserInDb._id;
+        return req.session.save(() => res.status(200).redirect("/"));
+    }
 })
 
 app.get("/quiz", (req, res) => {
@@ -217,7 +237,11 @@ const addNextQuestion = () => {
 
 // ---------- 
 
-app.post("/quiz", (req, res) => {
+app.post("/quiz", async (req, res) => {
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
+
     // clear previous questions array, start fresh
     questions = [];
 
@@ -313,7 +337,7 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
                 });
             await loadUser(user.username);
 
-        // and if thumbs-down is checked, add quote to the user's blacklist
+            // and if thumbs-down is checked, add quote to the user's blacklist
         } else if (req.body.btnThumbs === "thumbsDown") {
             await addToBlacklist(user,
                 {
@@ -326,7 +350,7 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
     } else {
         throw "User not found";
     }
-    
+
 
     // CHECK if end of quiz: redirect to score
     switch (typeOfQuiz) {
@@ -428,77 +452,77 @@ app.get("/favorites/download", (req, res) => {
         return res.status(404).send("User not found");
     }
 
-    const favList : string = user.favorites.reduce((favList: string,fav: Favorite) => {
+    const favList: string = user.favorites.reduce((favList: string, fav: Favorite) => {
         return favList + `${fav.dialog} - ${fav.character.name}\r\n`;
-    },"");
+    }, "");
 
-    fs.writeFileSync(`./public/${user.username}_favorites.txt`,favList,"utf8");
+    fs.writeFileSync(`./public/${user.username}_favorites.txt`, favList, "utf8");
 
     res.download(`./public/${user.username}_favorites.txt`);
 });
 
 
-app.get("/favorites/:characterId", async(req, res) => {
+app.get("/favorites/:characterId", async (req, res) => {
     // e.g. http://localhost:3000/favorites/28392
     const characterId: string = req.params.characterId;
-    
+
     if (!user) {
         return res.status(404).send("User not found");
     }
     let favorites: Favorite[] | undefined = await getUserFavorites(user?.username);
-    
+
     if (favorites) {
         let characterQuotes: Favorite[] = favorites.filter(fav => fav.character.character_id === characterId);
         if (characterQuotes.length > 0) {
-            let foundCharacter:Character | undefined = characterQuotes.find(fav => fav.character.character_id === characterId)?.character;
-            
-            if(foundCharacter) {
+            let foundCharacter: Character | undefined = characterQuotes.find(fav => fav.character.character_id === characterId)?.character;
+
+            if (foundCharacter) {
                 res.render("character", {
                     character: foundCharacter,
                     characterQuotes: characterQuotes
                 });
-            }        
+            }
         } else {
             // if all quotes of a specific char have been deleted, redirect to favorites
             res.redirect("/favorites");
         }
     }
-    
+
 })
 
 app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
     const quoteId: string = req.params.quoteId;
     const characterId: string = req.params.characterId;
-    
+
     if (!user) {
         return res.status(404).send("User not found");
     }
     let favorites: Favorite[] | undefined = await getUserFavorites(user?.username);
     if (favorites) {
-        let favorite: Favorite | undefined = favorites.find(fav => fav.quote_id === quoteId); 
-        
-        if(favorite) {
+        let favorite: Favorite | undefined = favorites.find(fav => fav.quote_id === quoteId);
+
+        if (favorite) {
             await deleteFavorite(user, favorite);
             res.redirect(`/favorites/${characterId}`);
-        }         
+        }
     }
-  
+
 })
 
 app.post("/favorites/:quoteId/delete", async (req, res) => {
     const quoteId: string = req.params.quoteId;
-    
+
     if (!user) {
         return res.status(404).send("User not found");
     }
     let favorites: Favorite[] | undefined = await getUserFavorites(user?.username);
     if (favorites) {
-        let favorite: Favorite | undefined = favorites.find(fav => fav.quote_id === quoteId); 
-        
-        if(favorite) {
+        let favorite: Favorite | undefined = favorites.find(fav => fav.quote_id === quoteId);
+
+        if (favorite) {
             await deleteFavorite(user, favorite);
             res.redirect(`/favorites`);
-        }         
+        }
     }
 })
 
@@ -508,7 +532,7 @@ app.get("/blacklist", (req, res) => {
         return res.status(404).send("User not found");
     }
     const blacklist: Blacklist[] = user.blacklist;
-    res.render("blacklist", {blacklist: blacklist});
+    res.render("blacklist", { blacklist: blacklist });
 })
 
 app.post("/blacklist/:quoteId/delete", async (req, res) => {
