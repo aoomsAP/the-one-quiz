@@ -94,6 +94,7 @@ const addToFavorites = async (user: User, favorite: Favorite) => {
 }
 
 const deleteFavorite = async (user: User, favorite: Favorite) => {
+    console.log("inside deletefavorite")
     try {
         await client.db("TheOneQuiz").collection("Users").updateOne(
             {_id: user._id},
