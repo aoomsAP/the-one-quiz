@@ -1,278 +1,78 @@
 <%- include('./partials/header-quiz'); %>
 
-    <main class="container-sm p-3" id="blacklist">
-        <!-- Title and intro -->
-        <section class="mb-5">
-            <h1>Blacklist</h1>
-            <p>Hieronder vind je je blacklist. Deze quotes komen niet meer voor in de quiz. Klik op de pen om de
-                opmerkingen te wijzigen, of op het vuilbakje om
-                quotes uit je blacklist te verwijderen.</p>
+<main class="container-sm p-3" id="blacklist">
+    <!-- Title and intro -->
+    <section class="mb-5">
+        <h1>Blacklist</h1>
+        <p>Hieronder vind je je blacklist. Deze quotes komen niet meer voor in de quiz. Klik op de pen om de
+            opmerkingen te wijzigen, of op het vuilbakje om quotes uit je blacklist te verwijderen.</p>
+    </section>
+    <% if (blacklist.length === 0) { %>
+        <!-- No quotes in blacklist -->
+        <section>
+            <p><strong>Nog geen quotes in je blacklist.</strong> Gebruik de blacklist-knop tijdens de quiz om een quote toe te voegen.</p>
         </section>
+    <% } else { %>
         <!-- Table with blacklisted quotes -->
         <section class="table-custom text-start p-0 rounded border overflow-hidden">
-
-            <!-- Blacklist row -->
-            <article class="p-3 border-bottom">
-                <div class="d-flex">
-                    <div class="table-id p-2 fw-bold ms-auto">#1</div>
-                    <div class="table-quote w-50 me-1 p-2">Yes the white tree of Gondor. The tree of the King. Lord
-                        Denethor
-                        however, is not the King. He is a steward only, a caretaker of the throne.</div>
-                    <div class="table-comment w-50 p-2 ms-1"><span class="text-decoration-underline">Jouw
-                            opmerking:</span>&nbsp;Gandalf talks way too
-                        much.</div>
-                    <div class="table-icons me-auto">
-                        <div class="table-edit-button ms-end p-2"><button type="button" data-bs-toggle="collapse"
-                                data-bs-target="#comment1" aria-expanded="false" aria-controls="comment1"
-                                class="btn btn-outline-primary" title="Wijzig deze opmerking"><i
-                                    class="bi bi-pencil-square"></i></button></div>
-                        <div class="table-delete-button ms-end p-2">
-                            <button type="button" class="btn btn-outline-primary" title="Verwijder uit je blacklist"
-                                data-bs-toggle="modal" data-bs-target="#deleteBlackList1">
-                                <i class="bi bi-trash"></i>
-                            </button>
+            <% blacklist.forEach((item, index) => { %>
+                <!-- Blacklist row -->
+                <article class="p-3 border-bottom">
+                    <div class="d-flex">
+                        <div class="table-id p-2 fw-bold ms-auto">#<%= index + 1 %></div>
+                        <div class="table-quote w-50 me-1 p-2"><%= item.dialog %></div>
+                        <div class="table-comment w-50 p-2 ms-1">
+                            <span class="text-decoration-underline">Jouw opmerking:</span>&nbsp;<%= item.comment %>
                         </div>
-                    </div>
-                    <!-- Confirm delete window -->
-                    <div class="modal fade" id="deleteBlackList1" tabindex="-1" aria-labelledby="deleteBlackList1"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="deleteBlackList1">Weet je zeker dat je deze
-                                        quote uit je blacklist wil verwijderen?</h2>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Yes the white tree of Gondor. The tree of the King. Lord Denethor
-                                        however, is not the King. He is a steward only, a caretaker of the
-                                        throne.</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Behouden</button>
-                                    <button type="button" class="btn btn-primary" formmethod="POST"
-                                        formaction="/">Verwijderen</button>
-                                </div>
+                        <div class="table-icons me-auto">
+                            <div class="table-edit-button ms-end p-2">
+                                <button type="button" data-bs-toggle="collapse" data-bs-target="#comment<%= index + 1 %>"
+                                    aria-expanded="false" aria-controls="comment<%= index + 1 %>"
+                                    class="btn btn-outline-primary" title="Wijzig deze opmerking">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </div>
+                            <div class="table-delete-button ms-end p-2">
+                                <button type="button" class="btn btn-outline-primary"
+                                    title="Verwijder uit je blacklist" data-bs-toggle="modal"
+                                    data-bs-target="#deleteBlackList<%= index + 1 %>">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <!-- Edit comment window -->
-                <form class="table-edit-form collapse px-2" id="comment1" action="" method="POST">
-                    <label for="editComment" class="form-label pt-2">Wijzig je opmerking hier:</label>
-                    <textarea class="form-control" id="editComment" rows="3">Gandalf talks way too much.</textarea>
-                    <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
-                </form>
-            </article>
-
-            <article class="p-3 border-bottom">
-                <div class="d-flex">
-                    <div class="table-id p-2 fw-bold ms-auto">#2</div>
-                    <div class="table-quote w-50 me-1 p-2">A day may come when the courage of men fails, when we
-                        forsake our friends and break all bonds of fellowship, but it is not this day.</div>
-                    <div class="table-comment w-50 p-2 ms-1"><span class="text-decoration-underline">Jouw
-                            opmerking:</span>&nbsp; Corny ass...</div>
-                    <div class="table-icons me-auto">
-                        <div class="table-edit-button ms-end p-2"><button type="button" data-bs-toggle="collapse"
-                                data-bs-target="#comment2" aria-expanded="false" aria-controls="comment2"
-                                class="btn btn-outline-primary" title="Wijzig deze opmerking"><i
-                                    class="bi bi-pencil-square"></i></button></div>
-                        <div class="table-delete-button ms-end p-2">
-                            <button type="button" class="btn btn-outline-primary" title="Verwijder uit je blacklist"
-                                data-bs-toggle="modal" data-bs-target="#deleteBlackList2">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="deleteBlackList2" tabindex="-1" aria-labelledby="deleteBlackList2"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="deleteBlackList2">Weet je zeker dat je deze
-                                        quote uit je blacklist wil verwijderen?</h2>
-                                </div>
-                                <div class="modal-body">
-                                    <p>A day may come when the courage of men fails, when we
-                                        forsake our friends and break all bonds of fellowship, but it is not
-                                        this day.</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Behouden</button>
-                                    <button type="button" class="btn btn-primary" formmethod="POST"
-                                        formaction="/">Verwijderen</button>
+                        <!-- Confirm delete window -->
+                            <div class="modal fade" id="deleteBlackList<%= index + 1 %>" tabindex="-1" aria-labelledby="deleteBlackList<%= index + 1 %>" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h2 class="modal-title fs-5" id="deleteBlackList<%= index + 1 %>">Weet je zeker dat je deze
+                                                quote uit je blacklist wil verwijderen?</h2>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><%= item.dialog %></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                                aria-label="Close">Behouden</button>
+                                            <form action="/blacklist/<%= item.quote_id %>/delete" method="post">
+                                                <button type="submit" class="btn btn-primary">Verwijderen</button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
-                </div>
-                <form class="table-edit-form collapse px-2" id="comment2" action="" method="POST">
-                    <label for="editComment" class="form-label pt-2">Wijzig je opmerking hier:</label>
-                    <textarea class="form-control" id="editComment" rows="3">Corny ass...</textarea>
-                    <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
-                </form>
-            </article>
-
-            <article class="p-3 border-bottom">
-                <div class="d-flex">
-                    <div class="table-id p-2 fw-bold ms-auto">#3</div>
-                    <div class="table-quote w-50 me-1 p-2">It's the tree. Gandalf! Gandalf! </div>
-                    <div class="table-comment w-50 p-2 ms-1"><span class="text-decoration-underline">Jouw
-                            opmerking:</span>&nbsp; Pippin is stating the obvious here, and we all know that that is
-                        Legolas' role in the movies. They're taking the Hobbits to Isengard, to Isengard, to
-                        Isengard...</div>
-                    <div class="table-icons me-auto">
-                        <div class="table-edit-button ms-end p-2"><button type="button" data-bs-toggle="collapse"
-                                data-bs-target="#comment3" aria-expanded="false" aria-controls="comment3"
-                                class="btn btn-outline-primary" title="Wijzig deze opmerking"><i
-                                    class="bi bi-pencil-square"></i></button></div>
-                        <div class="table-delete-button ms-end p-2">
-                            <button type="button" class="btn btn-outline-primary" title="Verwijder uit je blacklist"
-                                data-bs-toggle="modal" data-bs-target="#deleteBlackList3">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="deleteBlackList3" tabindex="-1" aria-labelledby="deleteBlackList3"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="deleteBlackList3">Weet je zeker dat je deze
-                                        quote uit je blacklist wil verwijderen?</h2>
-                                </div>
-                                <div class="modal-body">
-                                    <p>It's the tree. Gandalf! Gandalf!</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Behouden</button>
-                                    <button type="button" class="btn btn-primary" formmethod="POST"
-                                        formaction="/">Verwijderen</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <form class="table-edit-form collapse px-2" id="comment3" action="" method="POST">
-                    <label for="editComment" class="form-label pt-2">Wijzig je opmerking hier:</label>
-                    <textarea class="form-control" id="editComment"
-                        rows="3">Pippin is stating the obvious here, and we all know that that is Legolas' role in the movies. They're taking the Hobbits to Isengard, to Isengard, to Isengard...</textarea>
-                    <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
-                </form>
-            </article>
-
-            <article class="p-3 border-bottom">
-                <div class="d-flex">
-                    <div class="table-id p-2 fw-bold ms-auto">#4</div>
-                    <div class="table-quote w-50 me-1 p-2">Now listen carefully. Lord Denethor is Boromir's father.
-                        To give him news of his beloved son's death would be most unwise. And do not mention Frodo
-                        or the Ring. And say nothing of Aragorn either. In fact, its better if you don't speak at
-                        all Peregrin Took.</div>
-                    <div class="table-comment w-50 p-2 ms-1"><span class="text-decoration-underline">Jouw
-                            opmerking:</span>&nbsp;This was simply too easy. Every long ass lecture is from Gandalf.
-                    </div>
-                    <div class="table-icons me-auto">
-                        <div class="table-edit-button ms-end p-2"><button type="button" data-bs-toggle="collapse"
-                                data-bs-target="#comment4" aria-expanded="false" aria-controls="comment4"
-                                class="btn btn-outline-primary" title="Wijzig deze opmerking"><i
-                                    class="bi bi-pencil-square"></i></button></div>
-                        <div class="table-delete-button ms-end p-2">
-                            <button type="button" class="btn btn-outline-primary" title="Verwijder uit je blacklist"
-                                data-bs-toggle="modal" data-bs-target="#deleteBlackList4">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="deleteBlackList4" tabindex="-1" aria-labelledby="deleteBlackList4"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="deleteBlackList4">Weet je zeker dat je deze
-                                        quote uit je blacklist wil verwijderen?</h2>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Now listen carefully. Lord Denethor is Boromir's father.
-                                        To give him news of his beloved son's death would be most unwise. And do
-                                        not mention Frodo
-                                        or the Ring. And say nothing of Aragorn either. In fact, its better if
-                                        you don't speak at
-                                        all Peregrin Took.</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Behouden</button>
-                                    <button type="button" class="btn btn-primary" formmethod="POST"
-                                        formaction="/">Verwijderen</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <form class="table-edit-form collapse px-2" id="comment4" action="" method="POST">
-                    <label for="editComment" class="form-label pt-2">Wijzig je opmerking hier:</label>
-                    <textarea class="form-control" id="editComment"
-                        rows="3">This was simply too easy. Every long ass lecture is from Gandalf.</textarea>
-                    <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
-                </form>
-            </article>
-
-            <article class="p-3 border-bottom">
-                <div class="d-flex">
-                    <div class="table-id p-2 fw-bold ms-auto">#5</div>
-                    <div class="table-quote w-50 me-1 p-2">For the time will soon come when Hobbits will shape the
-                        fortunes of all.</div>
-                    <div class="table-comment w-50 p-2 ms-1"><span class="text-decoration-underline">Jouw
-                            opmerking:</span>&nbsp;A gorgeous quote honestly. Galadriel slays. Hobbit activist
-                        queen. That being said, it makes me wanna rewatch Rings of Power and I have to contain
-                        myself..</div>
-                    <div class="table-icons me-auto">
-                        <div class="table-edit-button ms-end p-2"><button type="button" data-bs-toggle="collapse"
-                                data-bs-target="#comment5" aria-expanded="false" aria-controls="comment5"
-                                class="btn btn-outline-primary" title="Wijzig deze opmerking"><i
-                                    class="bi bi-pencil-square"></i></button></div>
-                        <div class="table-delete-button ms-end p-2">
-                            <button type="button" class="btn btn-outline-primary" title="Verwijder uit je blacklist"
-                                data-bs-toggle="modal" data-bs-target="#deleteBlackList5">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="deleteBlackList5" tabindex="-1" aria-labelledby="deleteBlackList5"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="deleteBlackList5">Weet je zeker dat je deze
-                                        quote uit je blacklist wil verwijderen?</h2>
-                                </div>
-                                <div class="modal-body">
-                                    <p>For the time will soon come when Hobbits will shape the
-                                        fortunes of all.</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                        aria-label="Close">Behouden</button>
-                                    <button type="button" class="btn btn-primary" formmethod="POST"
-                                        formaction="/">Verwijderen</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <form class="table-edit-form collapse px-2" id="comment5" action="" method="POST">
-                    <label for="editComment" class="form-label pt-2">Wijzig je opmerking hier:</label>
-                    <textarea class="form-control" id="editComment"
-                        rows="3">A gorgeous quote honestly. Galadriel slays. Hobbit activist queen. That being said, it makes me wanna rewatch Rings of Power and I have to contain myself..</textarea>
-                    <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
-                </form>
-            </article>
-
+                    <!-- Edit comment window -->
+                    <form class="table-edit-form collapse px-2" id="comment<%= index + 1 %>" action="/blacklist/<%= item.quote_id %>/edit" method="POST">
+                        <label for="editComment" class="form-label pt-2">Wijzig je opmerking hier:</label>
+                        <textarea class="form-control" id="editComment" name="editComment" rows="3"><%= item.comment %></textarea>
+                        <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
+                    </form>
+                </article>
+            <% }); %>
             <a href="#top" class="scroll-to-top"><i class="bi bi-arrow-up-square-fill"></i></a>
-
         </section>
-    </main>
+    <% } %>
+</main>
 
-    <%- include('./partials/footer-quiz'); %>
+<%- include('./partials/footer-quiz'); %>

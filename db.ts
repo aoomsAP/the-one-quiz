@@ -128,8 +128,21 @@ const addToBlacklist = async (user: User, blacklistItem: Blacklist) => {
     }
 }
 
-// deleteBlacklistItem func
+const deleteBlacklist = async (user: User, quoteId: string) => {
+    try {
+        await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username }, { $pull: { blacklist: { quote_id: quoteId } } });
+    } catch (err) {
+        console.log(err);
+    }
+}
 
+const editBlacklist = async (user: User, quoteId: string, newComment: string) => {
+    try {
+        await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username, 'blacklist.quote_id': quoteId }, { $set: { 'blacklist.$.comment': newComment }});
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 export { 
     connect, 
@@ -140,5 +153,7 @@ export {
     addToFavorites, 
     addToBlacklist, 
     deleteFavorite, 
-    getUserBlacklist 
+    getUserBlacklist,
+    deleteBlacklist,
+    editBlacklist
 }
