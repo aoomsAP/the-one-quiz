@@ -3,9 +3,8 @@ import express from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 
-import { client, connect, createUser, getUser,getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, getUserFavorites, deleteBlacklist, editBlacklist } from "./db";
+import { client, connect, createUser, getUser, getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist } from "./db";
 import { User, Favorite, Blacklist, Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie } from "./types";
-import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
 import fs from "fs";
 import { ObjectId } from "mongodb";
 
@@ -37,7 +36,6 @@ declare module 'express-session' {
     }
 }
 
-
 if (typeof (process.env.API_KEY) === "undefined") throw Error(`Error: .env var "API_KEY" is undefined`); // needs to be added because typescript gives error if process.env is string/undefined
 const API_KEY = process.env.API_KEY; // API_KEY in .env file
 
@@ -49,10 +47,8 @@ let quotes: Quote[] = quoteList;
 let characters: Character[] = characterList;
 let movies: Movie[] = movieList; // TODO: delete mockMovies & fill in with loadData function in app.listen
 
-let questions: Question[];
-
 app.get("/", async (req, res) => {
-    let user: User|null = null;
+    let user: User | null = null;
     if (req.session.userId) {
         user = await getUserById(req.session.userId);
     }
@@ -63,13 +59,10 @@ app.get("/", async (req, res) => {
 })
 
 app.get("/login", (req, res) => {
-    // e.g. http://localhost:3000/login
     res.render("login");
 })
 
 app.post("/login", async (req, res) => {
-    // e.g. http://localhost:3000/login
-
     let username: string = req.body.username;
     let password: string = req.body.password;
 
@@ -93,8 +86,6 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-    // e.g. http://localhost:3000/register
-
     res.render("register");
 })
 
@@ -124,6 +115,7 @@ app.post("/register", async (req, res) => {
         username: username,
         password: password,
         email: email,
+        questions: [],
         favorites: [],
         blacklist: [],
         highscore_tenrounds: 0,
@@ -143,7 +135,6 @@ app.post("/register", async (req, res) => {
 })
 
 app.get("/quiz", (req, res) => {
-    // e.g. http://localhost:3000/quiz
     res.render("quiz");
 })
 
@@ -243,7 +234,7 @@ app.post("/quiz", async (req, res) => {
     if (!user) return res.status(404).send("User not found");
 
     // clear previous questions array, start fresh
-    questions = [];
+    await clearQuestions(req.session.userId);
 
     // add first question to questions array
     try {
@@ -260,7 +251,11 @@ app.post("/quiz", async (req, res) => {
     res.redirect(`/quiz/${typeOfQuiz}/question/0`);
 })
 
-app.get("/quiz/:type/question/:questionId", (req, res) => {
+app.get("/quiz/:type/question/:questionId", async (req, res) => {
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
+
     const typeOfQuiz: string = req.params.type;
     const typeOfQuizTitle: string = typeOfQuiz === "tenrounds" ? "Ten Rounds" : "Sudden Death";
     const questionId: number = parseInt(req.params.questionId);
@@ -269,7 +264,7 @@ app.get("/quiz/:type/question/:questionId", (req, res) => {
         typeOfQuiz: typeOfQuiz,
         typeOfQuizTitle: typeOfQuizTitle,
         questionId: questionId,
-        question: questions[questionId],
+        question: user.questions[questionId],
     });
 })
 
@@ -310,6 +305,9 @@ const addMovieAnswerToQuestion = (answerMovieId: string, q: Question) => {
 // ---------- 
 
 app.post("/quiz/:type/question/:questionId", async (req, res) => {
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
 
     const questionId: number = parseInt(req.params.questionId);
     const typeOfQuiz: string = req.params.type;
@@ -317,40 +315,30 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
     const movieAnswer = req.body.btnradioMovie;
     const comment: string = req.body.blacklistComment;
 
-    const characterIsCorrect = characterAnswer === questions[questionId].correct_character.character_id;
-    const movieIsCorrect = movieAnswer === questions[questionId].correct_movie.movie_id
+    const characterIsCorrect = characterAnswer === user.questions[questionId].correct_character.character_id;
+    const movieIsCorrect = movieAnswer === user.questions[questionId].correct_movie.movie_id;
 
     // write answers to question array
-    addCharacterAnswerToQuestion(characterAnswer, questions[questionId]);
-    addMovieAnswerToQuestion(movieAnswer, questions[questionId]);
+    addCharacterAnswerToQuestion(characterAnswer, user.questions[questionId]);
+    addMovieAnswerToQuestion(movieAnswer, user.questions[questionId]);
 
     // handle thumbs up & thumbs down functionality
-    // if user exists
-    if (user) {
-        // and if thumbs-up is checked, add quote to the user's favorites
-        if (req.body.btnThumbs === "thumbsUp") {
-            await addToFavorites(user,
-                {
-                    quote_id: questions[questionId].quote_id,
-                    dialog: questions[questionId].dialog,
-                    character: questions[questionId].correct_character
-                });
-            await loadUser(user.username);
+    if (req.body.btnThumbs === "thumbsUp") {
+        await addToFavorites(user,
+            {
+                quote_id: user.questions[questionId].quote_id,
+                dialog: user.questions[questionId].dialog,
+                character: user.questions[questionId].correct_character
+            });
 
-            // and if thumbs-down is checked, add quote to the user's blacklist
-        } else if (req.body.btnThumbs === "thumbsDown") {
-            await addToBlacklist(user,
-                {
-                    quote_id: questions[questionId].quote_id,
-                    dialog: questions[questionId].dialog,
-                    comment: comment
-                });
-            await loadUser(user.username);
-        }
-    } else {
-        throw "User not found";
+    } else if (req.body.btnThumbs === "thumbsDown") {
+        await addToBlacklist(user,
+            {
+                quote_id: user.questions[questionId].quote_id,
+                dialog: user.questions[questionId].dialog,
+                comment: comment
+            });
     }
-
 
     // CHECK if end of quiz: redirect to score
     switch (typeOfQuiz) {
@@ -377,22 +365,23 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
         console.log(error);
         res.status(404).send(error);
     }
+
     // DEFAULT redirect: go to the next question
     res.redirect(`/quiz/${typeOfQuiz}/question/${questionId + 1}`);
 })
 
 app.get("/quiz/:type/score", async (req, res) => {
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
+
     const typeOfQuiz = req.params.type;
     let scores: number[] = [];
     let highScore: number = 0;
 
-    if (user === null) {
-        return res.status(404).send("User not found");
-    }
-
     switch (typeOfQuiz) {
         case "tenrounds":
-            scores = questions.map(q => {
+            scores = user.questions.map(q => {
                 if (q.correct_character === q.answer_character && q.correct_movie === q.answer_movie) {
                     return 1;
                 } else if (q.correct_character === q.answer_character || q.correct_movie === q.answer_movie) {
@@ -404,7 +393,7 @@ app.get("/quiz/:type/score", async (req, res) => {
             highScore = user.highscore_tenrounds;
             break;
         case "suddendeath":
-            scores = questions.map(q => {
+            scores = user.questions.map(q => {
                 if (q.correct_character === q.answer_character && q.correct_movie === q.answer_movie) {
                     return 1;
                 } else {
@@ -422,13 +411,12 @@ app.get("/quiz/:type/score", async (req, res) => {
     const newHighScore: boolean = highScore < sumOfScores;
     if (newHighScore) {
         await createNewHighScore(user, typeOfQuiz, sumOfScores);
-        await loadUser(user.username);
         highScore = typeOfQuiz === "tenrounds" ? user.highscore_tenrounds : user.highscore_suddendeath;
     }
 
     res.render("score", {
         typeOfQuiz: typeOfQuiz,
-        questions: questions,
+        questions: user.questions,
         score: sumOfScores,
         highScore: highScore,
         newHighScore: newHighScore
@@ -437,20 +425,20 @@ app.get("/quiz/:type/score", async (req, res) => {
 
 
 app.get("/favorites", async (req, res) => {
-    if (user === null) {
-        return res.status(404).send("User not found");
-    }
-    let favorites: Favorite[] | undefined = await getUserFavorites(user?.username);
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
+
     res.render("favorites", {
-        favorites: favorites
+        favorites: user.favorites
     });
-})
+});
 
 
-app.get("/favorites/download", (req, res) => {
-    if (user === null) {
-        return res.status(404).send("User not found");
-    }
+app.get("/favorites/download", async (req, res) => {
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
 
     const favList: string = user.favorites.reduce((favList: string, fav: Favorite) => {
         return favList + `${fav.dialog} - ${fav.character.name}\r\n`;
@@ -463,16 +451,15 @@ app.get("/favorites/download", (req, res) => {
 
 
 app.get("/favorites/:characterId", async (req, res) => {
-    // e.g. http://localhost:3000/favorites/28392
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
+
     const characterId: string = req.params.characterId;
 
-    if (!user) {
-        return res.status(404).send("User not found");
-    }
-    let favorites: Favorite[] | undefined = await getUserFavorites(user?.username);
-
-    if (favorites) {
-        let characterQuotes: Favorite[] = favorites.filter(fav => fav.character.character_id === characterId);
+    if (user.favorites) {
+        let characterQuotes: Favorite[] = user.favorites.filter(fav => fav.character.character_id === characterId);
+        
         if (characterQuotes.length > 0) {
             let foundCharacter: Character | undefined = characterQuotes.find(fav => fav.character.character_id === characterId)?.character;
 
@@ -483,41 +470,38 @@ app.get("/favorites/:characterId", async (req, res) => {
                 });
             }
         } else {
-            // if all quotes of a specific char have been deleted, redirect to favorites
             res.redirect("/favorites");
         }
     }
-
 })
 
 app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
+
     const quoteId: string = req.params.quoteId;
     const characterId: string = req.params.characterId;
 
-    if (!user) {
-        return res.status(404).send("User not found");
-    }
-    let favorites: Favorite[] | undefined = await getUserFavorites(user?.username);
-    if (favorites) {
-        let favorite: Favorite | undefined = favorites.find(fav => fav.quote_id === quoteId);
+    if (user.favorites) {
+        let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
 
         if (favorite) {
             await deleteFavorite(user, favorite);
             res.redirect(`/favorites/${characterId}`);
         }
     }
-
 })
 
 app.post("/favorites/:quoteId/delete", async (req, res) => {
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
+
     const quoteId: string = req.params.quoteId;
 
-    if (!user) {
-        return res.status(404).send("User not found");
-    }
-    let favorites: Favorite[] | undefined = await getUserFavorites(user?.username);
-    if (favorites) {
-        let favorite: Favorite | undefined = favorites.find(fav => fav.quote_id === quoteId);
+    if (user.favorites) {
+        let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
 
         if (favorite) {
             await deleteFavorite(user, favorite);
@@ -526,36 +510,33 @@ app.post("/favorites/:quoteId/delete", async (req, res) => {
     }
 })
 
-app.get("/blacklist", (req, res) => {
-    // e.g. http://localhost:3000/blacklist
-    if (user == null) {
-        return res.status(404).send("User not found");
-    }
+app.get("/blacklist", async (req, res) => {
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
+
     const blacklist: Blacklist[] = user.blacklist;
     res.render("blacklist", { blacklist: blacklist });
 })
 
 app.post("/blacklist/:quoteId/delete", async (req, res) => {
-    if (user == null) {
-        return res.status(404).send("User not found");
-    }
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
 
     const quoteId = req.params.quoteId;
     await deleteBlacklist(user, quoteId);
-    await loadUser(user.username);
-
     res.redirect("/blacklist");
 })
 
 app.post("/blacklist/:quoteId/edit", async (req, res) => {
-    if (user == null) {
-        return res.status(404).send("User not found");
-    }
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
 
     const quoteId = req.params.quoteId;
     const newComment = req.body.editComment;
     await editBlacklist(user, quoteId, newComment);
-    await loadUser(user.username)
 
     res.redirect("/blacklist");
 })
@@ -573,7 +554,7 @@ app.listen(app.get("port"), async () => {
     } catch (e) {
         console.log("Error: MongoDB connection failed.");
     }
-    await loadCharacters(); // this function will load all characters from the one api
+    await loadCharacters();
     await loadQuotes();
     await loadMovies();
 })
