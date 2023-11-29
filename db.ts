@@ -74,7 +74,7 @@ const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: 
 
 const deleteBlacklist = async (user: User, quoteId: string) => {
     try {
-        await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username }, { $pull: { blacklist: { quote_Id: quoteId } } });
+        await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username }, { $pull: { blacklist: { quote_id: quoteId } } });
     } catch (err) {
         console.log(err);
     }
