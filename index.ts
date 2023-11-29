@@ -8,7 +8,7 @@ import { User, Favorite, Blacklist, Question, Quote, Movie, Character } from "./
 import { mockUser, mockQuotes, mockMovies, mockCharacters, mockQuestions } from "./mockData";
 import fs from "fs";
 import { ObjectId } from "mongodb";
-import { quoteList, characterList, movieList, quotes, characters, movies, loadCharacters, loadMovies, loadQuotes } from "./API"
+import { quotes, characters, movies, loadCharacters, loadMovies, loadQuotes } from "./API"
 
 const app = express();
 app.set("port", 3000);

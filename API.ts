@@ -3,21 +3,16 @@ import { Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie 
 if (typeof (process.env.API_KEY) === "undefined") throw Error(`Error: .env var "API_KEY" is undefined`); // needs to be added because typescript gives error if process.env is string/undefined
 const API_KEY = process.env.API_KEY; // API_KEY in .env file
 
-let quoteList: Quote[] = []; // this is the final list where all quotes will be in from the API
-let characterList: Character[] = []; // this is the final list where all characters will be in
-let movieList: Movie[] = []; // this is the final list where all movies will be in 
-
-let quotes: Quote[] = quoteList;
-let characters: Character[] = characterList;
-let movies: Movie[] = movieList; // TODO: delete mockMovies & fill in with loadData function in app.listen
-
+let quotes: Quote[] = [];
+let characters: Character[] = [];
+let movies: Movie[] = [];
 
 // ----------------------------------------------- START OVERVIEW API LOGIC ---------------------------------------------------------------------------------
 
 // ----------------------------------------------- START CHARACTER API LOGIC ---------------------------------------------------------------------------------
 // create root object
 let rootCharacter: RootCharacter; // just existing
-//let characterList: Character[] = []; // this is the final list where all characters will be in -- moved up to top 
+//let characters: Character[] = []; // this is the final list where all characters will be in -- moved up to top 
 
 const loadCharacters = async () => {
 
@@ -35,8 +30,8 @@ const loadCharacters = async () => {
         })
         ;
 
-    //let characterList: Character[] = []; // this is the final list where all characters will be in -- moved higher up
-    let characterTemp: Character; // this is a dummy character that will fill characterList
+    //let characters: Character[] = []; // this is the final list where all characters will be in -- moved higher up
+    let characterTemp: Character; // this is a dummy character that will fill characters
 
     // filtering + converting APICharacters to Characters objects
     for (let index = 0; index < rootCharacter.docs.length; index++) {
@@ -53,7 +48,7 @@ const loadCharacters = async () => {
                     wikiUrl: rootCharacter.docs[index].wikiUrl
                 }
 
-                characterList.push(characterTemp); // character added to list ==> characterList is final list with Character[] in
+                characters.push(characterTemp); // character added to list ==> characters is final list with Character[] in
             }
 
         }
@@ -71,7 +66,7 @@ const loadCharacters = async () => {
 // create root object
 let rootQuote: RootQuote; // just existing to extract data
 let rootQuoteTemp: RootQuote; // just existing temporary to combine the rest
-//let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
+//let quotes: Quote[] = []; // this is the final list where all quotes will be in 
 
 const loadQuotes = async () => {
 
@@ -104,8 +99,8 @@ const loadQuotes = async () => {
 
     }
 
-    //let quoteList: Quote[] = []; // this is the final list where all quotes will be in 
-    let quoteTemp: Quote; // this is a dummy quote that will fill quoteList
+    //let quotes: Quote[] = []; // this is the final list where all quotes will be in 
+    let quoteTemp: Quote; // this is a dummy quote that will fill quotes
 
     // filtering + converting APIQuotes to Quotes objects
     for (let index = 0; index < rootQuote.docs.length; index++) {
@@ -125,9 +120,9 @@ const loadQuotes = async () => {
                     character_id: rootQuote.docs[index].character
                 }
 
-                for (let i = 0; i < characterList.length; i++) {
-                    if (quoteTemp.character_id == characterList[i].character_id) { // check if person linked with quote is in the characterlist
-                        quoteList.push(quoteTemp); // add quote to list ==> quoteList is final list with Quotes[] in
+                for (let i = 0; i < characters.length; i++) {
+                    if (quoteTemp.character_id == characters[i].character_id) { // check if person linked with quote is in the characters
+                        quotes.push(quoteTemp); // add quote to list ==> quotes is final list with Quotes[] in
                         break;
                     }
                     else {
@@ -154,7 +149,7 @@ const loadQuotes = async () => {
 // ----------------------------------------------- START MOVIE API LOGIC ---------------------------------------------------------------------------------
 // create root object
 let rootMovie: RootMovie; // just existing to extract data
-//let movieList: Movie[] = []; // this is the final list where all movies will be in - moved up to top
+//let movies: Movie[] = []; // this is the final list where all movies will be in - moved up to top
 
 const loadMovies = async () => {
 
@@ -172,7 +167,7 @@ const loadMovies = async () => {
         })
         ;
 
-    let movieTemp: Movie; // this is a dummy movie that will fill characterList
+    let movieTemp: Movie; // this is a dummy movie that will fill characters
 
     // filtering + converting APIMovies to Movie objects
     for (let index = 0; index < rootMovie.docs.length; index++) {
@@ -190,7 +185,7 @@ const loadMovies = async () => {
                     name: rootMovie.docs[index].name
                 }
 
-                movieList.push(movieTemp); // add movie to list ==> movieList is final list with Movies[] in
+                movies.push(movieTemp); // add movie to list ==> movies is final list with Movies[] in
             }
 
             else {
@@ -206,6 +201,6 @@ const loadMovies = async () => {
 
 } // END ROOT CHARACTER LOGIC
 
-export {quoteList, characterList, movieList, quotes, characters, movies, loadCharacters, loadMovies, loadQuotes}
+export {quotes, characters, movies, loadCharacters, loadMovies, loadQuotes}
 
 // ----------------------------------------------- END API LOGIC ---------------------------------------------------------------------------------
