@@ -5,10 +5,12 @@ export interface User {
     username: string,
     password: string,
     email: string,
+    questions: Question[],
     favorites: Favorite[],
     blacklist: Blacklist[],
     highscore_tenrounds: number,
     highscore_suddendeath: number,
+
 }
 
 export interface Favorite {
