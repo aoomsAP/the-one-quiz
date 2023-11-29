@@ -485,6 +485,23 @@ app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
   
 })
 
+app.post("/favorites/:quoteId/delete", async (req, res) => {
+    const quoteId: string = req.params.quoteId;
+    
+    if (!user) {
+        return res.status(404).send("User not found");
+    }
+    let favorites: Favorite[] | undefined = await getUserFavorites(user?.username);
+    if (favorites) {
+        let favorite: Favorite | undefined = favorites.find(fav => fav.quote_id === quoteId); 
+        
+        if(favorite) {
+            await deleteFavorite(user, favorite);
+            res.redirect(`/favorites`);
+        }         
+    }
+})
+
 app.get("/blacklist", (req, res) => {
     // e.g. http://localhost:3000/blacklist
     res.render("blacklist");
