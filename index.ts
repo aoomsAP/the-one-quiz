@@ -3,7 +3,7 @@ import express from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 
-import { client, connect, createUser, getUser, getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist } from "./db";
+import { client, connect, createUser, getUser, getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions } from "./db";
 import { User, Favorite, Blacklist, Question, Quote, Movie, Character } from "./types";
 import fs from "fs";
 import { ObjectId } from "mongodb";
@@ -129,8 +129,6 @@ app.get("/quiz", (req, res) => {
     res.render("quiz");
 })
 
-// ---------- 
-
 app.post("/quiz", async (req, res) => {
     if (!req.session.userId) return res.status(404).send("User not found");
     const user = await getUserById(req.session.userId);
@@ -141,7 +139,7 @@ app.post("/quiz", async (req, res) => {
 
     // add first question to questions array
     try {
-        addNextQuestion();
+        await addNextQuestion(user);
     }
     catch (error) {
         console.log(error);
@@ -170,9 +168,6 @@ app.get("/quiz/:type/question/:questionId", async (req, res) => {
         question: user.questions[questionId],
     });
 })
-
-
-// ---------- 
 
 app.post("/quiz/:type/question/:questionId", async (req, res) => {
     if (!req.session.userId) return res.status(404).send("User not found");
@@ -229,7 +224,7 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
 
     // DEFAULT action: generate the next question
     try {
-        addNextQuestion();
+        await addNextQuestion(user);
     }
     catch (error) {
         console.log(error);
@@ -429,4 +424,3 @@ app.listen(app.get("port"), async () => {
     await loadMovies();
 })
 
-export { questions }
