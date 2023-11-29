@@ -1,5 +1,5 @@
 require("dotenv").config();
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { User, Favorite, Blacklist, Question, Movie, Character } from "./types";
 
 
@@ -39,6 +39,18 @@ const getUser = async (username: string): Promise<User | null> => {
     
     try {
         foundUser = await client.db("TheOneQuiz").collection("Users").findOne<User>({ username: username });
+    } catch (err) {
+        console.log(err);
+    }
+
+    return foundUser;
+}
+
+const getUserById = async(userId: ObjectId) => {
+    let foundUser: User | null = null;
+    
+    try {
+        foundUser = await client.db("TheOneQuiz").collection("Users").findOne<User>({ _id: new ObjectId(userId) });
     } catch (err) {
         console.log(err);
     }
@@ -146,9 +158,11 @@ const editBlacklist = async (user: User, quoteId: string, newComment: string) =>
 }
 
 export { 
+    client,
     connect, 
     createUser, 
     getUser, 
+    getUserById,
     createNewHighScore, 
     getUserFavorites, 
     addToFavorites, 
