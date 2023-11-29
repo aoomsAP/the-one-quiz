@@ -412,13 +412,13 @@ app.get("/quiz/:type/score", async (req, res) => {
 });
 
 
-app.get("/favorites", (req, res) => {
+app.get("/favorites", async (req, res) => {
     if (user === null) {
         return res.status(404).send("User not found");
     }
-
+    let favorites: Favorite[] | undefined = await getUserFavorites(user?.username);
     res.render("favorites", {
-        favorites: user.favorites,
+        favorites: favorites
     });
 })
 
