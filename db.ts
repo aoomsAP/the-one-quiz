@@ -2,6 +2,7 @@ require("dotenv").config();
 import { MongoClient, ObjectId } from "mongodb";
 import { User, Favorite, Blacklist, Question, Movie, Character } from "./types";
 
+// CONNECTION
 
 if (typeof (process.env.URI) === "undefined") throw Error(`Error: .env var "URI" is undefined`); // needs to be added because typescript gives error if process.env is string/undefined
 const client = new MongoClient(process.env.URI); // mongo URI in .env file
@@ -127,7 +128,6 @@ const addToFavorites = async (user: User, favorite: Favorite) => {
 }
 
 const deleteFavorite = async (user: User, favorite: Favorite) => {
-    console.log("inside deletefavorite")
     try {
         await client.db("TheOneQuiz").collection("Users").updateOne({ _id: user._id },{$pull: { favorites: favorite }});
     } catch (err) {

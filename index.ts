@@ -1,14 +1,20 @@
+// DEPENDENCIES
+// ------------------------------------------------------------------------------------------------------
+
 require("dotenv").config();
 import express from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-
-import { client, connect, createUser, getUser, getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions } from "./db";
-import { User, Favorite, Blacklist, Question, Quote, Movie, Character } from "./types";
 import fs from "fs";
+
+import { User, Favorite, Blacklist, Question, Quote, Movie, Character } from "./types";
 import { ObjectId } from "mongodb";
+import { client, connect, createUser, getUser, getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions, writeCharacterAnswer, writeMovieAnswer } from "./db";
+import { addNextQuestion, getCharacterAnswerById, getMovieAnswerById } from "./functions"
 import { quotes, characters, movies, loadCharacters, loadMovies, loadQuotes } from "./API"
-import { addNextQuestion, addCharacterAnswerToQuestion, addMovieAnswerToQuestion } from "./functions"
+
+// SETUP APP + SESSIONS
+// ------------------------------------------------------------------------------------------------------
 
 const app = express();
 app.set("port", 3000);
@@ -21,7 +27,11 @@ if (!process.env.SESSION_SECRET) throw Error('Error: .env var "SESSION_SECRET" i
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    store: MongoStore.create({ client, dbName: "TheOneQuiz", collectionName: "Sessions" }),
+    store: MongoStore.create({
+        client,
+        dbName: "TheOneQuiz",
+        collectionName: "Sessions"
+    }),
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -38,6 +48,11 @@ declare module 'express-session' {
     }
 }
 
+// ROUTES
+// ------------------------------------------------------------------------------------------------------
+
+// LANDING
+
 app.get("/", async (req, res) => {
     let user: User | null = null;
     if (req.session.userId) {
@@ -48,6 +63,8 @@ app.get("/", async (req, res) => {
         user: user,
     });
 })
+
+// LOGIN
 
 app.get("/login", (req, res) => {
     res.render("login");
@@ -75,6 +92,12 @@ app.post("/login", async (req, res) => {
     req.session.userId = foundUser._id;
     req.session.save(() => res.status(200).redirect("/"));
 });
+
+// LOGOUT
+
+// <IMPLEMENT LOGOUT HERE>
+
+// REGISTER
 
 app.get("/register", (req, res) => {
     res.render("register");
@@ -125,6 +148,8 @@ app.post("/register", async (req, res) => {
     }
 })
 
+// QUIZ
+
 app.get("/quiz", (req, res) => {
     res.render("quiz");
 })
@@ -152,6 +177,8 @@ app.post("/quiz", async (req, res) => {
     res.redirect(`/quiz/${typeOfQuiz}/question/0`);
 })
 
+// QUESTION
+
 app.get("/quiz/:type/question/:questionId", async (req, res) => {
     if (!req.session.userId) return res.status(404).send("User not found");
     const user = await getUserById(req.session.userId);
@@ -176,16 +203,18 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
 
     const questionId: number = parseInt(req.params.questionId);
     const typeOfQuiz: string = req.params.type;
-    const characterAnswer = req.body.btnradioChar;
-    const movieAnswer = req.body.btnradioMovie;
+    const characterAnswerId = req.body.btnradioChar;
+    const movieAnswerId = req.body.btnradioMovie;
     const comment: string = req.body.blacklistComment;
 
-    const characterIsCorrect = characterAnswer === user.questions[questionId].correct_character.character_id;
-    const movieIsCorrect = movieAnswer === user.questions[questionId].correct_movie.movie_id;
+    const characterIsCorrect = characterAnswerId === user.questions[questionId].correct_character.character_id;
+    const movieIsCorrect = movieAnswerId === user.questions[questionId].correct_movie.movie_id;
 
     // write answers to question array
-    addCharacterAnswerToQuestion(characterAnswer, user.questions[questionId]);
-    addMovieAnswerToQuestion(movieAnswer, user.questions[questionId]);
+    const characterAnswer : Character = getCharacterAnswerById(characterAnswerId, user.questions[questionId]);
+    await writeCharacterAnswer(req.session.userId, user.questions[questionId].quote_id, characterAnswer);
+    const movieAnswer : Movie = getMovieAnswerById(movieAnswerId,user.questions[questionId]);
+    await writeMovieAnswer(req.session.userId, user.questions[questionId].quote_id, movieAnswer);
 
     // handle thumbs up & thumbs down functionality
     if (req.body.btnThumbs === "thumbsUp") {
@@ -195,7 +224,6 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
                 dialog: user.questions[questionId].dialog,
                 character: user.questions[questionId].correct_character
             });
-
     } else if (req.body.btnThumbs === "thumbsDown") {
         await addToBlacklist(user,
             {
@@ -205,7 +233,7 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
             });
     }
 
-    // CHECK if end of quiz: redirect to score
+    // check if end of quiz: redirect to score
     switch (typeOfQuiz) {
         case "tenrounds":
             // ten rounds ends after 10 questions
@@ -222,7 +250,7 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
             break;
     }
 
-    // DEFAULT action: generate the next question
+    // default action: generate the next question
     try {
         await addNextQuestion(user);
     }
@@ -231,13 +259,15 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
         res.status(404).send(error);
     }
 
-    // DEFAULT redirect: go to the next question
+    // default redirect: go to the next question
     res.redirect(`/quiz/${typeOfQuiz}/question/${questionId + 1}`);
 })
 
+// SCORE
+
 app.get("/quiz/:type/score", async (req, res) => {
     if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
+    let user = await getUserById(req.session.userId);
     if (!user) return res.status(404).send("User not found");
 
     const typeOfQuiz = req.params.type;
@@ -247,9 +277,11 @@ app.get("/quiz/:type/score", async (req, res) => {
     switch (typeOfQuiz) {
         case "tenrounds":
             scores = user.questions.map(q => {
-                if (q.correct_character === q.answer_character && q.correct_movie === q.answer_movie) {
+                if (q.correct_character.character_id === q.answer_character?.character_id
+                    && q.correct_movie.movie_id === q.answer_movie?.movie_id) {
                     return 1;
-                } else if (q.correct_character === q.answer_character || q.correct_movie === q.answer_movie) {
+                } else if (q.correct_character.character_id === q.answer_character?.character_id
+                    || q.correct_movie.movie_id === q.answer_movie?.movie_id) {
                     return 0.5;
                 } else {
                     return 0;
@@ -259,7 +291,8 @@ app.get("/quiz/:type/score", async (req, res) => {
             break;
         case "suddendeath":
             scores = user.questions.map(q => {
-                if (q.correct_character === q.answer_character && q.correct_movie === q.answer_movie) {
+                if (q.correct_character.character_id === q.answer_character?.character_id
+                    && q.correct_movie.movie_id === q.answer_movie?.movie_id) {
                     return 1;
                 } else {
                     return 0;
@@ -276,6 +309,8 @@ app.get("/quiz/:type/score", async (req, res) => {
     const newHighScore: boolean = highScore < sumOfScores;
     if (newHighScore) {
         await createNewHighScore(user, typeOfQuiz, sumOfScores);
+        user = await getUserById(req.session.userId);
+        if (!user) return res.status(404).send("User not found");
         highScore = typeOfQuiz === "tenrounds" ? user.highscore_tenrounds : user.highscore_suddendeath;
     }
 
@@ -288,6 +323,7 @@ app.get("/quiz/:type/score", async (req, res) => {
     });
 });
 
+// FAVORITES
 
 app.get("/favorites", async (req, res) => {
     if (!req.session.userId) return res.status(404).send("User not found");
@@ -314,6 +350,24 @@ app.get("/favorites/download", async (req, res) => {
     res.download(`./public/${user.username}_favorites.txt`);
 });
 
+app.post("/favorites/:quoteId/delete", async (req, res) => {
+    if (!req.session.userId) return res.status(404).send("User not found");
+    const user = await getUserById(req.session.userId);
+    if (!user) return res.status(404).send("User not found");
+
+    const quoteId: string = req.params.quoteId;
+
+    if (user.favorites) {
+        let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
+
+        if (favorite) {
+            await deleteFavorite(user, favorite);
+            res.redirect(`/favorites`);
+        }
+    }
+})
+
+// CHARACTER
 
 app.get("/favorites/:characterId", async (req, res) => {
     if (!req.session.userId) return res.status(404).send("User not found");
@@ -358,22 +412,7 @@ app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
     }
 })
 
-app.post("/favorites/:quoteId/delete", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
-
-    const quoteId: string = req.params.quoteId;
-
-    if (user.favorites) {
-        let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
-
-        if (favorite) {
-            await deleteFavorite(user, favorite);
-            res.redirect(`/favorites`);
-        }
-    }
-})
+// BLACKLIST
 
 app.get("/blacklist", async (req, res) => {
     if (!req.session.userId) return res.status(404).send("User not found");
@@ -406,10 +445,15 @@ app.post("/blacklist/:quoteId/edit", async (req, res) => {
     res.redirect("/blacklist");
 })
 
+// PAGE NOT FOUND
+
 app.use((req, res) => {
     res.status(404);
     res.send("Error 404 - Page Not Found");
 })
+
+// PORT + CONNECTIONS
+// ------------------------------------------------------------------------------------------------------
 
 app.listen(app.get("port"), async () => {
     console.log(`Local url: htpp://localhost:${app.get("port")}`);
@@ -423,4 +467,3 @@ app.listen(app.get("port"), async () => {
     await loadQuotes();
     await loadMovies();
 })
-

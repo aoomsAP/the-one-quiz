@@ -3,6 +3,8 @@ import { quotes, characters, movies } from "./API"
 import { writeQuestion } from "./db";
 import { ObjectId } from "mongodb";
 
+// QUESTIONS
+
 const quoteAppearsInBlacklist = (quoteId: string, user: User) => {
     const blacklistedIds: string[] = user.blacklist.map(q => q.quote_id);
     return blacklistedIds.includes(quoteId);
@@ -85,40 +87,42 @@ const addNextQuestion = async (user: User) => {
     await writeQuestion(new ObjectId(user._id) ,newQuestion);
 }
 
-// ---------- functions for adding answers to questions
+// ANSWERS
 
-const addCharacterAnswerToQuestion = (answerCharacterId: string, q: Question) => {
+const getCharacterAnswerById = (answerCharacterId: string, q: Question) => {
     // if answer is correct, answer_character = correct_character
     if (answerCharacterId === q.correct_character.character_id) {
-        q.answer_character = q.correct_character;
+        return q.correct_character;
     }
     // if answer is incorrect, answer_character = one of the wrong_characters
     else {
         if (answerCharacterId === q.wrong_characters[0].character_id) {
-            q.answer_character = q.wrong_characters[0];
+            return q.wrong_characters[0];
         }
         else {
-            q.answer_character = q.wrong_characters[1];
+            return q.wrong_characters[1];
         }
     }
 }
 
-const addMovieAnswerToQuestion = (answerMovieId: string, q: Question) => {
+const getMovieAnswerById = (answerMovieId: string, q: Question) => {
     // if answer is correct, answer_movie = correct_movie
     if (answerMovieId === q.correct_movie.movie_id) {
-        q.answer_movie = q.correct_movie;
+        return q.correct_movie;
     }
     // if answer is incorrect, answer_movie = one of the wrong_movies
     else {
         if (answerMovieId === q.wrong_movies[0].movie_id) {
-            q.answer_movie = q.wrong_movies[0];
+            return q.wrong_movies[0];
         }
         else {
-            q.answer_movie = q.wrong_movies[1];
+            return q.wrong_movies[1];
         }
     }
 }
 
-
-export { addNextQuestion, addCharacterAnswerToQuestion, addMovieAnswerToQuestion }
-
+export { 
+    addNextQuestion,
+    getCharacterAnswerById,
+    getMovieAnswerById
+}

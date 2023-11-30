@@ -35,9 +35,9 @@
                             <%= q.dialog %>
                         </span>
                     </p>
-                    <!-- character -->
+                    <!-- character answer -->
                     <p>
-                        <% if (q.answer_character === q.correct_character) { %>
+                        <% if (q.answer_character.character_id === q.correct_character.character_id) { %>
                                 <span class="correct-answer"><i class="bi bi-check-lg" title="Correct character"></i><%= q.answer_character.name %></span>
                         <% } else { %>
                                 <span class="wrong-answer"><i class="bi bi-x" title="Wrong character"></i><%= q.answer_character.name %></span>
@@ -45,9 +45,9 @@
                                 <span class="correct-answer"><%= q.correct_character.name %></span>
                         <% } %>
                     </p>
-                    <!-- movie -->
+                    <!-- movie answer -->
                     <p>
-                        <% if (q.answer_movie === q.correct_movie) { %>
+                        <% if (q.answer_movie.movie_id === q.correct_movie.movie_id) { %>
                                 <span class="correct-answer"><i class="bi bi-check-lg" title="Correct movie"></i><%= q.answer_movie.name %></span>
                         <% } else { %>
                                 <span class="wrong-answer"><i class="bi bi-x" title="Wrong movie"></i><%= q.answer_movie.name %></span>
