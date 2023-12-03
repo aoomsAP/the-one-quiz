@@ -7,18 +7,29 @@
             <p class="fs-3">
                 <!-- Welkom text if user is logged in-->
                 <% if (locals.user) { %>
-                    Welkom <strong><%=user.username%></strong>! Start je ontdekkingsreis door zes boeiende projecten.
-                <% } else { %>
+                    Welkom <strong>
+                        <%=user.username%>
+                    </strong>! Start je ontdekkingsreis door zes boeiende projecten.
+                    <% } else { %>
                         Meld je aan en start je ontdekkingsreis door zes boeiende projecten!
-                <% } %>
+                        <% } %>
             </p>
-            <div class="d-grid gap-2 d-md-block">
-                <a href="/login" class="btn btn-primary btn-lg col text-center m-1">Aanmelden</a>
-                <a href="/register" class="btn btn-outline-secondary btn-lg col text-center m-1">Registreren</a>
-            </div>
+            <!-- Difference register/login/logout if user is logged in or not-->
+            <% if (locals.user) { %>
+                <div class="d-grid gap-2 d-md-block">
+                    <form method="POST" action="logout">
+                        <button type="submit" class="btn btn-primary btn-lg col text-center m-1">Afmelden</button>
+                    </form>
+                </div>
+                <% } else { %>
+                    <div class="d-grid gap-2 d-md-block">
+                        <a href="/login" class="btn btn-primary btn-lg col text-center m-1">Aanmelden</a>
+                        <a href="/register" class="btn btn-outline-secondary btn-lg col text-center m-1">Registreren</a>
+                    </div>
+                    <% } %>
 
-            <!-- Alerts -->
-            <div id="accessDeniedOtherProjects"></div>
+                        <!-- Alerts -->
+                        <div id="accessDeniedOtherProjects"></div>
 
         </section>
 
