@@ -140,7 +140,7 @@ app.post("/register", async (req, res) => {
         highscore_suddendeath: 0
     }
     await createUser(newUser);
-    console.log(newUser.password) // TESTING - TO BE REMOVED - testuer02 = password02
+
 
     // load new user from db
     let newUserInDb: User | null = await getUser(newUser.username);
