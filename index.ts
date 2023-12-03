@@ -13,6 +13,8 @@ import { client, connect, createUser, getUser, getUserById, createNewHighScore, 
 import { addNextQuestion, getCharacterAnswerById, getMovieAnswerById } from "./functions"
 import { quotes, characters, movies, loadCharacters, loadMovies, loadQuotes } from "./API"
 
+const bcrypt = require('bcrypt')
+
 // SETUP APP + SESSIONS
 // ------------------------------------------------------------------------------------------------------
 
@@ -82,7 +84,8 @@ app.post("/login", async (req, res) => {
             message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
         });
     }
-    if (foundUser.password != password) {
+    if //(foundUser.password != password) {
+        (!bcrypt.compare(foundUser.password, password)){
         return res.render("login", {
             message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
         });
@@ -125,9 +128,10 @@ app.post("/register", async (req, res) => {
     }
 
     // create new user
+    
     let newUser: User = {
         username: username,
-        password: password,
+        password: await bcrypt.hash(password,10),
         email: email,
         questions: [],
         favorites: [],
@@ -136,6 +140,7 @@ app.post("/register", async (req, res) => {
         highscore_suddendeath: 0
     }
     await createUser(newUser);
+
 
     // load new user from db
     let newUserInDb: User | null = await getUser(newUser.username);
