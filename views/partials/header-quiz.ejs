@@ -34,33 +34,35 @@
 
 <body id="top">
 
-<header>
-    <nav class="navbar navbar-expand-md mb-5" id="navbar">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/quiz"><img src="/assets/images/logo.png" alt="The One Quiz logo"
-                title="The One Quiz logo"></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Projecten</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/quiz">Quiz</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/favorites">Favorieten</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/blacklist">Blacklist</a>
-                    </li>
-                </ul>
-                <a href="/" class="btn btn-primary">Afmelden</a>
+    <header>
+        <nav class="navbar navbar-expand-md mb-5" id="navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/quiz"><img src="/assets/images/logo.png" alt="The One Quiz logo"
+                        title="The One Quiz logo"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Projecten</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/quiz">Quiz</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/favorites">Favorieten</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/blacklist">Blacklist</a>
+                        </li>
+                    </ul>
+                    <form method="POST" action="logout">
+                        <button type="submit" class="btn btn-primary">Afmelden</button>
+                    </form>
+                </div>
             </div>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
