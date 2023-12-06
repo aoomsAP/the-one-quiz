@@ -4,13 +4,13 @@
     <!-- Title and intro -->
     <section class="mb-5">
         <h1>Blacklist</h1>
-        <p>Hieronder vind je je blacklist. Deze quotes komen niet meer voor in de quiz. Klik op de pen om de
-            opmerkingen te wijzigen, of op het vuilbakje om quotes uit je blacklist te verwijderen.</p>
+        <p>Hieronder vind je jouw blacklist. Deze quotes komen niet meer voor in de quiz. Klik op de pen om de
+            opmerkingen te wijzigen, of op het vuilbakje om quotes uit jouw blacklist te verwijderen.</p>
     </section>
     <% if (blacklist.length === 0) { %>
         <!-- No quotes in blacklist -->
         <section>
-            <p><strong>Nog geen quotes in je blacklist.</strong> Gebruik de blacklist-knop tijdens de quiz om een quote toe te voegen.</p>
+            <p><strong>Nog geen quotes in jouw blacklist.</strong> Gebruik de blacklist-knop tijdens de quiz om een quote toe te voegen.</p>
         </section>
     <% } else { %>
         <!-- Table with blacklisted quotes -->
@@ -46,7 +46,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h2 class="modal-title fs-5" id="deleteBlackList<%= index + 1 %>">Weet je zeker dat je deze
-                                                quote uit je blacklist wil verwijderen?</h2>
+                                                quote uit jouw blacklist wil verwijderen?</h2>
                                         </div>
                                         <div class="modal-body">
                                             <p><%= item.dialog %></p>
@@ -64,7 +64,7 @@
                     </div>
                     <!-- Edit comment window -->
                     <form class="table-edit-form collapse px-2" id="comment<%= index + 1 %>" action="/blacklist/<%= item.quote_id %>/edit" method="POST">
-                        <label for="editComment" class="form-label pt-2">Wijzig je opmerking hier:</label>
+                        <label for="editComment" class="form-label pt-2">Wijzig jouw opmerking hier:</label>
                         <textarea class="form-control" id="editComment" name="editComment" rows="3"><%= item.comment %></textarea>
                         <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
                     </form>

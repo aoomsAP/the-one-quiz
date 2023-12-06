@@ -35,7 +35,7 @@ const loadCharacters = async () => {
 
     // filtering + converting APICharacters to Characters objects
     for (let index = 0; index < rootCharacter.docs.length; index++) {
-        if (rootCharacter.docs[index].name != '') {
+        if (rootCharacter.docs[index].name != '' && !rootCharacter.docs[index].name.startsWith("User:")) {
 
 
             // first check if data exists (only full objects?)
@@ -52,10 +52,6 @@ const loadCharacters = async () => {
             }
 
         }
-        else {
-            console.log(`${rootCharacter.docs[index].name} werd niet toegevoegd aan de lijst`)
-        }
-
     }
 
 
