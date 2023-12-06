@@ -1,7 +1,6 @@
 import { Question, Quote, Movie, Character, RootCharacter, RootQuote, RootMovie } from "./types";
 
-if (typeof (process.env.API_KEY) === "undefined") throw Error(`Error: .env var "API_KEY" is undefined`); // needs to be added because typescript gives error if process.env is string/undefined
-const API_KEY = process.env.API_KEY; // API_KEY in .env file
+const API_KEY = process.env.API_KEY || "key"; // API_KEY in .env file
 
 let quotes: Quote[] = [];
 let characters: Character[] = [];
