@@ -461,7 +461,7 @@ app.post("/blacklist/:quoteId/edit", async (req, res) => {
 
 app.use((req, res) => {
     res.status(404);
-    res.render("error-page", {errorMessage: "Pagina niet gevonden."});
+    res.send("Error 404 - Page Not Found");
 })
 
 // PORT + CONNECTIONS
