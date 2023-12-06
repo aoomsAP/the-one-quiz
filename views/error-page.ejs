@@ -1,0 +1,22 @@
+<%- include('./partials/header'); %>
+
+<main class="container mt-5 error">
+    <a href="/" title="Ga terug naar overzicht van projecten">
+        <i class="bi bi-arrow-left fs-1"></i>
+    </a>
+
+    <section class="card">
+        <h1 class="card-header text-left fs-3">Er ging iets mis</h1>
+        <figure>
+            <img src="/assets/images/error-image.jpg" alt="Robot holding an error sign"
+                title="Error robot" class="card-img-center py-3" />
+        </figure>
+        <div class="card-body">
+            <% if (locals.errorMessage) { %>
+                    <p><%= errorMessage %></p>
+            <% } %>
+        </div>
+    </section>
+</main>
+
+<%- include('./partials/footer'); %>
