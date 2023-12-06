@@ -4,8 +4,8 @@
         <!-- Title and intro -->
         <section class="position-relative mb-5">
             <h1>Favorieten</h1>
-            <p>Hieronder vind je een lijst met je favoriete quotes. Klik op een naam om uitsluitend quotes van een
-                bepaald personage te zien. Verwijder quotes uit je favorietenlijst door op het vuilbakje te klikken.
+            <p>Hieronder vind je een lijst met jouw favoriete quotes. Klik op een naam om uitsluitend quotes van een
+                bepaald personage te zien. Verwijder quotes uit jouw favorietenlijst door op het vuilbakje te klikken.
                 Download een tekstbestand van deze lijst met de downloadknop.</p>
             <form action="/favorites/download" METHOD="GET">
                 <button type="submit" class="btn btn-primary position-absolute top-0 end-0 text"
@@ -16,7 +16,7 @@
         <% if (favorites.length===0) { %>
             <!-- No quotes in favorites -->
             <section>
-                <p><strong>Nog geen quotes in je favorieten.</strong> Gebruik de favorieten-knop tijdens de quiz om een
+                <p><strong>Nog geen quotes in jouw favorieten.</strong> Gebruik de favorieten-knop tijdens de quiz om een
                     quote toe te voegen.</p>
             </section>
             <% } else { %>
@@ -59,7 +59,7 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h2 class="modal-title fs-5" id="deleteFavorite<%= index %>">
-                                                    Weet je zeker dat je deze quote uit je favorieten wil verwijderen?
+                                                    Weet je zeker dat je deze quote uit jouw favorieten wil verwijderen?
                                                 </h2>
                                             </div>
                                             <div class="modal-body">
