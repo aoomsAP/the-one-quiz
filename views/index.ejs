@@ -7,9 +7,7 @@
             <p class="fs-3">
                 <!-- Welkom text if user is logged in-->
                 <% if (locals.user) { %>
-                    Welkom <strong>
-                        <%=user.username%>
-                    </strong>! Start je ontdekkingsreis door zes boeiende projecten.
+                    Dag <strong><%=user.username%></strong>,<br>start nu je ontdekkingsreis door zes boeiende projecten.
                     <% } else { %>
                         Meld je aan en start je ontdekkingsreis door zes boeiende projecten!
                         <% } %>
