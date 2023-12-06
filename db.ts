@@ -29,7 +29,7 @@ const createUser = async (newUser: User) => {
     try {
         await client.db("TheOneQuiz").collection("Users").insertOne(newUser);
     } catch (err) {
-        console.log(err);
+        throw "Could not create a user.";
     }
 }
 
@@ -39,7 +39,7 @@ const getUser = async (username: string): Promise<User | null> => {
     try {
         foundUser = await client.db("TheOneQuiz").collection("Users").findOne<User>({ username: username });
     } catch (err) {
-        console.log(err);
+        throw "Could not get a user.";
     }
 
     return foundUser;
@@ -51,7 +51,7 @@ const getUserById = async (userId: ObjectId) => {
     try {
         foundUser = await client.db("TheOneQuiz").collection("Users").findOne<User>({ _id: new ObjectId(userId) });
     } catch (err) {
-        console.log(err);
+        throw "Could not get a user by id.";
     }
 
     return foundUser;
@@ -63,7 +63,7 @@ const clearQuestions = async (userId: ObjectId) => {
     try {
         await client.db("TheOneQuiz").collection("Users").updateOne({ _id: new ObjectId(userId) }, { $set: { questions: [] }});
     } catch (err) {
-        console.log(err);
+        throw "Could not clear questions";
     }
 }
 
@@ -71,7 +71,7 @@ const writeQuestion = async (userId: ObjectId, question: Question) => {
     try {
         await client.db("TheOneQuiz").collection("Users").updateOne({ _id: new ObjectId(userId) }, { $push: { questions: question }});
     } catch (err) {
-        console.log(err);
+        throw "Could not write question";
     }
 }
 
@@ -81,7 +81,7 @@ const writeCharacterAnswer = async (userId: ObjectId, quoteId: string, character
     try {
         await client.db("TheOneQuiz").collection("Users").updateOne({ _id: new ObjectId(userId), "questions.quote_id": quoteId }, { $set: { "questions.$.answer_character": characterAnswer }}, {upsert:true});
     } catch (err) {
-        console.log(err);
+        throw "Could not write character answer";
     } 
 }
 
@@ -89,7 +89,7 @@ const writeMovieAnswer = async (userId: ObjectId, quoteId: string, movieAnswer: 
     try {
         await client.db("TheOneQuiz").collection("Users").updateOne({ _id: new ObjectId(userId), "questions.quote_id": quoteId }, { $set: { "questions.$.answer_movie": movieAnswer }}, {upsert:true});
     } catch (err) {
-        console.log(err);
+        throw "Could not write movie answer";
     } 
 }
 
@@ -102,7 +102,7 @@ const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: 
             try {
                 await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username }, { $set: { highscore_tenrounds: newHighScore } });
             } catch (err) {
-                console.log(err);
+                throw "Could not create new ten rounds high score";
             }
             break;
         case "suddendeath":
@@ -110,7 +110,7 @@ const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: 
             try {
                 await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username }, { $set: { highscore_suddendeath: newHighScore } });
             } catch (err) {
-                console.log(err);
+                throw "Could not create new sudden death high score";
             }
             break;
         default:
@@ -123,7 +123,7 @@ const addToFavorites = async (user: User, favorite: Favorite) => {
         await client.db("TheOneQuiz").collection("Users").updateOne({ _id: user._id }, { $addToSet: { favorites: favorite } }
         )
     } catch (err) {
-        console.log(err);
+        throw "Could not add item to the favorites";
     }
 }
 
@@ -131,18 +131,11 @@ const deleteFavorite = async (user: User, favorite: Favorite) => {
     try {
         await client.db("TheOneQuiz").collection("Users").updateOne({ _id: user._id },{$pull: { favorites: favorite }});
     } catch (err) {
-        console.log(err);
+        throw "Could not delete the favorite";
     }
 }
 
 // BLACKLIST
-
-const getUserBlacklist = async (username: string): Promise<Blacklist[] | undefined> => {
-    let foundUser: User | null = await getUser(username);
-    let blacklist: Blacklist[] | undefined = foundUser?.blacklist;
-
-    return blacklist;
-}
 
 const addToBlacklist = async (user: User, blacklistItem: Blacklist) => {
     try {
@@ -153,7 +146,7 @@ const addToBlacklist = async (user: User, blacklistItem: Blacklist) => {
             }
         )
     } catch (err) {
-        console.log(err);
+        throw "Could not add item to the blacklist";
     }
 }
 
@@ -161,7 +154,7 @@ const deleteBlacklist = async (user: User, quoteId: string) => {
     try {
         await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username }, { $pull: { blacklist: { quote_id: quoteId } } });
     } catch (err) {
-        console.log(err);
+        throw "Could not delete the blacklist item";
     }
 }
 
@@ -169,7 +162,7 @@ const editBlacklist = async (user: User, quoteId: string, newComment: string) =>
     try {
         await client.db("TheOneQuiz").collection("Users").updateOne({ username: user.username, 'blacklist.quote_id': quoteId }, { $set: { 'blacklist.$.comment': newComment } });
     } catch (err) {
-        console.log(err);
+        throw "Could not edit the blacklist comment";
     }
 }
 
@@ -187,7 +180,6 @@ export {
     addToFavorites,
     addToBlacklist,
     deleteFavorite,
-    getUserBlacklist,
     deleteBlacklist,
     editBlacklist
 }

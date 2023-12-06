@@ -1,5 +1,5 @@
 import { Question, Quote, Movie, Character, User } from "./types";
-import { quotes, characters, movies } from "./API"
+import { quotes, characters, movies } from "./API";
 import { writeQuestion } from "./db";
 import { ObjectId } from "mongodb";
 
@@ -23,7 +23,7 @@ const getQuote = (user: User) => {
     do {
         let randomIndex = Math.floor(Math.random() * quotes.length);
         quote = quotes[randomIndex];
-    } while (quoteAppearsInBlacklist(quote.quote_id, user) || quoteAlreadyInQuestions(quote.quote_id, user.questions))
+    } while (quoteAppearsInBlacklist(quote.quote_id, user) || quoteAlreadyInQuestions(quote.quote_id, user.questions));
     return quote
 }
 
@@ -64,27 +64,32 @@ const getTwoWrongMovies = (correctMovieId: string) => {
 }
 
 const addNextQuestion = async (user: User) => {
-    // get random, valid, unique quote
-    let quote: Quote = getQuote(user);
+    try {
+        // get random, valid, unique quote
+        let quote: Quote = getQuote(user);
 
-    // search characters array for the character that the quote belongs to
-    let correctCharacter: Character | undefined = characters.find(character => quote.character_id === character.character_id);
-    if (correctCharacter === undefined) throw "Character not found.";
+        // search characters array for the character that the quote belongs to
+        let correctCharacter: Character | undefined = characters.find(character => quote.character_id === character.character_id);
+        if (correctCharacter === undefined) throw "Character not found.";
 
-    // search movies array for the movie that the quote belongs to
-    let correctMovie: Movie | undefined = movies.find(movie => quote.movie_id === movie.movie_id);
-    if (correctMovie === undefined) throw "Movie not found.";
+        // search movies array for the movie that the quote belongs to
+        let correctMovie: Movie | undefined = movies.find(movie => quote.movie_id === movie.movie_id);
+        if (correctMovie === undefined) throw "Movie not found.";
 
-    const newQuestion: Question = {
-        quote_id: quote.quote_id,
-        dialog: quote.dialog,
-        correct_character: correctCharacter,
-        wrong_characters: getTwoWrongCharacters(correctCharacter.character_id),
-        correct_movie: correctMovie,
-        wrong_movies: getTwoWrongMovies(correctMovie.movie_id),
-    };
+        const newQuestion: Question = {
+            quote_id: quote.quote_id,
+            dialog: quote.dialog,
+            correct_character: correctCharacter,
+            wrong_characters: getTwoWrongCharacters(correctCharacter.character_id),
+            correct_movie: correctMovie,
+            wrong_movies: getTwoWrongMovies(correctMovie.movie_id),
+        };
 
-    await writeQuestion(new ObjectId(user._id) ,newQuestion);
+        await writeQuestion(new ObjectId(user._id), newQuestion);
+    } catch (err) {
+        throw "Could not add next question";
+    }
+    
 }
 
 // ANSWERS
@@ -121,7 +126,7 @@ const getMovieAnswerById = (answerMovieId: string, q: Question) => {
     }
 }
 
-export { 
+export {
     addNextQuestion,
     getCharacterAnswerById,
     getMovieAnswerById
