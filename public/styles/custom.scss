@@ -1,12 +1,5 @@
-// Custom.scss
-// Option A: Include all of Bootstrap
-
-// Include any default variable overrides here (though functions won't be available)
-
-// Example:
 $primary: rgb(91, 29, 3);
 $secondary: rgb(179, 107, 0);
-$tertiary: rgb(182, 155, 0);
 
 $success: darkgreen;
 $danger: darkred;
@@ -21,5 +14,3 @@ $border-color: rgba($secondary, .3);
 $border-color-translucent: rgba($secondary, .3);
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
-
-// Then add additional custom code here
