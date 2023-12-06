@@ -6,14 +6,13 @@ import express from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import fs from "fs";
+const bcrypt = require('bcrypt');
 
-import { User, Favorite, Blacklist, Question, Quote, Movie, Character } from "./types";
+import { User, Favorite, Blacklist, Movie, Character } from "./types";
 import { ObjectId } from "mongodb";
 import { client, connect, createUser, getUser, getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions, writeCharacterAnswer, writeMovieAnswer } from "./db";
-import { addNextQuestion, getCharacterAnswerById, getMovieAnswerById } from "./functions"
-import { quotes, characters, movies, loadCharacters, loadMovies, loadQuotes } from "./API"
-
-const bcrypt = require('bcrypt')
+import { addNextQuestion, getCharacterAnswerById, getMovieAnswerById } from "./functions";
+import { loadCharacters, loadMovies, loadQuotes } from "./API";
 
 // SETUP APP + SESSIONS
 // ------------------------------------------------------------------------------------------------------
@@ -25,10 +24,8 @@ app.use(express.static("public"));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-if (!process.env.SESSION_SECRET) throw Error('Error: .env var "SESSION_SECRET" is undefined');
-
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "secret",
     store: MongoStore.create({
         client,
         dbName: "TheOneQuiz",
@@ -56,14 +53,23 @@ declare module 'express-session' {
 // LANDING
 
 app.get("/", async (req, res) => {
-    let user: User | null = null;
-    if (req.session.userId) {
-        user = await getUserById(req.session.userId);
-    }
+    try {
+        let user: User | null = null;
+        if (req.session.userId) {
+            user = await getUserById(req.session.userId);
+        }
 
-    res.render("index", {
-        user: user,
-    });
+        res.render("index", {
+            user: user,
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-page", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer het later opnieuw."
+        });
+    }
 })
 
 // LOGIN
@@ -73,27 +79,37 @@ app.get("/login", (req, res) => {
 })
 
 app.post("/login", async (req, res) => {
-    let username: string = req.body.username;
-    let password: string = req.body.password;
+    try {
+        let username: string = req.body.username;
+        let password: string = req.body.password;
+        let foundUser: User | null = await getUser(username);
 
-    let foundUser: User | null = await getUser(username);
+        // validate login
+        if (!foundUser) {
+            return res.render("login", {
+                message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
+            });
+        }
+        let validPassword = await bcrypt.compare(foundUser.password, password);
 
-    // validate login
-    if (!foundUser) {
-        return res.render("login", {
-            message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
+        if (!validPassword) {
+            return res.render("login", {
+                message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
+            });
+        }
+
+        // create session
+        req.session.userId = foundUser._id;
+        req.session.save(() => res.status(200).redirect("/"));
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-page", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer het later opnieuw."
         });
     }
-    if //(foundUser.password != password) {
-        (!bcrypt.compare(foundUser.password, password)){
-        return res.render("login", {
-            message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
-        });
-    }
 
-    // create session
-    req.session.userId = foundUser._id;
-    req.session.save(() => res.status(200).redirect("/"));
 });
 
 // LOGOUT
@@ -101,11 +117,10 @@ app.post("/login", async (req, res) => {
 // logout post endpoint
 app.post("/logout", (req, res) => {
     req.session.destroy(err => {
-        //console.log(err);
+        console.log(err);
         res.redirect("/");
-    })
+    });
 })
-
 
 // REGISTER
 
@@ -114,49 +129,56 @@ app.get("/register", (req, res) => {
 })
 
 app.post("/register", async (req, res) => {
-    let username: string = req.body.username;
-    let password: string = req.body.password;
-    let confirmPassword: string = req.body.confirmPassword;
-    let email: string = req.body.email;
+    try {
+        let username: string = req.body.username;
+        let password: string = req.body.password;
+        let confirmPassword: string = req.body.confirmPassword;
+        let email: string = req.body.email;
 
-    // check if username already exists in db
-    let foundUser: User | null = await getUser(username);
-    if (foundUser) {
-        return res.render("register", {
-            message: "Gebruikersnaam is al in gebruik."
+        // check if username already exists in db
+        let foundUser: User | null = await getUser(username);
+        if (foundUser) {
+            return res.render("register", {
+                message: "Gebruikersnaam is al in gebruik."
+            });
+        }
+
+        // check if passwords are the same
+        if (password !== confirmPassword) {
+            return res.render("register", {
+                message: "De ingevoerde wachtwoorden komen niet overeen. Probeer het opnieuw."
+            });
+        }
+
+        // create new user
+        let newUser: User = {
+            username: username,
+            password: await bcrypt.hash(password, 10),
+            email: email,
+            questions: [],
+            favorites: [],
+            blacklist: [],
+            highscore_tenrounds: 0,
+            highscore_suddendeath: 0
+        }
+        await createUser(newUser);
+
+        // load new user from db
+        let newUserInDb: User | null = await getUser(newUser.username);
+        if (!newUserInDb) {
+            throw "Could not find user";
+        }
+        else {
+            req.session.userId = newUserInDb._id;
+            return req.session.save(() => res.status(200).redirect("/"));
+        }
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-page", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer het later opnieuw."
         });
-    }
-
-    // check if passwords are the same
-    if (password !== confirmPassword) {
-        return res.render("register", {
-            message: "De ingevoerde wachtwoorden komen niet overeen. Probeer het opnieuw."
-        });
-    }
-
-    // create new user
-    
-    let newUser: User = {
-        username: username,
-        password: await bcrypt.hash(password,10),
-        email: email,
-        questions: [],
-        favorites: [],
-        blacklist: [],
-        highscore_tenrounds: 0,
-        highscore_suddendeath: 0
-    }
-    await createUser(newUser);
-
-
-    // load new user from db
-    let newUserInDb: User | null = await getUser(newUser.username);
-    if (!newUserInDb) {
-        return res.status(404).send("User not found");
-    }
-    else {
-        req.session.userId = newUserInDb._id;
-        return req.session.save(() => res.status(200).redirect("/"));
     }
 })
 
@@ -167,230 +189,315 @@ app.get("/quiz", (req, res) => {
 })
 
 app.post("/quiz", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
-
-    // clear previous questions array, start fresh
-    await clearQuestions(req.session.userId);
-
-    // add first question to questions array
     try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
+
+        // clear previous questions array, start fresh
+        await clearQuestions(req.session.userId);
+
+        // add first question to questions array
         await addNextQuestion(user);
-    }
-    catch (error) {
-        console.log(error);
-        res.status(404).send(error);
-    }
 
-    const typeOfQuiz: string = req.body.typeOfQuiz;
+        const typeOfQuiz: string = req.body.typeOfQuiz;
 
-    // go to first question of the chosen type of quiz
-    res.redirect(`/quiz/${typeOfQuiz}/question/0`);
+        // go to first question of the chosen type of quiz
+        res.redirect(`/quiz/${typeOfQuiz}/question/0`);
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
+    }
 })
 
 // QUESTION
 
 app.get("/quiz/:type/question/:questionId", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
+    try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
 
-    const typeOfQuiz: string = req.params.type;
-    const typeOfQuizTitle: string = typeOfQuiz === "tenrounds" ? "Ten Rounds" : "Sudden Death";
-    const questionId: number = parseInt(req.params.questionId);
+        const typeOfQuiz: string = req.params.type;
+        const typeOfQuizTitle: string = typeOfQuiz === "tenrounds" ? "Ten Rounds" : "Sudden Death";
+        const questionId: number = parseInt(req.params.questionId);
 
-    res.render("question", {
-        typeOfQuiz: typeOfQuiz,
-        typeOfQuizTitle: typeOfQuizTitle,
-        questionId: questionId,
-        question: user.questions[questionId],
-    });
+        res.render("question", {
+            typeOfQuiz: typeOfQuiz,
+            typeOfQuizTitle: typeOfQuizTitle,
+            questionId: questionId,
+            question: user.questions[questionId],
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
+    }
 })
 
 app.post("/quiz/:type/question/:questionId", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
-
-    const questionId: number = parseInt(req.params.questionId);
-    const typeOfQuiz: string = req.params.type;
-    const characterAnswerId = req.body.btnradioChar;
-    const movieAnswerId = req.body.btnradioMovie;
-    const comment: string = req.body.blacklistComment;
-
-    const characterIsCorrect = characterAnswerId === user.questions[questionId].correct_character.character_id;
-    const movieIsCorrect = movieAnswerId === user.questions[questionId].correct_movie.movie_id;
-
-    // write answers to question array
-    const characterAnswer : Character = getCharacterAnswerById(characterAnswerId, user.questions[questionId]);
-    await writeCharacterAnswer(req.session.userId, user.questions[questionId].quote_id, characterAnswer);
-    const movieAnswer : Movie = getMovieAnswerById(movieAnswerId,user.questions[questionId]);
-    await writeMovieAnswer(req.session.userId, user.questions[questionId].quote_id, movieAnswer);
-
-    // handle thumbs up & thumbs down functionality
-    if (req.body.btnThumbs === "thumbsUp") {
-        await addToFavorites(user,
-            {
-                quote_id: user.questions[questionId].quote_id,
-                dialog: user.questions[questionId].dialog,
-                character: user.questions[questionId].correct_character
-            });
-    } else if (req.body.btnThumbs === "thumbsDown") {
-        await addToBlacklist(user,
-            {
-                quote_id: user.questions[questionId].quote_id,
-                dialog: user.questions[questionId].dialog,
-                comment: comment
-            });
-    }
-
-    // check if end of quiz: redirect to score
-    switch (typeOfQuiz) {
-        case "tenrounds":
-            // ten rounds ends after 10 questions
-            if (questionId >= 9) {
-                return res.redirect(`/quiz/${typeOfQuiz}/score`,);
-            }
-            break;
-
-        case "suddendeath":
-            // sudden death ends when answer is wrong
-            if (!characterIsCorrect || !movieIsCorrect) {
-                return res.redirect(`/quiz/${typeOfQuiz}/score`,);
-            }
-            break;
-    }
-
-    // default action: generate the next question
     try {
-        await addNextQuestion(user);
-    }
-    catch (error) {
-        console.log(error);
-        res.status(404).send(error);
-    }
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
 
-    // default redirect: go to the next question
-    res.redirect(`/quiz/${typeOfQuiz}/question/${questionId + 1}`);
+        const questionId: number = parseInt(req.params.questionId);
+        const typeOfQuiz: string = req.params.type;
+        const characterAnswerId = req.body.btnradioChar;
+        const movieAnswerId = req.body.btnradioMovie;
+        const comment: string = req.body.blacklistComment;
+
+        const characterIsCorrect = characterAnswerId === user.questions[questionId].correct_character.character_id;
+        const movieIsCorrect = movieAnswerId === user.questions[questionId].correct_movie.movie_id;
+
+        // write answers to question array
+        const characterAnswer: Character = getCharacterAnswerById(characterAnswerId, user.questions[questionId]);
+        await writeCharacterAnswer(req.session.userId, user.questions[questionId].quote_id, characterAnswer);
+        const movieAnswer: Movie = getMovieAnswerById(movieAnswerId, user.questions[questionId]);
+        await writeMovieAnswer(req.session.userId, user.questions[questionId].quote_id, movieAnswer);
+
+        // handle thumbs up & thumbs down functionality
+        if (req.body.btnThumbs === "thumbsUp") {
+            await addToFavorites(user,
+                {
+                    quote_id: user.questions[questionId].quote_id,
+                    dialog: user.questions[questionId].dialog,
+                    character: user.questions[questionId].correct_character
+                });
+        } else if (req.body.btnThumbs === "thumbsDown") {
+            await addToBlacklist(user,
+                {
+                    quote_id: user.questions[questionId].quote_id,
+                    dialog: user.questions[questionId].dialog,
+                    comment: comment
+                });
+        }
+
+        // check if end of quiz: redirect to score
+        switch (typeOfQuiz) {
+            case "tenrounds":
+                // ten rounds ends after 10 questions
+                if (questionId >= 9) {
+                    return res.redirect(`/quiz/${typeOfQuiz}/score`,);
+                }
+                break;
+
+            case "suddendeath":
+                // sudden death ends when answer is wrong
+                if (!characterIsCorrect || !movieIsCorrect) {
+                    return res.redirect(`/quiz/${typeOfQuiz}/score`,);
+                }
+                break;
+        }
+
+        // default action: generate the next question
+        await addNextQuestion(user);
+
+        // default redirect: go to the next question
+        res.redirect(`/quiz/${typeOfQuiz}/question/${questionId + 1}`);
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
+    }
 })
 
 // SCORE
 
 app.get("/quiz/:type/score", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    let user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
+    try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        let user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
 
-    const typeOfQuiz = req.params.type;
-    let scores: number[] = [];
-    let highScore: number = 0;
+        const typeOfQuiz = req.params.type;
+        let scores: number[] = [];
+        let highScore: number = 0;
 
-    switch (typeOfQuiz) {
-        case "tenrounds":
-            scores = user.questions.map(q => {
-                if (q.correct_character.character_id === q.answer_character?.character_id
-                    && q.correct_movie.movie_id === q.answer_movie?.movie_id) {
-                    return 1;
-                } else if (q.correct_character.character_id === q.answer_character?.character_id
-                    || q.correct_movie.movie_id === q.answer_movie?.movie_id) {
-                    return 0.5;
-                } else {
-                    return 0;
-                }
-            });
-            highScore = user.highscore_tenrounds;
-            break;
-        case "suddendeath":
-            scores = user.questions.map(q => {
-                if (q.correct_character.character_id === q.answer_character?.character_id
-                    && q.correct_movie.movie_id === q.answer_movie?.movie_id) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
-            highScore = user.highscore_suddendeath;
-            break;
-        default:
-            break;
+        switch (typeOfQuiz) {
+            case "tenrounds":
+                scores = user.questions.map(q => {
+                    if (q.correct_character.character_id === q.answer_character?.character_id
+                        && q.correct_movie.movie_id === q.answer_movie?.movie_id) {
+                        return 1;
+                    } else if (q.correct_character.character_id === q.answer_character?.character_id
+                        || q.correct_movie.movie_id === q.answer_movie?.movie_id) {
+                        return 0.5;
+                    } else {
+                        return 0;
+                    }
+                });
+                highScore = user.highscore_tenrounds;
+                break;
+            case "suddendeath":
+                scores = user.questions.map(q => {
+                    if (q.correct_character.character_id === q.answer_character?.character_id
+                        && q.correct_movie.movie_id === q.answer_movie?.movie_id) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                });
+                highScore = user.highscore_suddendeath;
+                break;
+            default:
+                break;
+        }
+
+        let sumOfScores: number = scores.reduce((prev, curr) => prev + curr, 0);
+
+        const newHighScore: boolean = highScore < sumOfScores;
+        if (newHighScore) {
+            await createNewHighScore(user, typeOfQuiz, sumOfScores);
+            user = await getUserById(req.session.userId);
+            if (!user) {
+                throw "Could not find user in db";
+            }
+            highScore = typeOfQuiz === "tenrounds" ? user.highscore_tenrounds : user.highscore_suddendeath;
+        }
+
+        res.render("score", {
+            typeOfQuiz: typeOfQuiz,
+            questions: user.questions,
+            score: sumOfScores,
+            highScore: highScore,
+            newHighScore: newHighScore
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
     }
-
-    let sumOfScores: number = scores.reduce((prev, curr) => prev + curr, 0);
-
-    const newHighScore: boolean = highScore < sumOfScores;
-    if (newHighScore) {
-        await createNewHighScore(user, typeOfQuiz, sumOfScores);
-        user = await getUserById(req.session.userId);
-        if (!user) return res.status(404).send("User not found");
-        highScore = typeOfQuiz === "tenrounds" ? user.highscore_tenrounds : user.highscore_suddendeath;
-    }
-
-    res.render("score", {
-        typeOfQuiz: typeOfQuiz,
-        questions: user.questions,
-        score: sumOfScores,
-        highScore: highScore,
-        newHighScore: newHighScore
-    });
 });
 
 // FAVORITES
 
 app.get("/favorites", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
+    try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
 
-    res.render("favorites", {
-        favorites: user.favorites
-    });
+        res.render("favorites", {
+            favorites: user.favorites
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
+    }
+
 });
 
-
 app.get("/favorites/download", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
+    try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
 
-    const favList: string = user.favorites.reduce((favList: string, fav: Favorite) => {
-        return favList + `${fav.dialog} - ${fav.character.name}\r\n`;
-    }, "");
+        const favList: string = user.favorites.reduce((favList: string, fav: Favorite) => {
+            return favList + `${fav.dialog} - ${fav.character.name}\r\n`;
+        }, "");
 
-    fs.writeFileSync(`./public/${user.username}_favorites.txt`, favList, "utf8");
+        fs.writeFileSync(`${user.username}_favorites.txt`, favList, "utf8");
 
-    res.download(`./public/${user.username}_favorites.txt`);
+        res.download(`${user.username}_favorites.txt`, () => {
+            fs.unlink(`${user.username}_favorites.txt`, (error) => {
+                if (error) console.log(error);
+            });
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
+    }
 });
 
 app.post("/favorites/:quoteId/delete", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
+    try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
 
-    const quoteId: string = req.params.quoteId;
+        const quoteId: string = req.params.quoteId;
 
-    if (user.favorites) {
         let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
 
         if (favorite) {
             await deleteFavorite(user, favorite);
             res.redirect(`/favorites`);
         }
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
     }
 })
 
 // CHARACTER
 
 app.get("/favorites/:characterId", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
+    try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
 
-    const characterId: string = req.params.characterId;
+        const characterId: string = req.params.characterId;
 
-    if (user.favorites) {
         let characterQuotes: Favorite[] = user.favorites.filter(fav => fav.character.character_id === characterId);
-        
+
         if (characterQuotes.length > 0) {
             let foundCharacter: Character | undefined = characterQuotes.find(fav => fav.character.character_id === characterId)?.character;
 
@@ -403,79 +510,144 @@ app.get("/favorites/:characterId", async (req, res) => {
         } else {
             res.redirect("/favorites");
         }
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
     }
 })
 
 app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
-
-    const quoteId: string = req.params.quoteId;
-    const characterId: string = req.params.characterId;
-
-    if (user.favorites) {
-        let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
-
-        if (favorite) {
-            await deleteFavorite(user, favorite);
-            res.redirect(`/favorites/${characterId}`);
+    try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
         }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
+
+        const quoteId: string = req.params.quoteId;
+        const characterId: string = req.params.characterId;
+
+        if (user.favorites) {
+            let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
+
+            if (favorite) {
+                await deleteFavorite(user, favorite);
+                res.redirect(`/favorites/${characterId}`);
+            }
+        }
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
     }
 })
 
 // BLACKLIST
 
 app.get("/blacklist", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
+    try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
 
-    const blacklist: Blacklist[] = user.blacklist;
-    res.render("blacklist", { blacklist: blacklist });
+        const blacklist: Blacklist[] = user.blacklist;
+        res.render("blacklist", { blacklist: blacklist });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
+    }
 })
 
 app.post("/blacklist/:quoteId/delete", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
+    try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
 
-    const quoteId = req.params.quoteId;
-    await deleteBlacklist(user, quoteId);
-    res.redirect("/blacklist");
+        const quoteId = req.params.quoteId;
+        await deleteBlacklist(user, quoteId);
+        res.redirect("/blacklist");
+
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
+    }
 })
 
 app.post("/blacklist/:quoteId/edit", async (req, res) => {
-    if (!req.session.userId) return res.status(404).send("User not found");
-    const user = await getUserById(req.session.userId);
-    if (!user) return res.status(404).send("User not found");
+    try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
 
-    const quoteId = req.params.quoteId;
-    const newComment = req.body.editComment;
-    await editBlacklist(user, quoteId, newComment);
+        const quoteId = req.params.quoteId;
+        const newComment = req.body.editComment;
+        await editBlacklist(user, quoteId, newComment);
 
-    res.redirect("/blacklist");
+        res.redirect("/blacklist");
+    } catch (err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-quiz", {
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+        });
+    }
 })
 
 // PAGE NOT FOUND
 
 app.use((req, res) => {
     res.status(404);
-    res.send("Error 404 - Page Not Found");
+    res.render("error-page", {
+        errorMessage: "Pagina niet gevonden."
+    });
 })
 
 // PORT + CONNECTIONS
 // ------------------------------------------------------------------------------------------------------
 
 app.listen(app.get("port"), async () => {
-    console.log(`Local url: htpp://localhost:${app.get("port")}`);
+    console.log(`Local url: http://localhost:${app.get("port")}`);
 
     try {
         await connect();
     } catch (e) {
         console.log("Error: MongoDB connection failed.");
     }
-    await loadCharacters();
-    await loadQuotes();
-    await loadMovies();
+
+    try {
+        await loadCharacters();
+        await loadQuotes();
+        await loadMovies();
+    } catch (err) {
+        console.log(err);
+    }
 })
