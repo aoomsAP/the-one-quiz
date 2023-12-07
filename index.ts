@@ -116,7 +116,7 @@ app.post("/login", async (req, res) => {
 
 app.post("/logout", (req, res) => {
     req.session.destroy(err => {
-        console.log(err);
+        if (err) console.log(err);
         res.redirect("/");
     });
 })
