@@ -90,8 +90,8 @@ app.post("/login", async (req, res) => {
                 message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
             });
         }
-        let validPassword = await bcrypt.compare(foundUser.password, password);
-
+        
+        let validPassword = await bcrypt.compare(password, foundUser.password);
         if (!validPassword) {
             return res.render("login", {
                 message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
@@ -114,7 +114,6 @@ app.post("/login", async (req, res) => {
 
 // LOGOUT
 
-// logout post endpoint
 app.post("/logout", (req, res) => {
     req.session.destroy(err => {
         console.log(err);
