@@ -203,16 +203,15 @@ app.post("/quiz", async (req, res) => {
         // add first question to questions array
         await addNextQuestion(user);
 
-        const typeOfQuiz: string = req.body.typeOfQuiz;
-
         // go to first question of the chosen type of quiz
+        const typeOfQuiz: string = req.body.typeOfQuiz;
         res.redirect(`/quiz/${typeOfQuiz}/question/0`);
 
     } catch (err) {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 })
@@ -244,7 +243,7 @@ app.get("/quiz/:type/question/:questionId", async (req, res) => {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 })
@@ -318,7 +317,7 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 })
@@ -393,7 +392,7 @@ app.get("/quiz/:type/score", async (req, res) => {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 });
@@ -417,7 +416,7 @@ app.get("/favorites", async (req, res) => {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 
@@ -448,7 +447,7 @@ app.get("/favorites/download", async (req, res) => {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 });
@@ -476,7 +475,7 @@ app.post("/favorites/:quoteId/delete", async (req, res) => {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 })
@@ -514,7 +513,7 @@ app.get("/favorites/:characterId", async (req, res) => {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 })
@@ -545,7 +544,7 @@ app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 })
@@ -569,7 +568,7 @@ app.get("/blacklist", async (req, res) => {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 })
@@ -592,7 +591,7 @@ app.post("/blacklist/:quoteId/delete", async (req, res) => {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 })
@@ -616,7 +615,7 @@ app.post("/blacklist/:quoteId/edit", async (req, res) => {
         console.log(err);
         res.status(500);
         res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden"
+            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
         });
     }
 })
