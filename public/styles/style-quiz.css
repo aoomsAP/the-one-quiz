@@ -281,6 +281,7 @@ footer p {
 
 .error {
     max-width: 720px;
+    margin: auto;
 }
 
 .error img {
@@ -293,6 +294,8 @@ footer p {
 .error p {
     margin-top: .5rem;
 }
+
+/* media queries */
 
 @media screen and (max-width: 768px) {
     #character .table-custom>article,
