@@ -212,6 +212,11 @@ q {
     border-radius: 10px;
 }
 
+.score hr {
+    margin: auto;
+    width: 75%;
+}
+
 /* favorites, character and blacklist */
 
 #character,
