@@ -57,6 +57,18 @@ const getUserById = async (userId: ObjectId) => {
     return foundUser;
 }
 
+const getUserByEmail = async (email: string) => {
+    let foundUser: User | null = null;
+
+    try {
+        foundUser = await client.db("TheOneQuiz").collection("Users").findOne<User>({ email: email });
+    } catch (err) {
+        throw "Could not get a user by email.";
+    }
+
+    return foundUser;
+}
+
 // QUESTION
 
 const clearQuestions = async (userId: ObjectId) => {
@@ -172,6 +184,7 @@ export {
     createUser,
     getUser,
     getUserById,
+    getUserByEmail,
     clearQuestions,
     writeQuestion,
     writeCharacterAnswer,

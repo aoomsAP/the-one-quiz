@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt');
 
 import { User, Favorite, Blacklist, Movie, Character } from "./types";
 import { ObjectId } from "mongodb";
-import { client, connect, createUser, getUser, getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions, writeCharacterAnswer, writeMovieAnswer} from "./db";
+import { client, connect, createUser, getUser, getUserById, getUserByEmail, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions, writeCharacterAnswer, writeMovieAnswer } from "./db";
 import { addNextQuestion, getCharacterAnswerById, getMovieAnswerById } from "./functions";
 import { loadCharacters, loadMovies, loadQuotes } from "./API";
 
@@ -135,10 +135,18 @@ app.post("/register", async (req, res) => {
         let email: string = req.body.email;
 
         // check if username already exists in db
-        let foundUser: User | null = await getUser(username);
-        if (foundUser) {
+        let foundUserById: User | null = await getUser(username);
+        if (foundUserById) {
             return res.render("register", {
-                message: "Gebruikersnaam is al in gebruik."
+                message: "Gebruikersnaam en/of email is al in gebruik."
+            });
+        }
+
+        // check if email address already exists in db
+        let foundUserByEmail: User | null = await getUserByEmail(email);
+        if (foundUserByEmail) {
+            return res.render("register", {
+                message: "Gebruikersnaam en/of email is al in gebruik."
             });
         }
 
