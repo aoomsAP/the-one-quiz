@@ -90,7 +90,7 @@ app.post("/login", async (req, res) => {
                 message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
             });
         }
-        
+
         let validPassword = await bcrypt.compare(password, foundUser.password);
         if (!validPassword) {
             return res.render("login", {
@@ -239,12 +239,18 @@ app.get("/quiz/:type/question/:questionId", async (req, res) => {
         const typeOfQuiz: string = req.params.type;
         const typeOfQuizTitle: string = typeOfQuiz === "tenrounds" ? "Ten Rounds" : "Sudden Death";
         const questionId: number = parseInt(req.params.questionId);
+        const favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === user.questions[questionId].quote_id);
+        let inFavorite: boolean = false;
+        if (favorite) {
+            inFavorite = true;
+        }
 
         res.render("question", {
             typeOfQuiz: typeOfQuiz,
             typeOfQuizTitle: typeOfQuizTitle,
             questionId: questionId,
             question: user.questions[questionId],
+            inFavorite: inFavorite
         });
 
     } catch (err) {
@@ -281,21 +287,35 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
         const movieAnswer: Movie = getMovieAnswerById(movieAnswerId, user.questions[questionId]);
         await writeMovieAnswer(req.session.userId, user.questions[questionId].quote_id, movieAnswer);
 
-        // handle thumbs up & thumbs down functionality
+        //Handle thumbs up & thumbs down functionality
+        const favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === user.questions[questionId].quote_id);
         if (req.body.btnThumbs === "thumbsUp") {
+
             await addToFavorites(user,
                 {
                     quote_id: user.questions[questionId].quote_id,
                     dialog: user.questions[questionId].dialog,
                     character: user.questions[questionId].correct_character
                 });
-        } else if (req.body.btnThumbs === "thumbsDown") {
+        }
+        else if (req.body.btnThumbs === "thumbsDown") {
+
+            if (favorite) {
+                await deleteFavorite(user, favorite);
+
+            }
+
             await addToBlacklist(user,
                 {
                     quote_id: user.questions[questionId].quote_id,
                     dialog: user.questions[questionId].dialog,
                     comment: comment
                 });
+        }
+        else {
+            if (favorite) {
+                await deleteFavorite(user, favorite);
+            }
         }
 
         // check if end of quiz: redirect to score
