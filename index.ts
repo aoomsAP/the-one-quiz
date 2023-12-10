@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt');
 
 import { User, Favorite, Blacklist, Movie, Character } from "./types";
 import { ObjectId } from "mongodb";
-import { client, connect, createUser, getUser, getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions, writeCharacterAnswer, writeMovieAnswer } from "./db";
+import { client, connect, createUser, getUser, getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions, writeCharacterAnswer, writeMovieAnswer} from "./db";
 import { addNextQuestion, getCharacterAnswerById, getMovieAnswerById } from "./functions";
 import { loadCharacters, loadMovies, loadQuotes } from "./API";
 
@@ -90,7 +90,7 @@ app.post("/login", async (req, res) => {
                 message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
             });
         }
-        
+
         let validPassword = await bcrypt.compare(password, foundUser.password);
         if (!validPassword) {
             return res.render("login", {
@@ -273,21 +273,35 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
         const movieAnswer: Movie = getMovieAnswerById(movieAnswerId, user.questions[questionId]);
         await writeMovieAnswer(req.session.userId, user.questions[questionId].quote_id, movieAnswer);
 
-        // handle thumbs up & thumbs down functionality
+        //Handle thumbs up & thumbs down functionality
+        const favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === user.questions[questionId].quote_id);
         if (req.body.btnThumbs === "thumbsUp") {
+
             await addToFavorites(user,
                 {
                     quote_id: user.questions[questionId].quote_id,
                     dialog: user.questions[questionId].dialog,
                     character: user.questions[questionId].correct_character
                 });
-        } else if (req.body.btnThumbs === "thumbsDown") {
+        }
+        else if (req.body.btnThumbs === "thumbsDown") {
+
+            if (favorite) {
+                await deleteFavorite(user, favorite);
+
+            }
+
             await addToBlacklist(user,
                 {
                     quote_id: user.questions[questionId].quote_id,
                     dialog: user.questions[questionId].dialog,
                     comment: comment
                 });
+        }
+        else {
+            if (favorite) {
+                await deleteFavorite(user, favorite);
+            }
         }
 
         // check if end of quiz: redirect to score
