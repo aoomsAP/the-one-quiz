@@ -231,12 +231,18 @@ app.get("/quiz/:type/question/:questionId", async (req, res) => {
         const typeOfQuiz: string = req.params.type;
         const typeOfQuizTitle: string = typeOfQuiz === "tenrounds" ? "Ten Rounds" : "Sudden Death";
         const questionId: number = parseInt(req.params.questionId);
+        const favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === user.questions[questionId].quote_id);
+        let inFavorite: boolean = false;
+        if (favorite) {
+            inFavorite = true;
+        }
 
         res.render("question", {
             typeOfQuiz: typeOfQuiz,
             typeOfQuizTitle: typeOfQuizTitle,
             questionId: questionId,
             question: user.questions[questionId],
+            inFavorite: inFavorite
         });
 
     } catch (err) {

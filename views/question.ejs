@@ -22,7 +22,7 @@
                     <!-- Thumbs-up & Thumbs-down buttons -->
                     <div class="d-sm-block pb-3" role="group">
                         <input type="checkbox" class="btn-check" value="thumbsUp" name="btnThumbs" id="btnradioThumbsUp"
-                            autocomplete="off" onclick="onlyOneThumb(this)">
+                            autocomplete="off" onclick="onlyOneThumb(this)" <% if (inFavorite){ %>checked<% } %>>
                         <label class="btn btn-outline-success" for="btnradioThumbsUp"
                             title="Voeg toe aan jouw favorieten"><i class="bi bi-hand-thumbs-up"></i> favorieten</label>
 
