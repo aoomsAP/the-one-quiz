@@ -6,7 +6,7 @@
     </section>
     <section class="card text-center">
         <figure>
-            <% if ((typeOfQuiz === "tenrounds" && score < 5) || typeOfQuiz === "suddendeath") { %>
+            <% if ((typeOfQuiz === "tenrounds" && score < 5) || (typeOfQuiz === "suddendeath" && newHighScore === false)) { %>
                 <img src="/assets/images/score-frodocrying.png" alt="Frodo crying"
                 title="Frodo crying" class="card-img-top" />
             <% } else { %>
