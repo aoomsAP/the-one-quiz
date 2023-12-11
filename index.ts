@@ -191,11 +191,11 @@ app.post("/register", async (req, res) => {
 
 // QUIZ
 
-app.get("/quiz", (req, res) => {
+app.get("/lotr", (req, res) => {
     res.render("quiz");
 })
 
-app.post("/quiz", async (req, res) => {
+app.post("/lotr", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -213,7 +213,7 @@ app.post("/quiz", async (req, res) => {
 
         // go to first question of the chosen type of quiz
         const typeOfQuiz: string = req.body.typeOfQuiz;
-        res.redirect(`/quiz/${typeOfQuiz}/question/0`);
+        res.redirect(`/lotr/quiz/${typeOfQuiz}/question/0`);
 
     } catch (err) {
         console.log(err);
@@ -226,7 +226,7 @@ app.post("/quiz", async (req, res) => {
 
 // QUESTION
 
-app.get("/quiz/:type/question/:questionId", async (req, res) => {
+app.get("/lotr/quiz/:type/question/:questionId", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -262,7 +262,7 @@ app.get("/quiz/:type/question/:questionId", async (req, res) => {
     }
 })
 
-app.post("/quiz/:type/question/:questionId", async (req, res) => {
+app.post("/lotr/quiz/:type/question/:questionId", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -323,14 +323,14 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
             case "tenrounds":
                 // ten rounds ends after 10 questions
                 if (questionId >= 9) {
-                    return res.redirect(`/quiz/${typeOfQuiz}/score`,);
+                    return res.redirect(`/lotr/quiz/${typeOfQuiz}/score`,);
                 }
                 break;
 
             case "suddendeath":
                 // sudden death ends when answer is wrong
                 if (!characterIsCorrect || !movieIsCorrect) {
-                    return res.redirect(`/quiz/${typeOfQuiz}/score`,);
+                    return res.redirect(`/lotr/quiz/${typeOfQuiz}/score`,);
                 }
                 break;
         }
@@ -339,7 +339,7 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
         await addNextQuestion(user);
 
         // default redirect: go to the next question
-        res.redirect(`/quiz/${typeOfQuiz}/question/${questionId + 1}`);
+        res.redirect(`/lotr/quiz/${typeOfQuiz}/question/${questionId + 1}`);
 
     } catch (err) {
         console.log(err);
@@ -352,7 +352,7 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
 
 // SCORE
 
-app.get("/quiz/:type/score", async (req, res) => {
+app.get("/lotr/quiz/:type/score", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -427,7 +427,7 @@ app.get("/quiz/:type/score", async (req, res) => {
 
 // FAVORITES
 
-app.get("/favorites", async (req, res) => {
+app.get("/lotr/favorites", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -450,7 +450,7 @@ app.get("/favorites", async (req, res) => {
 
 });
 
-app.get("/favorites/download", async (req, res) => {
+app.get("/lotr/favorites/download", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -480,7 +480,7 @@ app.get("/favorites/download", async (req, res) => {
     }
 });
 
-app.post("/favorites/:quoteId/delete", async (req, res) => {
+app.post("/lotr/favorites/:quoteId/delete", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -510,7 +510,7 @@ app.post("/favorites/:quoteId/delete", async (req, res) => {
 
 // CHARACTER
 
-app.get("/favorites/:characterId", async (req, res) => {
+app.get("/lotr/favorites/character/:characterId", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -534,7 +534,7 @@ app.get("/favorites/:characterId", async (req, res) => {
                 });
             }
         } else {
-            res.redirect("/favorites");
+            res.redirect("/lotr/favorites");
         }
 
     } catch (err) {
@@ -546,7 +546,7 @@ app.get("/favorites/:characterId", async (req, res) => {
     }
 })
 
-app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
+app.post("/lotr/favorites/character/:characterId/:quoteId/delete", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -564,7 +564,7 @@ app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
 
             if (favorite) {
                 await deleteFavorite(user, favorite);
-                res.redirect(`/favorites/${characterId}`);
+                res.redirect(`/lotr/favorites/character/${characterId}`);
             }
         }
 
@@ -579,7 +579,7 @@ app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
 
 // BLACKLIST
 
-app.get("/blacklist", async (req, res) => {
+app.get("/lotr/blacklist", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -601,7 +601,7 @@ app.get("/blacklist", async (req, res) => {
     }
 })
 
-app.post("/blacklist/:quoteId/delete", async (req, res) => {
+app.post("/lotr/blacklist/:quoteId/delete", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -613,7 +613,7 @@ app.post("/blacklist/:quoteId/delete", async (req, res) => {
 
         const quoteId = req.params.quoteId;
         await deleteBlacklist(user, quoteId);
-        res.redirect("/blacklist");
+        res.redirect("/lotr/blacklist");
 
     } catch (err) {
         console.log(err);
@@ -624,7 +624,7 @@ app.post("/blacklist/:quoteId/delete", async (req, res) => {
     }
 })
 
-app.post("/blacklist/:quoteId/edit", async (req, res) => {
+app.post("/lotr/blacklist/:quoteId/edit", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -638,7 +638,7 @@ app.post("/blacklist/:quoteId/edit", async (req, res) => {
         const newComment = req.body.editComment;
         await editBlacklist(user, quoteId, newComment);
 
-        res.redirect("/blacklist");
+        res.redirect("/lotr/blacklist");
     } catch (err) {
         console.log(err);
         res.status(500);
