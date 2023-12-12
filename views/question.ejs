@@ -17,12 +17,12 @@
                 </p>
 
                 <!-- Form Questions -->
-                <form id="radio-btn-group" class="row justify-content-center px-3" action="/quiz/<%= typeOfQuiz %>/question/<%= questionId %>" method="POST">
+                <form id="radio-btn-group" class="row justify-content-center px-3" action="/lotr/quiz/<%= typeOfQuiz %>/question/<%= questionId %>" method="POST">
 
                     <!-- Thumbs-up & Thumbs-down buttons -->
                     <div class="d-sm-block pb-3" role="group">
                         <input type="checkbox" class="btn-check" value="thumbsUp" name="btnThumbs" id="btnradioThumbsUp"
-                            autocomplete="off" onclick="onlyOneThumb(this)">
+                            autocomplete="off" onclick="onlyOneThumb(this)" <% if (inFavorite){ %>checked<% } %>>
                         <label class="btn btn-outline-success" for="btnradioThumbsUp"
                             title="Voeg toe aan jouw favorieten"><i class="bi bi-hand-thumbs-up"></i> favorieten</label>
 
@@ -34,7 +34,7 @@
                     </div>
                     <div class="collapse p-0 m-0" id="collapseComment">
                         <div class="col-sm-6 px-2 mx-auto">
-                            <label for="blacklistComment" class="form-label pt-2">Reden voor blacklisting? (verplicht)</label>
+                            <label for="blacklistComment" class="form-label pt-2">Reden voor blacklisting?*</label>
                             <textarea class="form-control" name="blacklistComment" id="blacklistComment" rows="3"
                                 placeholder="Ik blacklist deze quote omdat..." ></textarea>
                         </div>

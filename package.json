@@ -4,6 +4,8 @@
   "description": "lord of the rings quiz application in express/node/mongodb",
   "main": "index.ts",
   "scripts": {
+    "build": "tsc",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -50,6 +52,7 @@
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
-    "mongodb": "^6.1.0"
+    "mongodb": "^6.1.0",
+    "typescript": "^5.3.3"
   }
 }

@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt');
 
 import { User, Favorite, Blacklist, Movie, Character } from "./types";
 import { ObjectId } from "mongodb";
-import { client, connect, createUser, getUser, getUserById, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions, writeCharacterAnswer, writeMovieAnswer } from "./db";
+import { client, connect, createUser, getUser, getUserById, getUserByEmail, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions, writeCharacterAnswer, writeMovieAnswer } from "./db";
 import { addNextQuestion, getCharacterAnswerById, getMovieAnswerById } from "./functions";
 import { loadCharacters, loadMovies, loadQuotes } from "./API";
 
@@ -90,7 +90,7 @@ app.post("/login", async (req, res) => {
                 message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
             });
         }
-        
+
         let validPassword = await bcrypt.compare(password, foundUser.password);
         if (!validPassword) {
             return res.render("login", {
@@ -135,10 +135,18 @@ app.post("/register", async (req, res) => {
         let email: string = req.body.email;
 
         // check if username already exists in db
-        let foundUser: User | null = await getUser(username);
-        if (foundUser) {
+        let foundUserById: User | null = await getUser(username);
+        if (foundUserById) {
             return res.render("register", {
-                message: "Gebruikersnaam is al in gebruik."
+                message: "Gebruikersnaam en/of email is al in gebruik."
+            });
+        }
+
+        // check if email address already exists in db
+        let foundUserByEmail: User | null = await getUserByEmail(email);
+        if (foundUserByEmail) {
+            return res.render("register", {
+                message: "Gebruikersnaam en/of email is al in gebruik."
             });
         }
 
@@ -183,11 +191,11 @@ app.post("/register", async (req, res) => {
 
 // QUIZ
 
-app.get("/quiz", (req, res) => {
+app.get("/lotr", (req, res) => {
     res.render("quiz");
 })
 
-app.post("/quiz", async (req, res) => {
+app.post("/lotr", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -205,20 +213,20 @@ app.post("/quiz", async (req, res) => {
 
         // go to first question of the chosen type of quiz
         const typeOfQuiz: string = req.body.typeOfQuiz;
-        res.redirect(`/quiz/${typeOfQuiz}/question/0`);
+        res.redirect(`/lotr/quiz/${typeOfQuiz}/question/0`);
 
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 })
 
 // QUESTION
 
-app.get("/quiz/:type/question/:questionId", async (req, res) => {
+app.get("/lotr/quiz/:type/question/:questionId", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -231,24 +239,30 @@ app.get("/quiz/:type/question/:questionId", async (req, res) => {
         const typeOfQuiz: string = req.params.type;
         const typeOfQuizTitle: string = typeOfQuiz === "tenrounds" ? "Ten Rounds" : "Sudden Death";
         const questionId: number = parseInt(req.params.questionId);
+        const favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === user.questions[questionId].quote_id);
+        let inFavorite: boolean = false;
+        if (favorite) {
+            inFavorite = true;
+        }
 
         res.render("question", {
             typeOfQuiz: typeOfQuiz,
             typeOfQuizTitle: typeOfQuizTitle,
             questionId: questionId,
             question: user.questions[questionId],
+            inFavorite: inFavorite
         });
 
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 })
 
-app.post("/quiz/:type/question/:questionId", async (req, res) => {
+app.post("/lotr/quiz/:type/question/:questionId", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -273,15 +287,24 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
         const movieAnswer: Movie = getMovieAnswerById(movieAnswerId, user.questions[questionId]);
         await writeMovieAnswer(req.session.userId, user.questions[questionId].quote_id, movieAnswer);
 
-        // handle thumbs up & thumbs down functionality
+        //Handle thumbs up & thumbs down functionality
+        const favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === user.questions[questionId].quote_id);
         if (req.body.btnThumbs === "thumbsUp") {
+
             await addToFavorites(user,
                 {
                     quote_id: user.questions[questionId].quote_id,
                     dialog: user.questions[questionId].dialog,
                     character: user.questions[questionId].correct_character
                 });
-        } else if (req.body.btnThumbs === "thumbsDown") {
+        }
+        else if (req.body.btnThumbs === "thumbsDown") {
+
+            if (favorite) {
+                await deleteFavorite(user, favorite);
+
+            }
+
             await addToBlacklist(user,
                 {
                     quote_id: user.questions[questionId].quote_id,
@@ -289,20 +312,25 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
                     comment: comment
                 });
         }
+        else {
+            if (favorite) {
+                await deleteFavorite(user, favorite);
+            }
+        }
 
         // check if end of quiz: redirect to score
         switch (typeOfQuiz) {
             case "tenrounds":
                 // ten rounds ends after 10 questions
                 if (questionId >= 9) {
-                    return res.redirect(`/quiz/${typeOfQuiz}/score`,);
+                    return res.redirect(`/lotr/quiz/${typeOfQuiz}/score`,);
                 }
                 break;
 
             case "suddendeath":
                 // sudden death ends when answer is wrong
                 if (!characterIsCorrect || !movieIsCorrect) {
-                    return res.redirect(`/quiz/${typeOfQuiz}/score`,);
+                    return res.redirect(`/lotr/quiz/${typeOfQuiz}/score`,);
                 }
                 break;
         }
@@ -311,20 +339,20 @@ app.post("/quiz/:type/question/:questionId", async (req, res) => {
         await addNextQuestion(user);
 
         // default redirect: go to the next question
-        res.redirect(`/quiz/${typeOfQuiz}/question/${questionId + 1}`);
+        res.redirect(`/lotr/quiz/${typeOfQuiz}/question/${questionId + 1}`);
 
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 })
 
 // SCORE
 
-app.get("/quiz/:type/score", async (req, res) => {
+app.get("/lotr/quiz/:type/score", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -391,15 +419,15 @@ app.get("/quiz/:type/score", async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 });
 
 // FAVORITES
 
-app.get("/favorites", async (req, res) => {
+app.get("/lotr/favorites", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -415,14 +443,14 @@ app.get("/favorites", async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 
 });
 
-app.get("/favorites/download", async (req, res) => {
+app.get("/lotr/favorites/download", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -446,13 +474,13 @@ app.get("/favorites/download", async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 });
 
-app.post("/favorites/:quoteId/delete", async (req, res) => {
+app.post("/lotr/favorites/:quoteId/delete", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -474,15 +502,15 @@ app.post("/favorites/:quoteId/delete", async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 })
 
 // CHARACTER
 
-app.get("/favorites/:characterId", async (req, res) => {
+app.get("/lotr/favorites/character/:characterId", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -506,19 +534,19 @@ app.get("/favorites/:characterId", async (req, res) => {
                 });
             }
         } else {
-            res.redirect("/favorites");
+            res.redirect("/lotr/favorites");
         }
 
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 })
 
-app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
+app.post("/lotr/favorites/character/:characterId/:quoteId/delete", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -536,22 +564,22 @@ app.post("/favorites/:characterId/:quoteId/delete", async (req, res) => {
 
             if (favorite) {
                 await deleteFavorite(user, favorite);
-                res.redirect(`/favorites/${characterId}`);
+                res.redirect(`/lotr/favorites/character/${characterId}`);
             }
         }
 
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 })
 
 // BLACKLIST
 
-app.get("/blacklist", async (req, res) => {
+app.get("/lotr/blacklist", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -567,13 +595,13 @@ app.get("/blacklist", async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 })
 
-app.post("/blacklist/:quoteId/delete", async (req, res) => {
+app.post("/lotr/blacklist/:quoteId/delete", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -585,18 +613,18 @@ app.post("/blacklist/:quoteId/delete", async (req, res) => {
 
         const quoteId = req.params.quoteId;
         await deleteBlacklist(user, quoteId);
-        res.redirect("/blacklist");
+        res.redirect("/lotr/blacklist");
 
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 })
 
-app.post("/blacklist/:quoteId/edit", async (req, res) => {
+app.post("/lotr/blacklist/:quoteId/edit", async (req, res) => {
     try {
         if (!req.session.userId) {
             throw "Could not find session user id";
@@ -610,12 +638,12 @@ app.post("/blacklist/:quoteId/edit", async (req, res) => {
         const newComment = req.body.editComment;
         await editBlacklist(user, quoteId, newComment);
 
-        res.redirect("/blacklist");
+        res.redirect("/lotr/blacklist");
     } catch (err) {
         console.log(err);
         res.status(500);
-        res.render("error-quiz", {
-            errorMessage: "Oeps, er is iets fout gegaan. Probeer opnieuw aan te melden."
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
         });
     }
 })

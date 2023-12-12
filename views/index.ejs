@@ -15,7 +15,7 @@
             <!-- Difference register/login/logout if user is logged in or not-->
             <% if (locals.user) { %>
                 <div class="d-grid gap-2 d-md-block">
-                    <form method="POST" action="logout">
+                    <form method="POST" action="/logout">
                         <button type="submit" class="btn btn-primary btn-lg col text-center m-1">Afmelden</button>
                     </form>
                 </div>
@@ -44,7 +44,7 @@
                                 <p class="card-text">Test jouw kennis met deze quiz over bekende citaten uit de Lord of
                                     the
                                     Rings trilogie!</p>
-                                <a href="/quiz" class="btn btn-primary w-100" id="accessGranted">Ontdek meer</a>
+                                <a href="/lotr" class="btn btn-primary w-100" id="accessGranted">Ontdek meer</a>
                             </div>
                         </div>
                     </article>

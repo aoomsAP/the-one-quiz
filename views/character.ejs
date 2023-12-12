@@ -4,7 +4,7 @@
 
         <!-- Title and intro -->
         <section class="position-relative mb-3">
-            <a href="/favorites" title="Ga terug naar alle favorieten">
+            <a href="/lotr/favorites" title="Ga terug naar alle favorieten">
                 <i class="bi bi-arrow-left fs-1"></i>
             </a>
             <a href="<%= character.wikiUrl %>" title="Ga naar de fandom pagina van <%= character.name %>">
@@ -53,7 +53,7 @@
                                         aria-label="Close">Behouden</button>
                                     <form>
                                         <button class="btn btn-primary" formmethod="POST"
-                                            formaction="/favorites/<%= character.character_id %>/<%= characterQuotes[i].quote_id %>/delete">Verwijderen</button>
+                                            formaction="/lotr/favorites/character/<%= character.character_id %>/<%= characterQuotes[i].quote_id %>/delete">Verwijderen</button>
                                     </form>
                                 </div>
                             </div>
