@@ -191,8 +191,24 @@ app.post("/register", async (req, res) => {
 
 // QUIZ
 
-app.get("/lotr", (req, res) => {
-    res.render("quiz");
+app.get("/lotr", async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            throw "Could not find session user id";
+        }
+        const user = await getUserById(req.session.userId);
+        if (!user) {
+            throw "Could not find user in db";
+        }
+        res.render("quiz");
+    } catch(err) {
+        console.log(err);
+        res.status(500);
+        res.render("error-page", {
+            errorMessage: "Probeer opnieuw aan te melden."
+        });
+    }
+    
 })
 
 app.post("/lotr", async (req, res) => {
