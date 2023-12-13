@@ -356,3 +356,8 @@ footer p {
     }
     
 }
+
+a:focus {
+    outline: 2px solid var(--bs-secondary);
+    outline-offset: 5px;
+}
