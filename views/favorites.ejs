@@ -4,19 +4,25 @@
         <!-- Title and intro -->
         <section class="position-relative mb-5">
             <h1>Favorieten</h1>
-            <p>Hieronder vind je een lijst met jouw favoriete quotes. Klik op een naam om uitsluitend quotes van een
-                bepaald personage te zien. Verwijder quotes uit jouw favorietenlijst door op het vuilbakje te klikken.
-                Download een tekstbestand van deze lijst met de downloadknop.</p>
-            <form action="/lotr/favorites/download" METHOD="GET">
-                <button type="submit" class="btn btn-primary position-absolute top-0 end-0 text"
-                    title="Download je favorietenlijst"><i class="bi bi-download"></i>&nbsp;&nbsp;Download</button>
-            </form>
+            <% if (favorites.length > 0) { %>
+                <p>Hieronder vind je een lijst met jouw favoriete quotes. Klik op een naam om uitsluitend quotes van een
+                    bepaald personage te zien. Verwijder quotes uit jouw favorietenlijst door op het vuilbakje te
+                    klikken.
+                    Download een tekstbestand van deze lijst met de downloadknop.</p>
+            
+                    <form action="/lotr/favorites/download" METHOD="GET">
+                        <button type="submit" class="btn btn-primary position-absolute top-0 end-0 text"
+                            title="Download je favorietenlijst"><i
+                                class="bi bi-download"></i>&nbsp;&nbsp;Download</button>
+                    </form>
+            <% } %>
         </section>
 
         <% if (favorites.length===0) { %>
             <!-- No quotes in favorites -->
             <section>
-                <p><strong>Nog geen quotes in jouw favorieten.</strong> Gebruik de favorieten-knop tijdens de quiz om een
+                <p><strong>Nog geen quotes in jouw favorieten.</strong> Gebruik de favorieten-knop tijdens de quiz om
+                    een
                     quote toe te voegen.</p>
             </section>
             <% } else { %>
@@ -70,7 +76,8 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                                                     aria-label="Close">Behouden</button>
-                                                <form action="/lotr/favorites/character/<%= fav.quote_id %>/delete" method="POST">
+                                                <form action="/lotr/favorites/character/<%= fav.quote_id %>/delete"
+                                                    method="POST">
                                                     <button type="submit" class="btn btn-primary">Verwijderen</button>
                                                 </form>
                                             </div>
