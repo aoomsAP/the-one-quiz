@@ -496,7 +496,7 @@ app.post("/lotr/favorites/:quoteId/delete", async (req, res) => {
 
         if (favorite) {
             await deleteFavorite(user, favorite);
-            res.redirect(`/favorites`);
+            res.redirect(`/lotr/favorites`);
         }
 
     } catch (err) {

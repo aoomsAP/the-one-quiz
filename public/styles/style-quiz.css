@@ -358,10 +358,6 @@ footer p {
 }
 
 a:focus {
-    outline: 2px solid var(--bs-secondary-bg);
+    outline: 2px solid var(--bs-secondary);
+    outline-offset: 5px;
 }
-
-.navbar-brand img:focus {
-    outline: none !important;
-    box-shadow: 0 0 2px 2px var(--bs-secondary-bg);
-}  
