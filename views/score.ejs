@@ -29,7 +29,12 @@
                 </p>
             <% } %>
             <hr/>
-            <p class="card-text fs-5">Goed gespeeld! Hieronder vind je een overzicht van al jouw antwoorden.</p>
+            <p class="card-text fs-5">
+                <% if ((typeOfQuiz === "tenrounds" && score < 5) || (typeOfQuiz === "suddendeath" && newHighScore === false)) { %>
+                    Blijf proberen!
+                <% } else { %>
+                    Goed gespeeld!
+                <% } %> Hieronder vind je een overzicht van al jouw antwoorden.</p>
             <p class="card-text fs-5"><a href="/lotr" class="btn btn-primary">Terug naar quiz overzicht</a></p>
         </div>
         <!-- overview of questions -->
