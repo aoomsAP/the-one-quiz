@@ -70,8 +70,16 @@
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary col-md-3 mx-auto">Volgende vraag <i
-                            class="bi bi-chevron-right"></i></button>
+                    <% if (typeOfQuiz === "tenrounds") { %>
+                        <% if (questionId === 9) { %>
+                            <button type="submit" class="btn btn-primary col-md-3 mx-auto">Beëindig quiz <i
+                                class="bi bi-chevron-right"></i></button>
+                        <% } %>
+                        <% else { %>
+                            <button type="submit" class="btn btn-primary col-md-3 mx-auto">Volgende vraag <i
+                                class="bi bi-chevron-right"></i></button>
+                        <% } %>
+                    <% } %>
                 </form>
             </div>
         </section>
