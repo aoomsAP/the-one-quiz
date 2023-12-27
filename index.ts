@@ -8,12 +8,11 @@ import MongoStore from "connect-mongo";
 import fs from "fs";
 const bcrypt = require('bcrypt');
 
-import { User, Favorite, Blacklist, Movie, Character } from "./types";
+import { User, Favorite, Movie, Character } from "./types";
 import { ObjectId } from "mongodb";
 import { client, connect, createUser, getUser, getUserById, getUserByEmail, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions, writeCharacterAnswer, writeMovieAnswer } from "./db";
 import { addNextQuestion, getCharacterAnswerById, getMovieAnswerById } from "./functions";
-import { characters, loadCharacters, loadMovies, loadQuotes } from "./API";
-import { channel } from "diagnostics_channel";
+import { loadCharacters, loadMovies, loadQuotes } from "./API";
 
 // SETUP APP + SESSIONS
 // ------------------------------------------------------------------------------------------------------
@@ -204,14 +203,14 @@ app.get("/lotr", async (req, res) => {
 
         res.render("quiz");
 
-    } catch(err) {
+    } catch (err) {
         console.log(err);
-        res.status(500);
+        // res.status(500);
         res.render("error-page", {
             errorMessage: "Probeer opnieuw aan te melden."
         });
     }
-    
+
 })
 
 app.post("/lotr", async (req, res) => {
@@ -310,7 +309,6 @@ app.post("/lotr/quiz/:type/question/:questionId", async (req, res) => {
         await writeMovieAnswer(req.session.userId, user.questions[questionId].quote_id, movieAnswer);
 
         // thumbs up & thumbs down functionality
-        const favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === user.questions[questionId].quote_id);
         if (req.body.btnThumbs === "thumbsUp") {
             await addToFavorites(user,
                 {
@@ -320,10 +318,9 @@ app.post("/lotr/quiz/:type/question/:questionId", async (req, res) => {
                 });
         }
         else if (req.body.btnThumbs === "thumbsDown") {
-            // if user wants to blacklist a favorite quote, remove from favorites
-            if (favorite) {
-                await deleteFavorite(user, favorite);
-            }
+            // if user wants to blacklist a quote, remove from it favorites first
+            // (will simply do nothing if quote is not in favorites)
+            await deleteFavorite(user, user.questions[questionId].quote_id);
 
             await addToBlacklist(user,
                 {
@@ -333,10 +330,9 @@ app.post("/lotr/quiz/:type/question/:questionId", async (req, res) => {
                 });
         }
         else {
-            // if both buttons are unchecked & the quote was in favorites, remove quote from favorites
-            if (favorite) {
-                await deleteFavorite(user, favorite);
-            }
+            // if both buttons are unchecked, remove quote from favorites
+            // (will simply do nothing if quote is not in favorites)
+            await deleteFavorite(user, user.questions[questionId].quote_id);
         }
 
         // check if end of quiz, then redirect to score
@@ -396,12 +392,12 @@ app.get("/lotr/quiz/:type/score", async (req, res) => {
                         && q.correct_movie.movie_id === q.answer_movie?.movie_id) {
                         return 1;
 
-                    // if character or movie answer is correct, return 0.5 point
+                        // if character or movie answer is correct, return 0.5 point
                     } else if (q.correct_character.character_id === q.answer_character?.character_id
                         || q.correct_movie.movie_id === q.answer_movie?.movie_id) {
                         return 0.5;
-                    
-                    // if neither is correct, return 0 point
+
+                        // if neither is correct, return 0 point
                     } else {
                         return 0;
                     }
@@ -416,8 +412,8 @@ app.get("/lotr/quiz/:type/score", async (req, res) => {
                     if (q.correct_character.character_id === q.answer_character?.character_id
                         && q.correct_movie.movie_id === q.answer_movie?.movie_id) {
                         return 1;
-                    
-                    // if anything is wrong, return 0 point
+
+                        // if anything is wrong, return 0 point
                     } else {
                         return 0;
                     }
@@ -534,14 +530,11 @@ app.post("/lotr/favorites/:quoteId/delete", async (req, res) => {
             throw "Could not find user in db";
         }
 
+        // delete from favorites        
         const quoteId: string = req.params.quoteId;
+        await deleteFavorite(user, quoteId);
 
-        // get favorite quote to delete
-        let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
-        if (favorite) {
-            await deleteFavorite(user, favorite);
-            res.redirect(`/lotr/favorites`);
-        }
+        res.redirect(`/lotr/favorites/`);
 
     } catch (err) {
         console.log(err);
@@ -581,7 +574,7 @@ app.get("/lotr/favorites/character/:characterId", async (req, res) => {
                     characterQuotes: characterQuotes
                 });
             }
-        // if there are no quotes left for this character, go back to favorites page
+            // if there are no quotes left for this character, go back to favorites page
         } else {
             res.redirect("/lotr/favorites");
         }
@@ -608,12 +601,10 @@ app.post("/lotr/favorites/character/:characterId/:quoteId/delete", async (req, r
         const quoteId: string = req.params.quoteId;
         const characterId: string = req.params.characterId;
 
-        // get favorite quote to delete
-        let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
-        if (favorite) {
-            await deleteFavorite(user, favorite);
-            res.redirect(`/lotr/favorites/character/${characterId}`);
-        }
+        // delete from favorites
+        await deleteFavorite(user, quoteId);
+
+        res.redirect(`/lotr/favorites/character/${characterId}`);
 
     } catch (err) {
         console.log(err);
