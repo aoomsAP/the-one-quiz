@@ -205,7 +205,7 @@ app.get("/lotr", async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.status(500);
+        // res.status(500);
         res.render("error-page", {
             errorMessage: "Probeer opnieuw aan te melden."
         });
