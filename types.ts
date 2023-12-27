@@ -56,7 +56,7 @@ export interface Character {
 // API INTERFACES
 // ------------------------------------------------------------------------------------------------------
 
-export interface CharacterApi{
+export interface CharacterAPI {
     _id: string,
     height: string,
     race: string,
@@ -70,16 +70,7 @@ export interface CharacterApi{
     wikiUrl: string
 }
 
-export interface RootCharacter{
-    docs: CharacterApi[];
-    total: number,
-    limit: number,
-    offset: number,
-    page: number,
-    pages: number
-}
-
-export interface QuoteApi{
+export interface QuoteAPI {
     _id: string,
     dialog: string,
     movie: string,
@@ -87,15 +78,7 @@ export interface QuoteApi{
     id: string
 }
 
-export interface RootQuote{
-    docs: QuoteApi[];
-    total: number,
-    limit: number,
-    page: number,
-    pages: number
-}
-
-export interface MovieApi{
+export interface MovieAPI {
     _id: string,
     name: string,
     runtimeInMinutes: number,
@@ -104,13 +87,4 @@ export interface MovieApi{
     academyAwardNominations: number,
     academyAwardWins: number,
     rottenTomatoesScore: number
-}
-
-export interface RootMovie{
-    docs: MovieApi[];
-    total: number,
-    limit: number,
-    offset: number,
-    page: number,
-    pages: number
 }

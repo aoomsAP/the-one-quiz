@@ -12,7 +12,8 @@ import { User, Favorite, Blacklist, Movie, Character } from "./types";
 import { ObjectId } from "mongodb";
 import { client, connect, createUser, getUser, getUserById, getUserByEmail, createNewHighScore, addToFavorites, addToBlacklist, deleteFavorite, deleteBlacklist, editBlacklist, clearQuestions, writeCharacterAnswer, writeMovieAnswer } from "./db";
 import { addNextQuestion, getCharacterAnswerById, getMovieAnswerById } from "./functions";
-import { loadCharacters, loadMovies, loadQuotes } from "./API";
+import { characters, loadCharacters, loadMovies, loadQuotes } from "./API";
+import { channel } from "diagnostics_channel";
 
 // SETUP APP + SESSIONS
 // ------------------------------------------------------------------------------------------------------

@@ -119,7 +119,7 @@ const getMovieAnswerById = (answerMovieId: string, q: Question) => {
     if (answerMovieId === q.correct_movie.movie_id) {
         return q.correct_movie;
     }
-    
+
     // if answer is incorrect, answer_movie = one of the wrong_movies
     else {
         if (answerMovieId === q.wrong_movies[0].movie_id) {
