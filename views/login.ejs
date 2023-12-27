@@ -1,18 +1,24 @@
 <%- include('./partials/header'); %>
 
 <main class="container mt-5" id="login">
+
     <a href="/" title="Ga terug naar overzicht projecten">
         <i class="bi bi-arrow-left fs-1"></i>
     </a>
+
     <section class="card">
         <h1 class="card-header text-center fs-3">Aanmelden</h1>
         <div class="card-body">
+
             <% if (locals.message) { %>
+                <!-- Alert -->
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <p><%= message %></p>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <% } %>
+
+            <!-- Login form -->
             <form method="POST" action="/login">
                 <div class="form-group mb-3">
                     <label for="username">Gebruikersnaam</label>
@@ -25,6 +31,7 @@
                 <button type="submit" class="btn btn-primary mb-3">Aanmelden</button>
                 <p>Nog geen account? <a href="/register">Registreer hier</a></p>
             </form>
+
         </div>
     </section>
 </main>

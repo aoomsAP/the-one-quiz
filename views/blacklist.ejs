@@ -1,93 +1,110 @@
 <%- include('./partials/header-quiz'); %>
 
     <main class="container-sm p-3" id="blacklist">
+
         <!-- Title and intro -->
         <section class="mb-5">
             <h1>Blacklist</h1>
+
             <% if (blacklist.length> 0) { %>
                 <p>Hieronder vind je jouw blacklist. Deze quotes komen niet meer voor in de quiz. Klik op de pen om de
                     opmerkingen te wijzigen, of op het vuilbakje om quotes uit jouw blacklist te verwijderen.</p>
             <% } %>
+
         </section>
+
         <% if (blacklist.length===0) { %>
+
             <!-- No quotes in blacklist -->
             <section>
                 <p><strong>Nog geen quotes in jouw blacklist.</strong> Gebruik de blacklist-knop tijdens de quiz om een
                     quote toe te voegen.</p>
             </section>
+
         <% } else { %>
-                <!-- Table with blacklisted quotes -->
-                <section class="table-custom text-start p-0 rounded border overflow-hidden">
-                    <% blacklist.forEach((item, index)=> { %>
-                        <!-- Blacklist row -->
-                        <article class="p-3 border-bottom">
-                            <div class="d-flex">
-                                <div class="table-id p-2 fw-bold ms-auto">#<%= index + 1 %>
-                                </div>
-                                <div class="table-quote w-50 me-1 p-2">
-                                    <%= item.dialog %>
-                                </div>
-                                <div class="table-comment w-50 p-2 ms-1">
-                                    <span class="text-decoration-underline">Jouw opmerking:</span>&nbsp;<%= item.comment
-                                        %>
-                                </div>
-                                <div class="table-icons me-auto">
-                                    <div class="table-edit-button ms-end p-2">
-                                        <button type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#comment<%= index + 1 %>" aria-expanded="false"
-                                            aria-controls="comment<%= index + 1 %>" class="btn btn-outline-primary"
-                                            title="Wijzig deze opmerking">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </button>
+
+            <!-- Table with blacklisted quotes -->
+            <section class="table-custom text-start p-0 rounded border overflow-hidden">
+
+            <% blacklist.forEach((item, index)=> { %>
+
+                <!-- Blacklist item -->
+                <article class="p-3 border-bottom">
+                    <div class="d-flex">
+                        <div class="table-id p-2 fw-bold ms-auto">
+                            #<%= index + 1 %>
+                        </div>
+                        <div class="table-quote w-50 me-1 p-2">
+                            <%= item.dialog %>
+                        </div>
+                        <div class="table-comment w-50 p-2 ms-1">
+                            <span class="text-decoration-underline">Jouw opmerking:</span>&nbsp;<%= item.comment %>
+                        </div>
+                        <div class="table-icons me-auto">
+                            <div class="table-edit-button ms-end p-2">
+                                <button type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#comment<%= index + 1 %>" aria-expanded="false"
+                                    aria-controls="comment<%= index + 1 %>" class="btn btn-outline-primary"
+                                    title="Wijzig deze opmerking">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </div>
+                            <div class="table-delete-button ms-end p-2">
+                                <button type="button" class="btn btn-outline-primary"
+                                    title="Verwijder uit je blacklist" data-bs-toggle="modal"
+                                    data-bs-target="#deleteBlackList<%= index + 1 %>">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Confirm delete window -->
+                        <div class="modal fade" id="deleteBlackList<%= index + 1 %>" tabindex="-1"
+                            aria-labelledby="deleteBlackList<%= index + 1 %>" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2 class="modal-title fs-5" id="deleteBlackList<%= index + 1 %>">
+                                            Weet je zeker dat je deze quote uit jouw blacklist wil verwijderen?
+                                        </h2>
                                     </div>
-                                    <div class="table-delete-button ms-end p-2">
-                                        <button type="button" class="btn btn-outline-primary"
-                                            title="Verwijder uit je blacklist" data-bs-toggle="modal"
-                                            data-bs-target="#deleteBlackList<%= index + 1 %>">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                                    <div class="modal-body">
+                                        <p><%= item.dialog %></p>
                                     </div>
-                                </div>
-                                <!-- Confirm delete window -->
-                                <div class="modal fade" id="deleteBlackList<%= index + 1 %>" tabindex="-1"
-                                    aria-labelledby="deleteBlackList<%= index + 1 %>" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h2 class="modal-title fs-5" id="deleteBlackList<%= index + 1 %>">Weet
-                                                    je zeker dat je deze
-                                                    quote uit jouw blacklist wil verwijderen?</h2>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>
-                                                    <%= item.dialog %>
-                                                </p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                                    aria-label="Close">Behouden</button>
-                                                <form action="/lotr/blacklist/<%= item.quote_id %>/delete"
-                                                    method="post">
-                                                    <button type="submit" class="btn btn-primary">Verwijderen</button>
-                                                </form>
-                                            </div>
-                                        </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                            aria-label="Close">
+                                            Behouden
+                                        </button>
+                                        <form action="/lotr/blacklist/<%= item.quote_id %>/delete" method="post">
+                                            <button type="submit" class="btn btn-primary">Verwijderen</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                            <!-- Edit comment window -->
-                            <form class="table-edit-form collapse px-2" id="comment<%= index + 1 %>"
-                                action="/lotr/blacklist/<%= item.quote_id %>/edit" method="POST">
-                                <label for="editComment" class="form-label pt-2">Wijzig jouw opmerking hier:</label>
-                                <textarea class="form-control" id="editComment" name="editComment"
-                                    rows="3"><%= item.comment %></textarea>
-                                <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
-                            </form>
-                        </article>
-                    <% }); %>
-                            <a href="#top" class="scroll-to-top"><i class="bi bi-arrow-up-square-fill"></i></a>
-                </section>
-            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Edit comment window -->
+                    <form class="table-edit-form collapse px-2" id="comment<%= index + 1 %>"
+                        action="/lotr/blacklist/<%= item.quote_id %>/edit" method="POST">
+                        <label for="editComment" class="form-label pt-2">Wijzig jouw opmerking hier:</label>
+                        <textarea class="form-control" id="editComment" name="editComment" rows="3">
+                            <%= item.comment %>
+                        </textarea>
+                        <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
+                    </form>
+                </article>
+
+                <% }); %>
+
+                <!-- Arrow to top -->
+                <a href="#top" class="scroll-to-top"><i class="bi bi-arrow-up-square-fill"></i></a>
+                
+            </section>
+
+        <% } %>
+
     </main>
 
     <%- include('./partials/footer-quiz'); %>

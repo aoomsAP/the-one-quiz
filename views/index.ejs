@@ -1,139 +1,136 @@
 <%- include('./partials/header'); %>
 
     <main id="landing-page" class="container mt-5">
-        <!-- First section with Buttons -->
+
+        <!-- Title and intro -->
         <section class="row text-center bg-white p-3">
             <h1 class="display-1 mb-4">Projecten</h1>
+            
+            <!-- Welcome message -->
             <p class="fs-3">
-                <!-- Welkom text if user is logged in-->
                 <% if (locals.user) { %>
                     Dag <strong><%=user.username%></strong>,<br>start nu jouw ontdekkingsreis door zes boeiende projecten.
-                    <% } else { %>
-                        Meld je aan en start jouw ontdekkingsreis door zes boeiende projecten!
-                        <% } %>
+                <% } else { %>
+                    Meld je aan en start jouw ontdekkingsreis door zes boeiende projecten!
+                <% } %>
             </p>
-            <!-- Difference register/login/logout if user is logged in or not-->
+
             <% if (locals.user) { %>
+                <!-- Logout button -->
                 <div class="d-grid gap-2 d-md-block">
                     <form method="POST" action="/logout">
                         <button type="submit" class="btn btn-primary btn-lg col text-center m-1">Afmelden</button>
                     </form>
                 </div>
-                <% } else { %>
-                    <div class="d-grid gap-2 d-md-block">
-                        <a href="/login" class="btn btn-primary btn-lg col text-center m-1">Aanmelden</a>
-                        <a href="/register" class="btn btn-outline-secondary btn-lg col text-center m-1">Registreren</a>
-                    </div>
-                    <% } %>
+            <% } else { %>
+                <!-- Login/register button -->
+                <div class="d-grid gap-2 d-md-block">
+                    <a href="/login" class="btn btn-primary btn-lg col text-center m-1">Aanmelden</a>
+                    <a href="/register" class="btn btn-outline-secondary btn-lg col text-center m-1">Registreren</a>
+                </div>
+            <% } %>
 
-                        <!-- Alerts -->
-                        <div id="accessDeniedOtherProjects"></div>
-
+            <!-- Alerts -->
+            <div id="accessDeniedOtherProjects"></div>
         </section>
 
-        <!-- Second section with 6 projects -->
+        <!-- Projects -->
         <section class="mt-5">
             <div class="row">
-                <% if (locals.user) { %>
-                    <article class="col-md-4">
-                        <div class="card mb-4">
-                            <img src="/assets/images/landing-lotr.jpg" class="card-img-top border-bottom"
-                                alt="Lord of the Rings" title="Lord of the Rings">
-                            <div class="card-body">
-                                <h2 class="card-title fs-4">Lord of The Rings</h2>
-                                <p class="card-text">Test jouw kennis met deze quiz over bekende citaten uit de Lord of
-                                    the
-                                    Rings trilogie!</p>
+
+                <article class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="/assets/images/landing-lotr.jpg" class="card-img-top border-bottom"
+                            alt="Lord of the Rings" title="Lord of the Rings">
+                        <div class="card-body">
+                            <h2 class="card-title fs-4">Lord of The Rings</h2>
+                            <p class="card-text">Test jouw kennis met deze quiz over bekende citaten uit de Lord of the Rings trilogie!</p>
+
+                            <% if (locals.user) { %>
                                 <a href="/lotr" class="btn btn-primary w-100" id="accessGranted">Ontdek meer</a>
-                            </div>
+                            <% } else { %>
+                                <a href="#" class="btn btn-primary w-100 noAccessAlertBtn" id="accessDeniedWithoutLoginBtn">Ontdek meer</a>
+                            <% } %>
                         </div>
-                    </article>
-                    <% } else { %>
-                        <article class="col-md-4">
-                            <div class="card mb-4">
-                                <img src="/assets/images/landing-lotr.jpg" class="card-img-top border-bottom"
-                                    alt="Lord of the Rings" title="Lord of the Rings">
-                                <div class="card-body">
-                                    <h2 class="card-title fs-4">Lord of The Rings</h2>
-                                    <p class="card-text">Test jouw kennis met deze quiz over bekende citaten uit de Lord
-                                        of the
-                                        Rings trilogie!</p>
-                                    <a href="#" class="btn btn-primary w-100 noAccessAlertBtn"
-                                        id="accessDeniedWithoutLoginBtn">Ontdek meer</a>
-                                </div>
-                            </div>
-                        </article>
-                        <% } %>
-                            <article class="col-md-4">
-                                <div class="card mb-4">
-                                    <img src="/assets/images/landing-mtg.jpeg" class="card-img-top border-bottom"
-                                        alt="Magic the Gathering" title="Magic the Gathering">
-                                    <div class="card-body">
-                                        <h2 class="card-title fs-4">Magic: The Gathering</h2>
-                                        <p class="card-text">Bouw jouw eigen machtige "Magic: The Gathering" card deck en
-                                            domineer het
-                                            slagveld!</p>
-                                        <a href="#" class="btn btn-primary w-100 noAccessAlertBtn">Ontdek meer</a>
-                                    </div>
-                                </div>
-                            </article>
-                            <article class="col-md-4">
-                                <div class="card mb-4">
-                                    <img src="/assets/images/landing-pokemon.jpg" class="card-img-top border-bottom"
-                                        alt="Pokémon" title="Pokémon">
-                                    <div class="card-body">
-                                        <h2 class="card-title fs-4">Pokémon</h5>
-                                            <p class="card-text">Vang Pokémon, train ze en neem deel aan epische
-                                                gevechten tegen andere
-                                                Pokémon!</p>
-                                            <a href="#" class="btn btn-primary w-100 noAccessAlertBtn">Ontdek meer</a>
-                                    </div>
-                                </div>
-                            </article>
-                            <article class="col-md-4">
-                                <div class="card mb-4">
-                                    <img src="/assets/images/landing-fortnite.jpg" class="card-img-top border-bottom"
-                                        alt="Fortnite" title="Fortnite">
-                                    <div class="card-body">
-                                        <h2 class="card-title fs-4">Fortnite</h2>
-                                        <p class="card-text">
-                                            Creëer jouw eigen Fortnite-personage, volg jouw voortgang en bekijk jouw
-                                            overwinningen en
-                                            nederlagen in het spel.</p>
-                                        <a href="#" class="btn btn-primary w-100 noAccessAlertBtn">Ontdek meer</a>
-                                    </div>
-                                </div>
-                            </article>
-                            <article class="col-md-4">
-                                <div class="card mb-4">
-                                    <img src="/assets/images/landing-legomasters.jpeg"
-                                        class="card-img-top border-bottom" alt="Legomasters" title="Legomasters">
-                                    <div class="card-body">
-                                        <h2 class="card-title fs-4">LEGO Masters</h2>
-                                        <p class="card-text">
-                                            Organiseer jouw LEGO-minifiguren in sets en beleef urenlang bouwplezier met
-                                            deze handige
-                                            oplossing!</p>
-                                        <a href="#" class="btn btn-primary w-100 noAccessAlertBtn">Ontdek meer</a>
-                                    </div>
-                                </div>
-                            </article>
-                            <article class="col-md-4">
-                                <div class="card mb-4">
-                                    <img src="/assets/images/landing-fifa.jpeg" class="card-img-top border-bottom"
-                                        alt="Fifa" title="Fifa">
-                                    <div class="card-body">
-                                        <h2 class="card-title fs-4">FIFA</h2>
-                                        <p class="card-text">Doe de FIFA Clubs-quiz en test jouw kennis van de meest
-                                            iconische
-                                            voetbalclubs ter wereld!</p>
-                                        <a href="#" class="btn btn-primary w-100 noAccessAlertBtn">Ontdek meer</a>
-                                    </div>
-                                </div>
-                            </article>
+                    </div>
+                </article>
+
+                <article class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="/assets/images/landing-mtg.jpeg" class="card-img-top border-bottom"
+                            alt="Magic the Gathering" title="Magic the Gathering">
+                        <div class="card-body">
+                            <h2 class="card-title fs-4">Magic: The Gathering</h2>
+                            <p class="card-text">Bouw jouw eigen machtige "Magic: The Gathering" card deck en
+                                domineer het
+                                slagveld!</p>
+                            <a href="#" class="btn btn-primary w-100 noAccessAlertBtn">Ontdek meer</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="/assets/images/landing-pokemon.jpg" class="card-img-top border-bottom"
+                            alt="Pokémon" title="Pokémon">
+                        <div class="card-body">
+                            <h2 class="card-title fs-4">Pokémon</h5>
+                                <p class="card-text">Vang Pokémon, train ze en neem deel aan epische
+                                    gevechten tegen andere
+                                    Pokémon!</p>
+                                <a href="#" class="btn btn-primary w-100 noAccessAlertBtn">Ontdek meer</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="/assets/images/landing-fortnite.jpg" class="card-img-top border-bottom"
+                            alt="Fortnite" title="Fortnite">
+                        <div class="card-body">
+                            <h2 class="card-title fs-4">Fortnite</h2>
+                            <p class="card-text">
+                                Creëer jouw eigen Fortnite-personage, volg jouw voortgang en bekijk jouw
+                                overwinningen en
+                                nederlagen in het spel.</p>
+                            <a href="#" class="btn btn-primary w-100 noAccessAlertBtn">Ontdek meer</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="/assets/images/landing-legomasters.jpeg"
+                            class="card-img-top border-bottom" alt="Legomasters" title="Legomasters">
+                        <div class="card-body">
+                            <h2 class="card-title fs-4">LEGO Masters</h2>
+                            <p class="card-text">
+                                Organiseer jouw LEGO-minifiguren in sets en beleef urenlang bouwplezier met
+                                deze handige
+                                oplossing!</p>
+                            <a href="#" class="btn btn-primary w-100 noAccessAlertBtn">Ontdek meer</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="/assets/images/landing-fifa.jpeg" class="card-img-top border-bottom"
+                            alt="Fifa" title="Fifa">
+                        <div class="card-body">
+                            <h2 class="card-title fs-4">FIFA</h2>
+                            <p class="card-text">Doe de FIFA Clubs-quiz en test jouw kennis van de meest
+                                iconische
+                                voetbalclubs ter wereld!</p>
+                            <a href="#" class="btn btn-primary w-100 noAccessAlertBtn">Ontdek meer</a>
+                        </div>
+                    </div>
+                </article>
+
             </div>
         </section>
-        <!-- To top -->
+
+        <!-- Arrow to top -->
         <a href="#top" class="scroll-to-top"><i class="bi bi-arrow-up-square-fill"></i></a>
     </main>
 

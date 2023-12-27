@@ -36,8 +36,7 @@ app.use(session({
     cookie: {
         httpOnly: true,
         sameSite: 'strict',
-        secure: false,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: false
     }
 }));
 
@@ -82,15 +81,16 @@ app.post("/login", async (req, res) => {
     try {
         let username: string = req.body.username;
         let password: string = req.body.password;
-        let foundUser: User | null = await getUser(username);
 
-        // validate login
+        // validate username
+        let foundUser: User | null = await getUser(username);
         if (!foundUser) {
             return res.render("login", {
                 message: "Sorry, de ingevoerde gebruikersnaam en/of wachtwoord is niet correct. Probeer het opnieuw."
             });
         }
 
+        // validate password
         let validPassword = await bcrypt.compare(password, foundUser.password);
         if (!validPassword) {
             return res.render("login", {
@@ -200,7 +200,9 @@ app.get("/lotr", async (req, res) => {
         if (!user) {
             throw "Could not find user in db";
         }
+
         res.render("quiz");
+
     } catch(err) {
         console.log(err);
         res.status(500);
@@ -255,6 +257,8 @@ app.get("/lotr/quiz/:type/question/:questionId", async (req, res) => {
         const typeOfQuiz: string = req.params.type;
         const typeOfQuizTitle: string = typeOfQuiz === "tenrounds" ? "Ten Rounds" : "Sudden Death";
         const questionId: number = parseInt(req.params.questionId);
+
+        // if quote is already in favorites, favorites button will be green upon page load
         const favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === user.questions[questionId].quote_id);
         let inFavorite: boolean = false;
         if (favorite) {
@@ -294,6 +298,7 @@ app.post("/lotr/quiz/:type/question/:questionId", async (req, res) => {
         const movieAnswerId = req.body.btnradioMovie;
         const comment: string = req.body.blacklistComment;
 
+        // check whether answers are correct
         const characterIsCorrect = characterAnswerId === user.questions[questionId].correct_character.character_id;
         const movieIsCorrect = movieAnswerId === user.questions[questionId].correct_movie.movie_id;
 
@@ -303,10 +308,9 @@ app.post("/lotr/quiz/:type/question/:questionId", async (req, res) => {
         const movieAnswer: Movie = getMovieAnswerById(movieAnswerId, user.questions[questionId]);
         await writeMovieAnswer(req.session.userId, user.questions[questionId].quote_id, movieAnswer);
 
-        //Handle thumbs up & thumbs down functionality
+        // thumbs up & thumbs down functionality
         const favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === user.questions[questionId].quote_id);
         if (req.body.btnThumbs === "thumbsUp") {
-
             await addToFavorites(user,
                 {
                     quote_id: user.questions[questionId].quote_id,
@@ -315,10 +319,9 @@ app.post("/lotr/quiz/:type/question/:questionId", async (req, res) => {
                 });
         }
         else if (req.body.btnThumbs === "thumbsDown") {
-
+            // if user wants to blacklist a favorite quote, remove from favorites
             if (favorite) {
                 await deleteFavorite(user, favorite);
-
             }
 
             await addToBlacklist(user,
@@ -329,22 +332,23 @@ app.post("/lotr/quiz/:type/question/:questionId", async (req, res) => {
                 });
         }
         else {
+            // if both buttons are unchecked & the quote was in favorites, remove quote from favorites
             if (favorite) {
                 await deleteFavorite(user, favorite);
             }
         }
 
-        // check if end of quiz: redirect to score
+        // check if end of quiz, then redirect to score
         switch (typeOfQuiz) {
             case "tenrounds":
-                // ten rounds ends after 10 questions
+                // "ten rounds" ends after 10 questions
                 if (questionId >= 9) {
                     return res.redirect(`/lotr/quiz/${typeOfQuiz}/score`,);
                 }
                 break;
 
             case "suddendeath":
-                // sudden death ends when answer is wrong
+                // "sudden death" ends when answer is wrong
                 if (!characterIsCorrect || !movieIsCorrect) {
                     return res.redirect(`/lotr/quiz/${typeOfQuiz}/score`,);
                 }
@@ -382,30 +386,43 @@ app.get("/lotr/quiz/:type/score", async (req, res) => {
         let scores: number[] = [];
         let highScore: number = 0;
 
+        // get score for all questions
         switch (typeOfQuiz) {
             case "tenrounds":
                 scores = user.questions.map(q => {
+                    // if both character and movie answer are correct, return 1 point
                     if (q.correct_character.character_id === q.answer_character?.character_id
                         && q.correct_movie.movie_id === q.answer_movie?.movie_id) {
                         return 1;
+
+                    // if character or movie answer is correct, return 0.5 point
                     } else if (q.correct_character.character_id === q.answer_character?.character_id
                         || q.correct_movie.movie_id === q.answer_movie?.movie_id) {
                         return 0.5;
+                    
+                    // if neither is correct, return 0 point
                     } else {
                         return 0;
                     }
                 });
+
+                // get user highscore for "ten rounds"
                 highScore = user.highscore_tenrounds;
                 break;
             case "suddendeath":
                 scores = user.questions.map(q => {
+                    // if both character and movie answer are correct, return 1 point
                     if (q.correct_character.character_id === q.answer_character?.character_id
                         && q.correct_movie.movie_id === q.answer_movie?.movie_id) {
                         return 1;
+                    
+                    // if anything is wrong, return 0 point
                     } else {
                         return 0;
                     }
                 });
+
+                // get user highscore for "sudden death"
                 highScore = user.highscore_suddendeath;
                 break;
             default:
@@ -414,13 +431,18 @@ app.get("/lotr/quiz/:type/score", async (req, res) => {
 
         let sumOfScores: number = scores.reduce((prev, curr) => prev + curr, 0);
 
+        // check whether current score is new highscore, if yes add new high score
         const newHighScore: boolean = highScore < sumOfScores;
         if (newHighScore) {
             await createNewHighScore(user, typeOfQuiz, sumOfScores);
+
+            // refresh user data after adding new high score
             user = await getUserById(req.session.userId);
             if (!user) {
                 throw "Could not find user in db";
             }
+
+            // refresh high score data after adding new high score
             highScore = typeOfQuiz === "tenrounds" ? user.highscore_tenrounds : user.highscore_suddendeath;
         }
 
@@ -456,6 +478,7 @@ app.get("/lotr/favorites", async (req, res) => {
         res.render("favorites", {
             favorites: user.favorites
         });
+
     } catch (err) {
         console.log(err);
         res.status(500);
@@ -476,17 +499,21 @@ app.get("/lotr/favorites/download", async (req, res) => {
             throw "Could not find user in db";
         }
 
+        // create string with favorites data
         const favList: string = user.favorites.reduce((favList: string, fav: Favorite) => {
             return favList + `${fav.dialog} - ${fav.character.name}\r\n`;
         }, "");
 
+        // write favorites file to server
         fs.writeFileSync(`${user.username}_favorites.txt`, favList, "utf8");
 
         res.download(`${user.username}_favorites.txt`, () => {
+            // remove favorites file from server after download
             fs.unlink(`${user.username}_favorites.txt`, (error) => {
                 if (error) console.log(error);
             });
         });
+
     } catch (err) {
         console.log(err);
         res.status(500);
@@ -508,8 +535,8 @@ app.post("/lotr/favorites/:quoteId/delete", async (req, res) => {
 
         const quoteId: string = req.params.quoteId;
 
+        // get favorite quote to delete
         let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
-
         if (favorite) {
             await deleteFavorite(user, favorite);
             res.redirect(`/lotr/favorites`);
@@ -538,9 +565,13 @@ app.get("/lotr/favorites/character/:characterId", async (req, res) => {
 
         const characterId: string = req.params.characterId;
 
+        // get all quotes from this character
         let characterQuotes: Favorite[] = user.favorites.filter(fav => fav.character.character_id === characterId);
 
+        // if there are quotes for the character, render the character page
         if (characterQuotes.length > 0) {
+
+            // get character name
             let foundCharacter: Character | undefined = characterQuotes.find(fav => fav.character.character_id === characterId)?.character;
 
             if (foundCharacter) {
@@ -549,6 +580,7 @@ app.get("/lotr/favorites/character/:characterId", async (req, res) => {
                     characterQuotes: characterQuotes
                 });
             }
+        // if there are no quotes left for this character, go back to favorites page
         } else {
             res.redirect("/lotr/favorites");
         }
@@ -575,13 +607,11 @@ app.post("/lotr/favorites/character/:characterId/:quoteId/delete", async (req, r
         const quoteId: string = req.params.quoteId;
         const characterId: string = req.params.characterId;
 
-        if (user.favorites) {
-            let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
-
-            if (favorite) {
-                await deleteFavorite(user, favorite);
-                res.redirect(`/lotr/favorites/character/${characterId}`);
-            }
+        // get favorite quote to delete
+        let favorite: Favorite | undefined = user.favorites.find(fav => fav.quote_id === quoteId);
+        if (favorite) {
+            await deleteFavorite(user, favorite);
+            res.redirect(`/lotr/favorites/character/${characterId}`);
         }
 
     } catch (err) {
@@ -605,8 +635,7 @@ app.get("/lotr/blacklist", async (req, res) => {
             throw "Could not find user in db";
         }
 
-        const blacklist: Blacklist[] = user.blacklist;
-        res.render("blacklist", { blacklist: blacklist });
+        res.render("blacklist", { blacklist: user.blacklist });
 
     } catch (err) {
         console.log(err);
@@ -627,8 +656,10 @@ app.post("/lotr/blacklist/:quoteId/delete", async (req, res) => {
             throw "Could not find user in db";
         }
 
+        // delete from blacklist
         const quoteId = req.params.quoteId;
         await deleteBlacklist(user, quoteId);
+
         res.redirect("/lotr/blacklist");
 
     } catch (err) {
@@ -650,11 +681,13 @@ app.post("/lotr/blacklist/:quoteId/edit", async (req, res) => {
             throw "Could not find user in db";
         }
 
+        // edit blacklist comment
         const quoteId = req.params.quoteId;
         const newComment = req.body.editComment;
         await editBlacklist(user, quoteId, newComment);
 
         res.redirect("/lotr/blacklist");
+
     } catch (err) {
         console.log(err);
         res.status(500);

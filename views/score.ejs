@@ -1,10 +1,14 @@
 <%- include('./partials/header-quiz'); %>
 
 <main class="container p-3" id="score">
+
     <section class="text-center mb-4">
         <h1>Score: <%= typeOfQuiz === "tenrounds" ? "Ten Rounds" : "Sudden Death" %></h1>
     </section>
+
     <section class="card text-center">
+
+        <!-- Score image -->
         <figure>
             <% if ((typeOfQuiz === "tenrounds" && score < 5) || (typeOfQuiz === "suddendeath" && newHighScore === false)) { %>
                 <img src="/assets/images/score-frodocrying.png" alt="Frodo crying"
@@ -17,9 +21,15 @@
                 &copy; <cite>The Lord of the Rings</cite>
             </figcaption>
         </figure>
+
         <div class="card-body p-3 pb-4">
-            <p class="card-text fs-5 fw-bold">Je behaalde de volgende score:<br><%= score %><%= typeOfQuiz === "tenrounds" ? "/10" : (score === 1 ? " juist antwoord" : " juiste antwoorden") %>
+
+            <!-- Current score -->
+            <p class="card-text fs-5 fw-bold">
+                Je behaalde de volgende score:<br><%= score %><%= typeOfQuiz === "tenrounds" ? "/10" : (score === 1 ? " juist antwoord" : " juiste antwoorden") %>
             </p>
+
+            <!-- High score -->
             <% if (newHighScore) { %>
                 <p class="card-text d-flex justify-content-center align-items-center"><span class="new-highscore fs-5">
                     Nieuwe hoogste score:<br><%= highScore %><%= typeOfQuiz === "tenrounds" ? "/10" : (highScore === 1 ? " juist antwoord" : " juiste antwoorden") %></span>
@@ -28,49 +38,61 @@
                 <p class="card-text fs-5">Je hoogste score:<br><%= highScore %><%= typeOfQuiz === "tenrounds" ? "/10" : (highScore === 1 ? " juist antwoord" : " juiste antwoorden") %>
                 </p>
             <% } %>
+
             <hr/>
+
             <p class="card-text fs-5">
                 <% if ((typeOfQuiz === "tenrounds" && score < 5) || (typeOfQuiz === "suddendeath" && newHighScore === false)) { %>
                     Blijf proberen!
                 <% } else { %>
                     Goed gespeeld!
-                <% } %> Hieronder vind je een overzicht van al jouw antwoorden.</p>
-            <p class="card-text fs-5"><a href="/lotr" class="btn btn-primary">Terug naar quiz overzicht</a></p>
+                <% } %> Hieronder vind je een overzicht van al jouw antwoorden.
+            </p>
+            <p class="card-text fs-5">
+                <a href="/lotr" class="btn btn-primary">Terug naar quiz overzicht</a>
+            </p>
+
         </div>
-        <!-- overview of questions -->
+
+        <!-- Overview of questions -->
         <div class="answers card-footer">
+
             <% questions.forEach((q,index) => { %>
+
                 <div class="p-3 text-start">
                     <p class="border-bottom-0 mb-3">
                         <strong class="me-2"># <%= index+1 %> </strong>
-                        <span class="lotr-quote">
-                            <%= q.dialog %>
-                        </span>
+                        <span class="lotr-quote"><%= q.dialog %></span>
                     </p>
-                    <!-- character answer -->
+
+                    <!-- Character answer -->
                     <p>
                         <% if (q.answer_character.character_id === q.correct_character.character_id) { %>
-                                <span class="correct-answer"><i class="bi bi-check-lg" title="Correct character"></i><%= q.answer_character.name %></span>
+                            <span class="correct-answer"><i class="bi bi-check-lg" title="Correct character"></i><%= q.answer_character.name %></span>
                         <% } else { %>
-                                <span class="wrong-answer"><i class="bi bi-x" title="Wrong character"></i><%= q.answer_character.name %></span>
-                                &nbsp;<i class="bi bi-arrow-right" title="Arrow pointing right to correct character"></i>
-                                <span class="correct-answer"><%= q.correct_character.name %></span>
+                            <span class="wrong-answer"><i class="bi bi-x" title="Wrong character"></i><%= q.answer_character.name %></span>
+                            &nbsp;<i class="bi bi-arrow-right" title="Arrow pointing right to correct character"></i>
+                            <span class="correct-answer"><%= q.correct_character.name %></span>
                         <% } %>
                     </p>
-                    <!-- movie answer -->
+
+                    <!-- Movie answer -->
                     <p>
                         <% if (q.answer_movie.movie_id === q.correct_movie.movie_id) { %>
-                                <span class="correct-answer"><i class="bi bi-check-lg" title="Correct movie"></i><%= q.answer_movie.name %></span>
+                            <span class="correct-answer"><i class="bi bi-check-lg" title="Correct movie"></i><%= q.answer_movie.name %></span>
                         <% } else { %>
-                                <span class="wrong-answer"><i class="bi bi-x" title="Wrong movie"></i><%= q.answer_movie.name %></span>
-                                &nbsp;<i class="bi bi-arrow-right" title="Arrow pointing right to correct movie"></i>
-                                <span class="correct-answer"><%= q.correct_movie.name %></span>
+                            <span class="wrong-answer"><i class="bi bi-x" title="Wrong movie"></i><%= q.answer_movie.name %></span>
+                            &nbsp;<i class="bi bi-arrow-right" title="Arrow pointing right to correct movie"></i>
+                            <span class="correct-answer"><%= q.correct_movie.name %></span>
                         <% } %>
                     </p>
                 </div>
+
             <% }); %>
+
         </div>
 
+        <!-- Arrow to top -->
         <a href="#top" class="scroll-to-top"><i class="bi bi-arrow-up-square-fill"></i></a>
 
     </section>

@@ -36,8 +36,7 @@
 <body id="top">
 
     <header>
-        <nav
-        class="navbar navbar-expand-md mb-5" id="navbar">
+        <nav class="navbar navbar-expand-md mb-5" id="navbar">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/lotr"><img src="/assets/images/logo.png" alt="The One Quiz logo"
                         title="The One Quiz logo"></a>
@@ -109,10 +108,10 @@
                         </div>
                     </div>
 
-                    <!-- randomizes order of character options -->
-                    <% let characterOptions = [...question.wrong_characters,question.correct_character].sort(() => Math.random() - 0.5); %>
+                    <%  <!-- Randomizes order of character options -->
+                    let characterOptions = [...question.wrong_characters,question.correct_character].sort(() => Math.random() - 0.5); %>
 
-                    <!-- First row: 3 Characters -->
+                    <!-- Character options -->
                     <p class="pb-3">Van welk personage komt deze quote? </p>
                     <div class="d-grid gap-2 col-6 mx-auto" role="group">
                         <input type="radio" class="btn-check" name="btnradioChar" id="btnradio1" autocomplete="off" required value=<%= characterOptions[0].character_id %> >
@@ -125,7 +124,7 @@
                         <label class="btn btn-outline-primary" for="btnradio3"><%= characterOptions[2].name %></label>
                     </div>
 
-                    <!-- Second row: 3 movies -->
+                    <!-- Movie options -->
                     <p class="pb-3">Uit welke film komt deze quote? </p>
                     <div class="d-grid gap-2 col-6 mx-auto" role="group">
                         <input type="radio" class="btn-check" name="btnradioMovie" id="btnradio4" autocomplete="off" required value="5cd95395de30eff6ebccde5c" >
@@ -139,9 +138,10 @@
                     </div>
 
                     <!-- Submit Button -->
-                    
                     <button type="submit" id="questionSubmit" class="btn btn-primary col-md-3 mx-auto"><%= (typeOfQuiz === "tenrounds" && questionId+1 === 10) ? "Beëindig quiz" : "Volgende vraag" %>
-                        <i class="bi bi-chevron-right"></i></button>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+
                 </form>
             </div>
         </section>

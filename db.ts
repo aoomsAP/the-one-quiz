@@ -3,9 +3,10 @@ import { MongoClient, ObjectId } from "mongodb";
 import { User, Favorite, Blacklist, Question, Movie, Character } from "./types";
 
 // CONNECTION
+// ------------------------------------------------------------------------------------------------------
 
-if (typeof (process.env.URI) === "undefined") throw Error(`Error: .env var "URI" is undefined`); // needs to be added because typescript gives error if process.env is string/undefined
-const client = new MongoClient(process.env.URI); // mongo URI in .env file
+if (typeof (process.env.URI) === "undefined") throw Error(`Error: .env var "URI" is undefined`);
+const client = new MongoClient(process.env.URI);
 
 const exit = async () => {
     try {
@@ -24,6 +25,7 @@ const connect = async () => {
 }
 
 // USER
+// ------------------------------------------------------------------------------------------------------
 
 const createUser = async (newUser: User) => {
     try {
@@ -70,6 +72,7 @@ const getUserByEmail = async (email: string) => {
 }
 
 // QUESTION
+// ------------------------------------------------------------------------------------------------------
 
 const clearQuestions = async (userId: ObjectId) => {
     try {
@@ -88,6 +91,7 @@ const writeQuestion = async (userId: ObjectId, question: Question) => {
 }
 
 // ANSWER
+// ------------------------------------------------------------------------------------------------------
 
 const writeCharacterAnswer = async (userId: ObjectId, quoteId: string, characterAnswer: Character) => {
     try {
@@ -106,6 +110,7 @@ const writeMovieAnswer = async (userId: ObjectId, quoteId: string, movieAnswer: 
 }
 
 // SCORE
+// ------------------------------------------------------------------------------------------------------
 
 const createNewHighScore = async (user: User, typeOfQuiz: string, newHighScore: number) => {
     switch (typeOfQuiz) {
@@ -148,6 +153,7 @@ const deleteFavorite = async (user: User, favorite: Favorite) => {
 }
 
 // BLACKLIST
+// ------------------------------------------------------------------------------------------------------
 
 const addToBlacklist = async (user: User, blacklistItem: Blacklist) => {
     try {
