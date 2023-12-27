@@ -4,15 +4,20 @@
     <a href="/" title="Ga terug naar overzicht projecten">
         <i class="bi bi-arrow-left fs-1"></i>
     </a>
+
     <section class="card">
         <h1 class="card-header text-center fs-3">Registreer</h1>
         <div class="card-body">
+
             <% if (locals.message) { %>
+                <!-- Alert -->
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <p><%= message %></p>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <% } %>
+
+            <!-- Register form -->
             <form method="POST" action="/register">
                 <div class="form-group mb-3">
                     <label for="username">Gebruikersnaam*</label>
@@ -33,6 +38,7 @@
                 <button type="submit" class="btn btn-primary mb-3">Registreer</button>
                 <p>Heb jij al een account? <a href="/login">Aanmelden</a></p>
             </form>
+            
         </div>
     </section>
 </main>

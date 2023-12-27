@@ -4,6 +4,7 @@ import { writeQuestion } from "./db";
 import { ObjectId } from "mongodb";
 
 // QUESTIONS
+// ------------------------------------------------------------------------------------------------------
 
 const quoteAppearsInBlacklist = (quoteId: string, user: User) => {
     const blacklistedIds: string[] = user.blacklist.map(q => q.quote_id);
@@ -89,16 +90,18 @@ const addNextQuestion = async (user: User) => {
     } catch (err) {
         throw "Could not add next question";
     }
-    
 }
 
 // ANSWERS
+// ------------------------------------------------------------------------------------------------------
 
 const getCharacterAnswerById = (answerCharacterId: string, q: Question) => {
+
     // if answer is correct, answer_character = correct_character
     if (answerCharacterId === q.correct_character.character_id) {
         return q.correct_character;
     }
+
     // if answer is incorrect, answer_character = one of the wrong_characters
     else {
         if (answerCharacterId === q.wrong_characters[0].character_id) {
@@ -111,10 +114,12 @@ const getCharacterAnswerById = (answerCharacterId: string, q: Question) => {
 }
 
 const getMovieAnswerById = (answerMovieId: string, q: Question) => {
+
     // if answer is correct, answer_movie = correct_movie
     if (answerMovieId === q.correct_movie.movie_id) {
         return q.correct_movie;
     }
+
     // if answer is incorrect, answer_movie = one of the wrong_movies
     else {
         if (answerMovieId === q.wrong_movies[0].movie_id) {

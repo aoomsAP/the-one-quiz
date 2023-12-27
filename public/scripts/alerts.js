@@ -1,5 +1,6 @@
-// inspired by https://getbootstrap.com/docs/5.3/components/alerts/#examples
+// Inspired by https://getbootstrap.com/docs/5.3/components/alerts/#examples
 
+// Append alert to page wrapper
 const alertPlaceholder = document.getElementById("accessDeniedOtherProjects");
 const appendAlert = (message, type) => {
   const wrapper = document.createElement("div");
@@ -13,10 +14,9 @@ const appendAlert = (message, type) => {
   alertPlaceholder.innerHTML = ""; // Clear existing alerts
   alertPlaceholder.append(wrapper);
   isAlertVisible = true;
-
 }
 
-// alert for all projects other than LOTR
+// Alert for all projects other than LOTR
 const alertTriggers = document.querySelectorAll(".noAccessAlertBtn");
 alertTriggers.forEach((alertTrigger) => {
     alertTrigger.addEventListener("click", () => {
@@ -24,7 +24,7 @@ alertTriggers.forEach((alertTrigger) => {
     })
 });
 
-// alert for LOTR if you are not logged in (user is null)
+// Alert for LOTR if you are not logged in (user is null)
 const alertTrigger = document.getElementById("accessDeniedWithoutLoginBtn");
 if (alertTrigger) {
   alertTrigger.addEventListener("click", () => {

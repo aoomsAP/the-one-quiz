@@ -10,7 +10,6 @@ export interface User {
     blacklist: Blacklist[],
     highscore_tenrounds: number,
     highscore_suddendeath: number,
-
 }
 
 export interface Favorite {
@@ -54,9 +53,10 @@ export interface Character {
     wikiUrl: string
 }
 
-// Different object Character (API)
+// API INTERFACES
+// ------------------------------------------------------------------------------------------------------
 
-export interface CharacterApi{
+export interface CharacterAPI {
     _id: string,
     height: string,
     race: string,
@@ -70,19 +70,7 @@ export interface CharacterApi{
     wikiUrl: string
 }
 
-// Root Object voor Character (API)
-export interface RootCharacter{
-    docs: CharacterApi[];
-    total: number,
-    limit: number,
-    offset: number,
-    page: number,
-    pages: number
-}
-
-// Different object quote (API)
-
-export interface QuoteApi{
+export interface QuoteAPI {
     _id: string,
     dialog: string,
     movie: string,
@@ -90,18 +78,7 @@ export interface QuoteApi{
     id: string
 }
 
-// Root Object voor Quote (API)
-export interface RootQuote{
-    docs: QuoteApi[];
-    total: number,
-    limit: number,
-    page: number,
-    pages: number
-}
-
-// Different object Movie (API)
-
-export interface MovieApi{
+export interface MovieAPI {
     _id: string,
     name: string,
     runtimeInMinutes: number,
@@ -111,14 +88,3 @@ export interface MovieApi{
     academyAwardWins: number,
     rottenTomatoesScore: number
 }
-
-// Root Object voor movie (API)
-export interface RootMovie{
-    docs: MovieApi[];
-    total: number,
-    limit: number,
-    offset: number,
-    page: number,
-    pages: number
-}
-

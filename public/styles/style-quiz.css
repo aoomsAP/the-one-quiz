@@ -51,6 +51,11 @@ h2,
     text-transform: lowercase;
 }
 
+a:focus {
+    outline: 2px solid var(--bs-secondary);
+    outline-offset: 5px;
+}
+
 figure {
     margin: 0;
     position: relative;
@@ -97,9 +102,17 @@ figcaption {
     align-items: center;
 }
 
+.navbar-brand figure {
+    height: 100%;
+}
+
 .navbar-brand img {
     height: 100%;
     width: 100%;
+}
+
+.separation-hr {
+    display: none;
 }
 
 /* quiz page */
@@ -304,6 +317,20 @@ footer p {
 /* media queries */
 
 @media screen and (max-width: 768px) {
+    .navbar-collapse {
+        text-align: center;
+    }
+    .separation-dash {
+        display: none;
+    }
+    .separation-hr {
+        display: block;
+    }
+    .separation-hr hr {
+        margin: 0 auto;
+        width: 50%;
+    }
+
     #character .table-custom>article,
     #favorites .table-custom>article {
         flex-wrap: wrap;
@@ -349,15 +376,5 @@ footer p {
 
     #blacklist .table-icons button {
         width: 100%;
-    }
-
-    .navbar-collapse {
-        text-align: center;
-    }
-    
-}
-
-a:focus {
-    outline: 2px solid var(--bs-secondary);
-    outline-offset: 5px;
+    }   
 }
