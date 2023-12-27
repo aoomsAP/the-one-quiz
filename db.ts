@@ -144,9 +144,9 @@ const addToFavorites = async (user: User, favorite: Favorite) => {
     }
 }
 
-const deleteFavorite = async (user: User, favorite: Favorite) => {
+const deleteFavorite = async (user: User, quoteId: string) => {
     try {
-        await client.db("TheOneQuiz").collection("Users").updateOne({ _id: user._id },{$pull: { favorites: favorite }});
+        await client.db("TheOneQuiz").collection("Users").updateOne({ _id: user._id },{$pull: { favorites: { quote_id: quoteId } }});
     } catch (err) {
         throw "Could not delete the favorite";
     }
