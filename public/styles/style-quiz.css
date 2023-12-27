@@ -320,6 +320,9 @@ footer p {
     .navbar-collapse {
         text-align: center;
     }
+    .navbar-brand img {
+        width: inherit;
+    }
     .separation-dash {
         display: none;
     }
