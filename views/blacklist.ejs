@@ -89,9 +89,7 @@
                     <form class="table-edit-form collapse px-2" id="comment<%= index + 1 %>"
                         action="/lotr/blacklist/<%= item.quote_id %>/edit" method="POST">
                         <label for="editComment" class="form-label pt-2">Wijzig jouw opmerking hier:</label>
-                        <textarea class="form-control" id="editComment" name="editComment" rows="3">
-                            <%= item.comment %>
-                        </textarea>
+                        <textarea class="form-control" id="editComment" name="editComment" rows="3"><%= item.comment %></textarea>
                         <input type="submit" value="Aanpassen" class="btn btn-primary my-2">
                     </form>
                 </article>
